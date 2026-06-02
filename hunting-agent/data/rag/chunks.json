@@ -1,0 +1,1802 @@
+[
+  {
+    "byte_offset_end": 1134,
+    "byte_offset_start": 0,
+    "chunk_id": "INV-2026-0087-001",
+    "report_title": "Beacon False Positive (EDR Heartbeat)",
+    "section": "Summary",
+    "source_report": "INV-2026-0087",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "EDR",
+      "CrowdFalcon",
+      "heartbeat",
+      "10.42.10.0/24"
+    ],
+    "text": "# Investigation Report: INV-2026-0087 ## Metadata - **Report ID:** INV-2026-0087 - **Date:** 2026-01-14 - **Analyst:** K. Marchetti - **Priority:** Medium - **Verdict:** False Positive - **Investigation Type:** Network - **Subnet:** 10.42.10.0/24 ## Summary Beacon-like outbound HTTPS traffic from DEV-WS07 to 104.18.32.7 scored 0.91 and was investigated as possible C2. The traffic was confirmed as CrowdFalcon EDR heartbeat activity. This report is part of the Northwind Research SOC institutional memory corpus. It is written for retrieval during future investigations, so the key indicators, differentiators, and final verdict are explicit. The most useful retrieval terms for this case include beacon, false-positive, EDR, CrowdFalcon, heartbeat, 10.42.10.0/24. ## Investigation Steps 1. Loaded the triggering alert and confirmed the affected host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known",
+    "token_count": 151,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 2002,
+    "byte_offset_start": 858,
+    "chunk_id": "INV-2026-0087-002",
+    "report_title": "Beacon False Positive (EDR Heartbeat)",
+    "section": "Investigation Steps",
+    "source_report": "INV-2026-0087",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "EDR",
+      "CrowdFalcon",
+      "heartbeat",
+      "10.42.10.0/24"
+    ],
+    "text": "user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known malicious incidents in the SOC history. 5. Recorded the final verdict with the evidence that most strongly supported or weakened the alert. ## Findings The investigation team validated this point against telemetry, ownership records, and analyst notes: Destination 104.18.32.7 resolved through the CrowdFalcon cloud management path and matched the approved LOTS catalog. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: Process attribution showed crowdfalcon-sensor.exe running as SYSTEM with parent services.exe, which matched the expected sensor service",
+    "token_count": 151,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 2821,
+    "byte_offset_start": 1725,
+    "chunk_id": "INV-2026-0087-003",
+    "report_title": "Beacon False Positive (EDR Heartbeat)",
+    "section": "Findings",
+    "source_report": "INV-2026-0087",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "EDR",
+      "CrowdFalcon",
+      "heartbeat",
+      "10.42.10.0/24"
+    ],
+    "text": "role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: Process attribution showed crowdfalcon-sensor.exe running as SYSTEM with parent services.exe, which matched the expected sensor service model. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The interval and byte profile were intentionally regular and matched documented EDR heartbeat behavior. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would",
+    "token_count": 151,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1987,
+    "byte_offset_start": 1012,
+    "chunk_id": "INV-2026-0087-004",
+    "report_title": "Beacon False Positive (EDR Heartbeat)",
+    "section": "Findings",
+    "source_report": "INV-2026-0087",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "EDR",
+      "CrowdFalcon",
+      "heartbeat",
+      "10.42.10.0/24"
+    ],
+    "text": "destination ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in a future case before borrowing this verdict. A high beacon score, encoded command, or rare destination can be benign when ownership, process context, and business workflow explain it. The same surface indicator becomes more serious when those benign explanations are absent or contradicted by other evidence. ## Retrieval Notes For future retrieval, this point should be treated as a discriminator rather than a keyword: Destination 104.18.32.7 resolved through the CrowdFalcon cloud management path and matched the approved LOTS catalog. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage,",
+    "token_count": 151,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1500,
+    "byte_offset_start": 462,
+    "chunk_id": "INV-2026-0087-005",
+    "report_title": "Beacon False Positive (EDR Heartbeat)",
+    "section": "Findings",
+    "source_report": "INV-2026-0087",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "EDR",
+      "CrowdFalcon",
+      "heartbeat",
+      "10.42.10.0/24"
+    ],
+    "text": "the approved LOTS catalog. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: Process attribution showed crowdfalcon-sensor.exe running as SYSTEM with parent services.exe, which matched the expected sensor service model. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The interval and byte profile were intentionally regular",
+    "token_count": 151,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 4629,
+    "byte_offset_start": 3617,
+    "chunk_id": "INV-2026-0087-006",
+    "report_title": "Beacon False Positive (EDR Heartbeat)",
+    "section": "Verdict",
+    "source_report": "INV-2026-0087",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "EDR",
+      "CrowdFalcon",
+      "heartbeat",
+      "10.42.10.0/24"
+    ],
+    "text": "approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The interval and byte profile were intentionally regular and matched documented EDR heartbeat behavior. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. This case should be used carefully as precedent. A future alert may retrieve this report because it contains similar words, such as beacon, PowerShell, rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and",
+    "token_count": 151,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 5939,
+    "byte_offset_start": 4952,
+    "chunk_id": "INV-2026-0087-007",
+    "report_title": "Beacon False Positive (EDR Heartbeat)",
+    "section": "Recommendations",
+    "source_report": "INV-2026-0087",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "EDR",
+      "CrowdFalcon",
+      "heartbeat",
+      "10.42.10.0/24"
+    ],
+    "text": "developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence of corroborating malicious indicators. If those conditions are not present, this report may strengthen suspicion by showing what the benign version looked like. ## Analyst Notes The SOC recorded this report with enough operational detail to support later semantic retrieval. The report intentionally includes the alert shape, the entities involved, the observed telemetry, the decisive evidence, the benign or malicious explanation, and the conditions under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which parts apply. It",
+    "token_count": 151,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1598,
+    "byte_offset_start": 657,
+    "chunk_id": "INV-2026-0087-008",
+    "report_title": "Beacon False Positive (EDR Heartbeat)",
+    "section": "Tags",
+    "source_report": "INV-2026-0087",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "EDR",
+      "CrowdFalcon",
+      "heartbeat",
+      "10.42.10.0/24"
+    ],
+    "text": "use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which parts apply. It should also state which parts do not apply. For example, a false-positive report about EDR heartbeat can help clear another EDR heartbeat, but it can also make a non-EDR beacon look more suspicious because the current process, destination, or user context does not match the benign pattern. ## Verdict **False Positive.** Beacon-like outbound HTTPS traffic from DEV-WS07 to 104.18.32.7 scored 0.91 and was investigated as possible C2. The traffic was confirmed as CrowdFalcon EDR heartbeat activity. ## Recommendations 1. Suppress by CrowdFalcon domain and process attribution, not IP alone. 2. Keep a recurring review because CDN-backed service IPs can be shared. ## Tags beacon, false-positive, EDR, CrowdFalcon, heartbeat, 10.42.10.0/24",
+    "token_count": 144,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1133,
+    "byte_offset_start": 0,
+    "chunk_id": "INV-2026-0091-001",
+    "report_title": "Suspicious PowerShell (Admin Tooling)",
+    "section": "Summary",
+    "source_report": "INV-2026-0091",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "admin-tooling",
+      "VS-Code",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "# Investigation Report: INV-2026-0091 ## Metadata - **Report ID:** INV-2026-0091 - **Date:** 2026-01-22 - **Analyst:** R. Okonkwo - **Priority:** Medium - **Verdict:** False Positive - **Investigation Type:** Endpoint - **Subnet:** 10.42.10.0/24 ## Summary Code.exe spawned powershell.exe with ExecutionPolicy Bypass on DEV-WS04. Investigation confirmed an approved Azure DevOps extension workflow. This report is part of the Northwind Research SOC institutional memory corpus. It is written for retrieval during future investigations, so the key indicators, differentiators, and final verdict are explicit. The most useful retrieval terms for this case include powershell, false-positive, admin-tooling, VS-Code, developer, 10.42.10.0/24. ## Investigation Steps 1. Loaded the triggering alert and confirmed the affected host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known",
+    "token_count": 146,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1949,
+    "byte_offset_start": 856,
+    "chunk_id": "INV-2026-0091-002",
+    "report_title": "Suspicious PowerShell (Admin Tooling)",
+    "section": "Investigation Steps",
+    "source_report": "INV-2026-0091",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "admin-tooling",
+      "VS-Code",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known malicious incidents in the SOC history. 5. Recorded the final verdict with the evidence that most strongly supported or weakened the alert. ## Findings The investigation team validated this point against telemetry, ownership records, and analyst notes: The command was unencoded, short, and matched Get-AzDevOpsProject administration activity. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: No hidden window flag, download cradle, or child process creation followed the PowerShell command. This mattered because the team needed",
+    "token_count": 146,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 2715,
+    "byte_offset_start": 1692,
+    "chunk_id": "INV-2026-0091-003",
+    "report_title": "Suspicious PowerShell (Admin Tooling)",
+    "section": "Findings",
+    "source_report": "INV-2026-0091",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "admin-tooling",
+      "VS-Code",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: No hidden window flag, download cradle, or child process creation followed the PowerShell command. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The VS Code extension was present in the IT-approved developer tooling catalog. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be",
+    "token_count": 146,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1534,
+    "byte_offset_start": 579,
+    "chunk_id": "INV-2026-0091-004",
+    "report_title": "Suspicious PowerShell (Admin Tooling)",
+    "section": "Findings",
+    "source_report": "INV-2026-0091",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "admin-tooling",
+      "VS-Code",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in a future case before borrowing this verdict. A high beacon score, encoded command, or rare destination can be benign when ownership, process context, and business workflow explain it. The same surface indicator becomes more serious when those benign explanations are absent or contradicted by other evidence. ## Retrieval Notes For future retrieval, this point should be treated as a discriminator rather than a keyword: The command was unencoded, short, and matched Get-AzDevOpsProject administration activity. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval,",
+    "token_count": 146,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 4213,
+    "byte_offset_start": 3240,
+    "chunk_id": "INV-2026-0091-005",
+    "report_title": "Suspicious PowerShell (Admin Tooling)",
+    "section": "Findings",
+    "source_report": "INV-2026-0091",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "admin-tooling",
+      "VS-Code",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: No hidden window flag, download cradle, or child process creation followed the PowerShell command. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The VS Code extension was present in the IT-approved developer",
+    "token_count": 146,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1545,
+    "byte_offset_start": 579,
+    "chunk_id": "INV-2026-0091-006",
+    "report_title": "Suspicious PowerShell (Admin Tooling)",
+    "section": "Verdict",
+    "source_report": "INV-2026-0091",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "admin-tooling",
+      "VS-Code",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The VS Code extension was present in the IT-approved developer tooling catalog. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. This case should be used carefully as precedent. A future alert may retrieve this report because it contains similar words, such as beacon, PowerShell, rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow,",
+    "token_count": 146,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 973,
+    "byte_offset_start": 19,
+    "chunk_id": "INV-2026-0091-007",
+    "report_title": "Suspicious PowerShell (Admin Tooling)",
+    "section": "Recommendations",
+    "source_report": "INV-2026-0091",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "admin-tooling",
+      "VS-Code",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence of corroborating malicious indicators. If those conditions are not present, this report may strengthen suspicion by showing what the benign version looked like. ## Analyst Notes The SOC recorded this report with enough operational detail to support later semantic retrieval. The report intentionally includes the alert shape, the entities involved, the observed telemetry, the decisive evidence, the benign or malicious explanation, and the conditions under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and",
+    "token_count": 146,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 6448,
+    "byte_offset_start": 5480,
+    "chunk_id": "INV-2026-0091-008",
+    "report_title": "Suspicious PowerShell (Admin Tooling)",
+    "section": "Tags",
+    "source_report": "INV-2026-0091",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "admin-tooling",
+      "VS-Code",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which parts apply. It should also state which parts do not apply. For example, a false-positive report about EDR heartbeat can help clear another EDR heartbeat, but it can also make a non-EDR beacon look more suspicious because the current process, destination, or user context does not match the benign pattern. ## Verdict **False Positive.** Code.exe spawned powershell.exe with ExecutionPolicy Bypass on DEV-WS04. Investigation confirmed an approved Azure DevOps extension workflow. ## Recommendations 1. Document the extension command pattern as a known false positive. 2. Continue alerting when encoded command, hidden window, or download behavior appears. ## Tags powershell, false-positive, admin-tooling, VS-Code, developer, 10.42.10.0/24",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1137,
+    "byte_offset_start": 0,
+    "chunk_id": "INV-2026-0064-001",
+    "report_title": "Confirmed C2 Beacon (Cobalt Strike)",
+    "section": "Summary",
+    "source_report": "INV-2026-0064",
+    "tags": [
+      "beacon",
+      "true-positive",
+      "cobalt-strike",
+      "C2",
+      "phishing",
+      "APT",
+      "10.42.14.0/24"
+    ],
+    "text": "# Investigation Report: INV-2026-0064 ## Metadata - **Report ID:** INV-2026-0064 - **Date:** 2025-10-28 - **Analyst:** K. Marchetti - **Priority:** Critical - **Verdict:** True Positive - **Investigation Type:** Network - **Subnet:** 10.42.14.0/24 ## Summary SRV-APP04 beacons to 45.33.32.156 every 60 seconds. Threat intelligence and TLS structure confirmed Cobalt Strike infrastructure. This report is part of the Northwind Research SOC institutional memory corpus. It is written for retrieval during future investigations, so the key indicators, differentiators, and final verdict are explicit. The most useful retrieval terms for this case include beacon, true-positive, cobalt-strike, C2, phishing, APT, 10.42.14.0/24. ## Investigation Steps 1. Loaded the triggering alert and confirmed the affected host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known malicious incidents",
+    "token_count": 149,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1333,
+    "byte_offset_start": 239,
+    "chunk_id": "INV-2026-0064-002",
+    "report_title": "Confirmed C2 Beacon (Cobalt Strike)",
+    "section": "Investigation Steps",
+    "source_report": "INV-2026-0064",
+    "tags": [
+      "beacon",
+      "true-positive",
+      "cobalt-strike",
+      "C2",
+      "phishing",
+      "APT",
+      "10.42.14.0/24"
+    ],
+    "text": "2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known malicious incidents in the SOC history. 5. Recorded the final verdict with the evidence that most strongly supported or weakened the alert. ## Findings The investigation team validated this point against telemetry, ownership records, and analyst notes: Initial access was traced to a malicious attachment that launched WINWORD.EXE, cmd.exe, powershell.exe, and beacon.exe. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The server used a self-signed certificate and a JA3 profile associated with Cobalt Strike. This mattered because the team needed",
+    "token_count": 149,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 2740,
+    "byte_offset_start": 1705,
+    "chunk_id": "INV-2026-0064-003",
+    "report_title": "Confirmed C2 Beacon (Cobalt Strike)",
+    "section": "Findings",
+    "source_report": "INV-2026-0064",
+    "tags": [
+      "beacon",
+      "true-positive",
+      "cobalt-strike",
+      "C2",
+      "phishing",
+      "APT",
+      "10.42.14.0/24"
+    ],
+    "text": "considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The server used a self-signed certificate and a JA3 profile associated with Cobalt Strike. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The host was isolated within two hours and no lateral movement was observed in the initial containment window. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also",
+    "token_count": 149,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1937,
+    "byte_offset_start": 981,
+    "chunk_id": "INV-2026-0064-004",
+    "report_title": "Confirmed C2 Beacon (Cobalt Strike)",
+    "section": "Findings",
+    "source_report": "INV-2026-0064",
+    "tags": [
+      "beacon",
+      "true-positive",
+      "cobalt-strike",
+      "C2",
+      "phishing",
+      "APT",
+      "10.42.14.0/24"
+    ],
+    "text": "ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in a future case before borrowing this verdict. A high beacon score, encoded command, or rare destination can be benign when ownership, process context, and business workflow explain it. The same surface indicator becomes more serious when those benign explanations are absent or contradicted by other evidence. ## Retrieval Notes For future retrieval, this point should be treated as a discriminator rather than a keyword: Initial access was traced to a malicious attachment that launched WINWORD.EXE, cmd.exe, powershell.exe, and beacon.exe. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process",
+    "token_count": 149,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 2441,
+    "byte_offset_start": 1442,
+    "chunk_id": "INV-2026-0064-005",
+    "report_title": "Confirmed C2 Beacon (Cobalt Strike)",
+    "section": "Findings",
+    "source_report": "INV-2026-0064",
+    "tags": [
+      "beacon",
+      "true-positive",
+      "cobalt-strike",
+      "C2",
+      "phishing",
+      "APT",
+      "10.42.14.0/24"
+    ],
+    "text": "WINWORD.EXE, cmd.exe, powershell.exe, and beacon.exe. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The server used a self-signed certificate and a JA3 profile associated with Cobalt Strike. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The host was isolated within two hours and",
+    "token_count": 149,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 4511,
+    "byte_offset_start": 3533,
+    "chunk_id": "INV-2026-0064-006",
+    "report_title": "Confirmed C2 Beacon (Cobalt Strike)",
+    "section": "Verdict",
+    "source_report": "INV-2026-0064",
+    "tags": [
+      "beacon",
+      "true-positive",
+      "cobalt-strike",
+      "C2",
+      "phishing",
+      "APT",
+      "10.42.14.0/24"
+    ],
+    "text": "approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The host was isolated within two hours and no lateral movement was observed in the initial containment window. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. This case should be used carefully as precedent. A future alert may retrieve this report because it contains similar words, such as beacon, PowerShell, rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path,",
+    "token_count": 149,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 5767,
+    "byte_offset_start": 4775,
+    "chunk_id": "INV-2026-0064-007",
+    "report_title": "Confirmed C2 Beacon (Cobalt Strike)",
+    "section": "Recommendations",
+    "source_report": "INV-2026-0064",
+    "tags": [
+      "beacon",
+      "true-positive",
+      "cobalt-strike",
+      "C2",
+      "phishing",
+      "APT",
+      "10.42.14.0/24"
+    ],
+    "text": "PowerShell, rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence of corroborating malicious indicators. If those conditions are not present, this report may strengthen suspicion by showing what the benign version looked like. ## Analyst Notes The SOC recorded this report with enough operational detail to support later semantic retrieval. The report intentionally includes the alert shape, the entities involved, the observed telemetry, the decisive evidence, the benign or malicious explanation, and the conditions under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report",
+    "token_count": 149,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 3666,
+    "byte_offset_start": 2698,
+    "chunk_id": "INV-2026-0064-008",
+    "report_title": "Confirmed C2 Beacon (Cobalt Strike)",
+    "section": "Tags",
+    "source_report": "INV-2026-0064",
+    "tags": [
+      "beacon",
+      "true-positive",
+      "cobalt-strike",
+      "C2",
+      "phishing",
+      "APT",
+      "10.42.14.0/24"
+    ],
+    "text": "should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which parts apply. It should also state which parts do not apply. For example, a false-positive report about EDR heartbeat can help clear another EDR heartbeat, but it can also make a non-EDR beacon look more suspicious because the current process, destination, or user context does not match the benign pattern. ## Verdict **True Positive.** SRV-APP04 beacons to 45.33.32.156 every 60 seconds. Threat intelligence and TLS structure confirmed Cobalt Strike infrastructure. ## Recommendations 1. Retain Cobalt Strike JA3 and infrastructure matching in the high-priority triage path. 2. Use confirmed C2 precedent when assessing future beacon investigations. ## Tags beacon, true-positive, cobalt-strike, C2, phishing, APT, 10.42.14.0/24",
+    "token_count": 144,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1044,
+    "byte_offset_start": 0,
+    "chunk_id": "INV-2026-0072-001",
+    "report_title": "Credential Stuffing",
+    "section": "Summary",
+    "source_report": "INV-2026-0072",
+    "tags": [
+      "credential-stuffing",
+      "true-positive",
+      "VPN",
+      "brute-force",
+      "identity"
+    ],
+    "text": "# Investigation Report: INV-2026-0072 ## Metadata - **Report ID:** INV-2026-0072 - **Date:** 2025-11-15 - **Analyst:** S. Petrov - **Priority:** High - **Verdict:** True Positive - **Investigation Type:** Identity - **Subnet:** N/A ## Summary Northwind VPN saw 847 failed logins from 12 source IPs against 142 usernames. No authentication succeeded. This report is part of the Northwind Research SOC institutional memory corpus. It is written for retrieval during future investigations, so the key indicators, differentiators, and final verdict are explicit. The most useful retrieval terms for this case include credential-stuffing, true-positive, VPN, brute-force, identity. ## Investigation Steps 1. Loaded the triggering alert and confirmed the affected host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known",
+    "token_count": 141,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1822,
+    "byte_offset_start": 768,
+    "chunk_id": "INV-2026-0072-002",
+    "report_title": "Credential Stuffing",
+    "section": "Investigation Steps",
+    "source_report": "INV-2026-0072",
+    "tags": [
+      "credential-stuffing",
+      "true-positive",
+      "VPN",
+      "brute-force",
+      "identity"
+    ],
+    "text": "user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known malicious incidents in the SOC history. 5. Recorded the final verdict with the evidence that most strongly supported or weakened the alert. ## Findings The investigation team validated this point against telemetry, ownership records, and analyst notes: Source IPs mapped to residential proxy infrastructure. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: Targeted usernames matched public employee profile naming conventions. This mattered because the team needed",
+    "token_count": 141,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1945,
+    "byte_offset_start": 934,
+    "chunk_id": "INV-2026-0072-003",
+    "report_title": "Credential Stuffing",
+    "section": "Findings",
+    "source_report": "INV-2026-0072",
+    "tags": [
+      "credential-stuffing",
+      "true-positive",
+      "VPN",
+      "brute-force",
+      "identity"
+    ],
+    "text": "ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: Targeted usernames matched public employee profile naming conventions. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: MFA enforcement would have blocked successful password reuse. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to",
+    "token_count": 141,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 2468,
+    "byte_offset_start": 1572,
+    "chunk_id": "INV-2026-0072-004",
+    "report_title": "Credential Stuffing",
+    "section": "Findings",
+    "source_report": "INV-2026-0072",
+    "tags": [
+      "credential-stuffing",
+      "true-positive",
+      "VPN",
+      "brute-force",
+      "identity"
+    ],
+    "text": "role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in a future case before borrowing this verdict. A high beacon score, encoded command, or rare destination can be benign when ownership, process context, and business workflow explain it. The same surface indicator becomes more serious when those benign explanations are absent or contradicted by other evidence. ## Retrieval Notes For future retrieval, this point should be treated as a discriminator rather than a keyword: Source IPs mapped to residential proxy infrastructure. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination",
+    "token_count": 141,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 2328,
+    "byte_offset_start": 1350,
+    "chunk_id": "INV-2026-0072-005",
+    "report_title": "Credential Stuffing",
+    "section": "Findings",
+    "source_report": "INV-2026-0072",
+    "tags": [
+      "credential-stuffing",
+      "true-positive",
+      "VPN",
+      "brute-force",
+      "identity"
+    ],
+    "text": "residential proxy infrastructure. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: Targeted usernames matched public employee profile naming conventions. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: MFA enforcement would have blocked successful password reuse.",
+    "token_count": 141,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 4225,
+    "byte_offset_start": 3287,
+    "chunk_id": "INV-2026-0072-006",
+    "report_title": "Credential Stuffing",
+    "section": "Verdict",
+    "source_report": "INV-2026-0072",
+    "tags": [
+      "credential-stuffing",
+      "true-positive",
+      "VPN",
+      "brute-force",
+      "identity"
+    ],
+    "text": "approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: MFA enforcement would have blocked successful password reuse. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. This case should be used carefully as precedent. A future alert may retrieve this report because it contains similar words, such as beacon, PowerShell, rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same",
+    "token_count": 141,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 5419,
+    "byte_offset_start": 4477,
+    "chunk_id": "INV-2026-0072-007",
+    "report_title": "Credential Stuffing",
+    "section": "Recommendations",
+    "source_report": "INV-2026-0072",
+    "tags": [
+      "credential-stuffing",
+      "true-positive",
+      "VPN",
+      "brute-force",
+      "identity"
+    ],
+    "text": "destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence of corroborating malicious indicators. If those conditions are not present, this report may strengthen suspicion by showing what the benign version looked like. ## Analyst Notes The SOC recorded this report with enough operational detail to support later semantic retrieval. The report intentionally includes the alert shape, the entities involved, the observed telemetry, the decisive evidence, the benign or malicious explanation, and the conditions under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation,",
+    "token_count": 141,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 6083,
+    "byte_offset_start": 5208,
+    "chunk_id": "INV-2026-0072-008",
+    "report_title": "Credential Stuffing",
+    "section": "Tags",
+    "source_report": "INV-2026-0072",
+    "tags": [
+      "credential-stuffing",
+      "true-positive",
+      "VPN",
+      "brute-force",
+      "identity"
+    ],
+    "text": "under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which parts apply. It should also state which parts do not apply. For example, a false-positive report about EDR heartbeat can help clear another EDR heartbeat, but it can also make a non-EDR beacon look more suspicious because the current process, destination, or user context does not match the benign pattern. ## Verdict **True Positive.** Northwind VPN saw 847 failed logins from 12 source IPs against 142 usernames. No authentication succeeded. ## Recommendations 1. Tune VPN rate limiting. 2. Review credential monitoring coverage. ## Tags credential-stuffing, true-positive, VPN, brute-force, identity",
+    "token_count": 135,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1100,
+    "byte_offset_start": 0,
+    "chunk_id": "INV-2026-0079-001",
+    "report_title": "Data Exfiltration Attempt",
+    "section": "Summary",
+    "source_report": "INV-2026-0079",
+    "tags": [
+      "data-exfiltration",
+      "true-positive",
+      "insider-threat",
+      "dropbox",
+      "off-hours",
+      "10.42.12.0/24"
+    ],
+    "text": "# Investigation Report: INV-2026-0079 ## Metadata - **Report ID:** INV-2026-0079 - **Date:** 2025-12-03 - **Analyst:** R. Okonkwo - **Priority:** High - **Verdict:** True Positive - **Investigation Type:** Network - **Subnet:** 10.42.12.0/24 ## Summary ACCT-WS05 uploaded 2.3 GB to Dropbox during off-hours. Investigation confirmed insider exfiltration by a departing employee. This report is part of the Northwind Research SOC institutional memory corpus. It is written for retrieval during future investigations, so the key indicators, differentiators, and final verdict are explicit. The most useful retrieval terms for this case include data-exfiltration, true-positive, insider-threat, dropbox, off-hours, 10.42.12.0/24. ## Investigation Steps 1. Loaded the triggering alert and confirmed the affected host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign",
+    "token_count": 143,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1890,
+    "byte_offset_start": 823,
+    "chunk_id": "INV-2026-0079-002",
+    "report_title": "Data Exfiltration Attempt",
+    "section": "Investigation Steps",
+    "source_report": "INV-2026-0079",
+    "tags": [
+      "data-exfiltration",
+      "true-positive",
+      "insider-threat",
+      "dropbox",
+      "off-hours",
+      "10.42.12.0/24"
+    ],
+    "text": "subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known malicious incidents in the SOC history. 5. Recorded the final verdict with the evidence that most strongly supported or weakened the alert. ## Findings The investigation team validated this point against telemetry, ownership records, and analyst notes: Uploaded files included customer contact lists and pricing spreadsheets. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: Process attribution showed chrome.exe using a personal Dropbox account. This mattered because the team needed",
+    "token_count": 143,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1813,
+    "byte_offset_start": 817,
+    "chunk_id": "INV-2026-0079-003",
+    "report_title": "Data Exfiltration Attempt",
+    "section": "Findings",
+    "source_report": "INV-2026-0079",
+    "tags": [
+      "data-exfiltration",
+      "true-positive",
+      "insider-threat",
+      "dropbox",
+      "off-hours",
+      "10.42.12.0/24"
+    ],
+    "text": "user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: Process attribution showed chrome.exe using a personal Dropbox account. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: Legal and HR were involved after containment. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in",
+    "token_count": 143,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1502,
+    "byte_offset_start": 576,
+    "chunk_id": "INV-2026-0079-004",
+    "report_title": "Data Exfiltration Attempt",
+    "section": "Findings",
+    "source_report": "INV-2026-0079",
+    "tags": [
+      "data-exfiltration",
+      "true-positive",
+      "insider-threat",
+      "dropbox",
+      "off-hours",
+      "10.42.12.0/24"
+    ],
+    "text": "are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in a future case before borrowing this verdict. A high beacon score, encoded command, or rare destination can be benign when ownership, process context, and business workflow explain it. The same surface indicator becomes more serious when those benign explanations are absent or contradicted by other evidence. ## Retrieval Notes For future retrieval, this point should be treated as a discriminator rather than a keyword: Uploaded files included customer contact lists and pricing spreadsheets. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval,",
+    "token_count": 143,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 4090,
+    "byte_offset_start": 3129,
+    "chunk_id": "INV-2026-0079-005",
+    "report_title": "Data Exfiltration Attempt",
+    "section": "Findings",
+    "source_report": "INV-2026-0079",
+    "tags": [
+      "data-exfiltration",
+      "true-positive",
+      "insider-threat",
+      "dropbox",
+      "off-hours",
+      "10.42.12.0/24"
+    ],
+    "text": "If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: Process attribution showed chrome.exe using a personal Dropbox account. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: Legal and HR were involved after containment. If a later investigation shares",
+    "token_count": 143,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1345,
+    "byte_offset_start": 404,
+    "chunk_id": "INV-2026-0079-006",
+    "report_title": "Data Exfiltration Attempt",
+    "section": "Verdict",
+    "source_report": "INV-2026-0079",
+    "tags": [
+      "data-exfiltration",
+      "true-positive",
+      "insider-threat",
+      "dropbox",
+      "off-hours",
+      "10.42.12.0/24"
+    ],
+    "text": "the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: Legal and HR were involved after containment. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. This case should be used carefully as precedent. A future alert may retrieve this report because it contains similar words, such as beacon, PowerShell, rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence",
+    "token_count": 143,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 5520,
+    "byte_offset_start": 4594,
+    "chunk_id": "INV-2026-0079-007",
+    "report_title": "Data Exfiltration Attempt",
+    "section": "Recommendations",
+    "source_report": "INV-2026-0079",
+    "tags": [
+      "data-exfiltration",
+      "true-positive",
+      "insider-threat",
+      "dropbox",
+      "off-hours",
+      "10.42.12.0/24"
+    ],
+    "text": "vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence of corroborating malicious indicators. If those conditions are not present, this report may strengthen suspicion by showing what the benign version looked like. ## Analyst Notes The SOC recorded this report with enough operational detail to support later semantic retrieval. The report intentionally includes the alert shape, the entities involved, the observed telemetry, the decisive evidence, the benign or malicious explanation, and the conditions under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state",
+    "token_count": 143,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1291,
+    "byte_offset_start": 381,
+    "chunk_id": "INV-2026-0079-008",
+    "report_title": "Data Exfiltration Attempt",
+    "section": "Tags",
+    "source_report": "INV-2026-0079",
+    "tags": [
+      "data-exfiltration",
+      "true-positive",
+      "insider-threat",
+      "dropbox",
+      "off-hours",
+      "10.42.12.0/24"
+    ],
+    "text": "This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which parts apply. It should also state which parts do not apply. For example, a false-positive report about EDR heartbeat can help clear another EDR heartbeat, but it can also make a non-EDR beacon look more suspicious because the current process, destination, or user context does not match the benign pattern. ## Verdict **True Positive.** ACCT-WS05 uploaded 2.3 GB to Dropbox during off-hours. Investigation confirmed insider exfiltration by a departing employee. ## Recommendations 1. Alert on unsanctioned cloud upload volume. 2. Tie off-hours transfer alerts to HR risk context where legally approved. ## Tags data-exfiltration, true-positive, insider-threat, dropbox, off-hours, 10.42.12.0/24",
+    "token_count": 136,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1041,
+    "byte_offset_start": 0,
+    "chunk_id": "INV-2026-0083-001",
+    "report_title": "Brute Force on VPN",
+    "section": "Summary",
+    "source_report": "INV-2026-0083",
+    "tags": [
+      "brute-force",
+      "false-positive",
+      "lockout",
+      "service-accounts",
+      "CyberArk",
+      "identity"
+    ],
+    "text": "# Investigation Report: INV-2026-0083 ## Metadata - **Report ID:** INV-2026-0083 - **Date:** 2025-12-18 - **Analyst:** S. Petrov - **Priority:** Low - **Verdict:** False Positive - **Investigation Type:** Identity - **Subnet:** N/A ## Summary Eight service accounts locked out in a 15-minute window. The cause was a password rotation script defect. This report is part of the Northwind Research SOC institutional memory corpus. It is written for retrieval during future investigations, so the key indicators, differentiators, and final verdict are explicit. The most useful retrieval terms for this case include brute-force, false-positive, lockout, service-accounts, CyberArk, identity. ## Investigation Steps 1. Loaded the triggering alert and confirmed the affected host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1789,
+    "byte_offset_start": 764,
+    "chunk_id": "INV-2026-0083-002",
+    "report_title": "Brute Force on VPN",
+    "section": "Investigation Steps",
+    "source_report": "INV-2026-0083",
+    "tags": [
+      "brute-force",
+      "false-positive",
+      "lockout",
+      "service-accounts",
+      "CyberArk",
+      "identity"
+    ],
+    "text": "affected host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known malicious incidents in the SOC history. 5. Recorded the final verdict with the evidence that most strongly supported or weakened the alert. ## Findings The investigation team validated this point against telemetry, ownership records, and analyst notes: All affected accounts were managed by IT Operations. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: No external source IP was involved. This mattered because the team",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1838,
+    "byte_offset_start": 836,
+    "chunk_id": "INV-2026-0083-003",
+    "report_title": "Brute Force on VPN",
+    "section": "Findings",
+    "source_report": "INV-2026-0083",
+    "tags": [
+      "brute-force",
+      "false-positive",
+      "lockout",
+      "service-accounts",
+      "CyberArk",
+      "identity"
+    ],
+    "text": "process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: No external source IP was involved. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: CyberArk rotation timing was patched after the investigation. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1657,
+    "byte_offset_start": 779,
+    "chunk_id": "INV-2026-0083-004",
+    "report_title": "Brute Force on VPN",
+    "section": "Findings",
+    "source_report": "INV-2026-0083",
+    "tags": [
+      "brute-force",
+      "false-positive",
+      "lockout",
+      "service-accounts",
+      "CyberArk",
+      "identity"
+    ],
+    "text": "user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in a future case before borrowing this verdict. A high beacon score, encoded command, or rare destination can be benign when ownership, process context, and business workflow explain it. The same surface indicator becomes more serious when those benign explanations are absent or contradicted by other evidence. ## Retrieval Notes For future retrieval, this point should be treated as a discriminator rather than a keyword: All affected accounts were managed by IT Operations. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 2302,
+    "byte_offset_start": 1362,
+    "chunk_id": "INV-2026-0083-005",
+    "report_title": "Brute Force on VPN",
+    "section": "Findings",
+    "source_report": "INV-2026-0083",
+    "tags": [
+      "brute-force",
+      "false-positive",
+      "lockout",
+      "service-accounts",
+      "CyberArk",
+      "identity"
+    ],
+    "text": "were managed by IT Operations. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: No external source IP was involved. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: CyberArk rotation timing was patched after the investigation.",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 4197,
+    "byte_offset_start": 3259,
+    "chunk_id": "INV-2026-0083-006",
+    "report_title": "Brute Force on VPN",
+    "section": "Verdict",
+    "source_report": "INV-2026-0083",
+    "tags": [
+      "brute-force",
+      "false-positive",
+      "lockout",
+      "service-accounts",
+      "CyberArk",
+      "identity"
+    ],
+    "text": "approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: CyberArk rotation timing was patched after the investigation. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. This case should be used carefully as precedent. A future alert may retrieve this report because it contains similar words, such as beacon, PowerShell, rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 5356,
+    "byte_offset_start": 4414,
+    "chunk_id": "INV-2026-0083-007",
+    "report_title": "Brute Force on VPN",
+    "section": "Recommendations",
+    "source_report": "INV-2026-0083",
+    "tags": [
+      "brute-force",
+      "false-positive",
+      "lockout",
+      "service-accounts",
+      "CyberArk",
+      "identity"
+    ],
+    "text": "destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence of corroborating malicious indicators. If those conditions are not present, this report may strengthen suspicion by showing what the benign version looked like. ## Analyst Notes The SOC recorded this report with enough operational detail to support later semantic retrieval. The report intentionally includes the alert shape, the entities involved, the observed telemetry, the decisive evidence, the benign or malicious explanation, and the conditions under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation,",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 6061,
+    "byte_offset_start": 5145,
+    "chunk_id": "INV-2026-0083-008",
+    "report_title": "Brute Force on VPN",
+    "section": "Tags",
+    "source_report": "INV-2026-0083",
+    "tags": [
+      "brute-force",
+      "false-positive",
+      "lockout",
+      "service-accounts",
+      "CyberArk",
+      "identity"
+    ],
+    "text": "under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which parts apply. It should also state which parts do not apply. For example, a false-positive report about EDR heartbeat can help clear another EDR heartbeat, but it can also make a non-EDR beacon look more suspicious because the current process, destination, or user context does not match the benign pattern. ## Verdict **False Positive.** Eight service accounts locked out in a 15-minute window. The cause was a password rotation script defect. ## Recommendations 1. Stagger service account password rotation. 2. Tag password tooling sources in identity alerts. ## Tags brute-force, false-positive, lockout, service-accounts, CyberArk, identity",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1063,
+    "byte_offset_start": 0,
+    "chunk_id": "INV-2026-0088-001",
+    "report_title": "Suspicious Cloud API Calls",
+    "section": "Summary",
+    "source_report": "INV-2026-0088",
+    "tags": [
+      "cloud-api",
+      "false-positive",
+      "CI-CD",
+      "Jenkins",
+      "AWS",
+      "10.42.11.0/24"
+    ],
+    "text": "# Investigation Report: INV-2026-0088 ## Metadata - **Report ID:** INV-2026-0088 - **Date:** 2026-01-17 - **Analyst:** T. Vasquez - **Priority:** Medium - **Verdict:** False Positive - **Investigation Type:** Endpoint - **Subnet:** 10.42.11.0/24 ## Summary BUILD-SVR01 made AWS API calls that resembled reconnaissance. The activity was a scheduled CI/CD infrastructure audit. This report is part of the Northwind Research SOC institutional memory corpus. It is written for retrieval during future investigations, so the key indicators, differentiators, and final verdict are explicit. The most useful retrieval terms for this case include cloud-api, false-positive, CI-CD, Jenkins, AWS, 10.42.11.0/24. ## Investigation Steps 1. Loaded the triggering alert and confirmed the affected host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1848,
+    "byte_offset_start": 787,
+    "chunk_id": "INV-2026-0088-002",
+    "report_title": "Suspicious Cloud API Calls",
+    "section": "Investigation Steps",
+    "source_report": "INV-2026-0088",
+    "tags": [
+      "cloud-api",
+      "false-positive",
+      "CI-CD",
+      "Jenkins",
+      "AWS",
+      "10.42.11.0/24"
+    ],
+    "text": "host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known malicious incidents in the SOC history. 5. Recorded the final verdict with the evidence that most strongly supported or weakened the alert. ## Findings The investigation team validated this point against telemetry, ownership records, and analyst notes: Jenkins executed DescribeInstances, GetCallerIdentity, and ListBuckets. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The service account and cron schedule were documented. This mattered because the team needed",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1938,
+    "byte_offset_start": 959,
+    "chunk_id": "INV-2026-0088-003",
+    "report_title": "Suspicious Cloud API Calls",
+    "section": "Findings",
+    "source_report": "INV-2026-0088",
+    "tags": [
+      "cloud-api",
+      "false-positive",
+      "CI-CD",
+      "Jenkins",
+      "AWS",
+      "10.42.11.0/24"
+    ],
+    "text": "ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The service account and cron schedule were documented. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The same pattern existed across 90 days of logs. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1711,
+    "byte_offset_start": 793,
+    "chunk_id": "INV-2026-0088-004",
+    "report_title": "Suspicious Cloud API Calls",
+    "section": "Findings",
+    "source_report": "INV-2026-0088",
+    "tags": [
+      "cloud-api",
+      "false-positive",
+      "CI-CD",
+      "Jenkins",
+      "AWS",
+      "10.42.11.0/24"
+    ],
+    "text": "user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in a future case before borrowing this verdict. A high beacon score, encoded command, or rare destination can be benign when ownership, process context, and business workflow explain it. The same surface indicator becomes more serious when those benign explanations are absent or contradicted by other evidence. ## Retrieval Notes For future retrieval, this point should be treated as a discriminator rather than a keyword: Jenkins executed DescribeInstances, GetCallerIdentity, and ListBuckets. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 2335,
+    "byte_offset_start": 1390,
+    "chunk_id": "INV-2026-0088-005",
+    "report_title": "Suspicious Cloud API Calls",
+    "section": "Findings",
+    "source_report": "INV-2026-0088",
+    "tags": [
+      "cloud-api",
+      "false-positive",
+      "CI-CD",
+      "Jenkins",
+      "AWS",
+      "10.42.11.0/24"
+    ],
+    "text": "GetCallerIdentity, and ListBuckets. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The service account and cron schedule were documented. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The same pattern existed across 90 days of",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 4237,
+    "byte_offset_start": 3317,
+    "chunk_id": "INV-2026-0088-006",
+    "report_title": "Suspicious Cloud API Calls",
+    "section": "Verdict",
+    "source_report": "INV-2026-0088",
+    "tags": [
+      "cloud-api",
+      "false-positive",
+      "CI-CD",
+      "Jenkins",
+      "AWS",
+      "10.42.11.0/24"
+    ],
+    "text": "approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The same pattern existed across 90 days of logs. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. This case should be used carefully as precedent. A future alert may retrieve this report because it contains similar words, such as beacon, PowerShell, rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 3613,
+    "byte_offset_start": 2681,
+    "chunk_id": "INV-2026-0088-007",
+    "report_title": "Suspicious Cloud API Calls",
+    "section": "Recommendations",
+    "source_report": "INV-2026-0088",
+    "tags": [
+      "cloud-api",
+      "false-positive",
+      "CI-CD",
+      "Jenkins",
+      "AWS",
+      "10.42.11.0/24"
+    ],
+    "text": "rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence of corroborating malicious indicators. If those conditions are not present, this report may strengthen suspicion by showing what the benign version looked like. ## Analyst Notes The SOC recorded this report with enough operational detail to support later semantic retrieval. The report intentionally includes the alert shape, the entities involved, the observed telemetry, the decisive evidence, the benign or malicious explanation, and the conditions under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 5723,
+    "byte_offset_start": 4804,
+    "chunk_id": "INV-2026-0088-008",
+    "report_title": "Suspicious Cloud API Calls",
+    "section": "Tags",
+    "source_report": "INV-2026-0088",
+    "tags": [
+      "cloud-api",
+      "false-positive",
+      "CI-CD",
+      "Jenkins",
+      "AWS",
+      "10.42.11.0/24"
+    ],
+    "text": "conditions under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which parts apply. It should also state which parts do not apply. For example, a false-positive report about EDR heartbeat can help clear another EDR heartbeat, but it can also make a non-EDR beacon look more suspicious because the current process, destination, or user context does not match the benign pattern. ## Verdict **False Positive.** BUILD-SVR01 made AWS API calls that resembled reconnaissance. The activity was a scheduled CI/CD infrastructure audit. ## Recommendations 1. Document CI/CD cloud inventory jobs. 2. Suppress by service account and schedule only. ## Tags cloud-api, false-positive, CI-CD, Jenkins, AWS, 10.42.11.0/24",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1056,
+    "byte_offset_start": 0,
+    "chunk_id": "INV-2026-0093-001",
+    "report_title": "Beacon False Positive (M365 Keepalive)",
+    "section": "Summary",
+    "source_report": "INV-2026-0093",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "M365",
+      "Outlook",
+      "keepalive",
+      "10.42.12.0/24"
+    ],
+    "text": "# Investigation Report: INV-2026-0093 ## Metadata - **Report ID:** INV-2026-0093 - **Date:** 2026-02-04 - **Analyst:** T. Vasquez - **Priority:** Low - **Verdict:** False Positive - **Investigation Type:** Network - **Subnet:** 10.42.12.0/24 ## Summary Regular HTTPS from ACCT-WS02 to 13.107.42.14 scored 0.84. Outlook keepalive to Microsoft 365 was confirmed. This report is part of the Northwind Research SOC institutional memory corpus. It is written for retrieval during future investigations, so the key indicators, differentiators, and final verdict are explicit. The most useful retrieval terms for this case include beacon, false-positive, M365, Outlook, keepalive, 10.42.12.0/24. ## Investigation Steps 1. Loaded the triggering alert and confirmed the affected host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1825,
+    "byte_offset_start": 780,
+    "chunk_id": "INV-2026-0093-002",
+    "report_title": "Beacon False Positive (M365 Keepalive)",
+    "section": "Investigation Steps",
+    "source_report": "INV-2026-0093",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "M365",
+      "Outlook",
+      "keepalive",
+      "10.42.12.0/24"
+    ],
+    "text": "user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known malicious incidents in the SOC history. 5. Recorded the final verdict with the evidence that most strongly supported or weakened the alert. ## Findings The investigation team validated this point against telemetry, ownership records, and analyst notes: Destination ASN was Microsoft AS8075. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: Process attribution showed OUTLOOK.EXE under the interactive user. This mattered because the team needed to separate",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 2570,
+    "byte_offset_start": 1567,
+    "chunk_id": "INV-2026-0093-003",
+    "report_title": "Beacon False Positive (M365 Keepalive)",
+    "section": "Findings",
+    "source_report": "INV-2026-0093",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "M365",
+      "Outlook",
+      "keepalive",
+      "10.42.12.0/24"
+    ],
+    "text": "role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: Process attribution showed OUTLOOK.EXE under the interactive user. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The same destination range was common across workstation fleet telemetry. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 2465,
+    "byte_offset_start": 1567,
+    "chunk_id": "INV-2026-0093-004",
+    "report_title": "Beacon False Positive (M365 Keepalive)",
+    "section": "Findings",
+    "source_report": "INV-2026-0093",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "M365",
+      "Outlook",
+      "keepalive",
+      "10.42.12.0/24"
+    ],
+    "text": "role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in a future case before borrowing this verdict. A high beacon score, encoded command, or rare destination can be benign when ownership, process context, and business workflow explain it. The same surface indicator becomes more serious when those benign explanations are absent or contradicted by other evidence. ## Retrieval Notes For future retrieval, this point should be treated as a discriminator rather than a keyword: Destination ASN was Microsoft AS8075. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 2331,
+    "byte_offset_start": 1371,
+    "chunk_id": "INV-2026-0093-005",
+    "report_title": "Beacon False Positive (M365 Keepalive)",
+    "section": "Findings",
+    "source_report": "INV-2026-0093",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "M365",
+      "Outlook",
+      "keepalive",
+      "10.42.12.0/24"
+    ],
+    "text": "AS8075. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: Process attribution showed OUTLOOK.EXE under the interactive user. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The same destination range was common across workstation fleet telemetry.",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1473,
+    "byte_offset_start": 541,
+    "chunk_id": "INV-2026-0093-006",
+    "report_title": "Beacon False Positive (M365 Keepalive)",
+    "section": "Verdict",
+    "source_report": "INV-2026-0093",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "M365",
+      "Outlook",
+      "keepalive",
+      "10.42.12.0/24"
+    ],
+    "text": "and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The same destination range was common across workstation fleet telemetry. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. This case should be used carefully as precedent. A future alert may retrieve this report because it contains similar words, such as beacon, PowerShell, rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 5413,
+    "byte_offset_start": 4471,
+    "chunk_id": "INV-2026-0093-007",
+    "report_title": "Beacon False Positive (M365 Keepalive)",
+    "section": "Recommendations",
+    "source_report": "INV-2026-0093",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "M365",
+      "Outlook",
+      "keepalive",
+      "10.42.12.0/24"
+    ],
+    "text": "destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence of corroborating malicious indicators. If those conditions are not present, this report may strengthen suspicion by showing what the benign version looked like. ## Analyst Notes The SOC recorded this report with enough operational detail to support later semantic retrieval. The report intentionally includes the alert shape, the entities involved, the observed telemetry, the decisive evidence, the benign or malicious explanation, and the conditions under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation,",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 2661,
+    "byte_offset_start": 1750,
+    "chunk_id": "INV-2026-0093-008",
+    "report_title": "Beacon False Positive (M365 Keepalive)",
+    "section": "Tags",
+    "source_report": "INV-2026-0093",
+    "tags": [
+      "beacon",
+      "false-positive",
+      "M365",
+      "Outlook",
+      "keepalive",
+      "10.42.12.0/24"
+    ],
+    "text": "under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which parts apply. It should also state which parts do not apply. For example, a false-positive report about EDR heartbeat can help clear another EDR heartbeat, but it can also make a non-EDR beacon look more suspicious because the current process, destination, or user context does not match the benign pattern. ## Verdict **False Positive.** Regular HTTPS from ACCT-WS02 to 13.107.42.14 scored 0.84. Outlook keepalive to Microsoft 365 was confirmed. ## Recommendations 1. Preserve M365 LOTS enrichment. 2. Do not suppress M365 traffic when process attribution is absent. ## Tags beacon, false-positive, M365, Outlook, keepalive, 10.42.12.0/24",
+    "token_count": 141,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1083,
+    "byte_offset_start": 0,
+    "chunk_id": "INV-2026-0096-001",
+    "report_title": "Lateral Movement (PsExec)",
+    "section": "Summary",
+    "source_report": "INV-2026-0096",
+    "tags": [
+      "lateral-movement",
+      "true-positive",
+      "PsExec",
+      "10.42.14.0/24",
+      "cobalt-strike"
+    ],
+    "text": "# Investigation Report: INV-2026-0096 ## Metadata - **Report ID:** INV-2026-0096 - **Date:** 2026-02-11 - **Analyst:** K. Marchetti - **Priority:** Critical - **Verdict:** True Positive - **Investigation Type:** Endpoint - **Subnet:** 10.42.14.0/24 ## Summary PsExec lateral movement was detected from SRV-APP04 to SRV-DB01 after the October Cobalt Strike incident. This report is part of the Northwind Research SOC institutional memory corpus. It is written for retrieval during future investigations, so the key indicators, differentiators, and final verdict are explicit. The most useful retrieval terms for this case include lateral-movement, true-positive, PsExec, 10.42.14.0/24, cobalt-strike. ## Investigation Steps 1. Loaded the triggering alert and confirmed the affected host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns",
+    "token_count": 142,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1841,
+    "byte_offset_start": 805,
+    "chunk_id": "INV-2026-0096-002",
+    "report_title": "Lateral Movement (PsExec)",
+    "section": "Investigation Steps",
+    "source_report": "INV-2026-0096",
+    "tags": [
+      "lateral-movement",
+      "true-positive",
+      "PsExec",
+      "10.42.14.0/24",
+      "cobalt-strike"
+    ],
+    "text": "score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known malicious incidents in the SOC history. 5. Recorded the final verdict with the evidence that most strongly supported or weakened the alert. ## Findings The investigation team validated this point against telemetry, ownership records, and analyst notes: PSEXESVC.exe service creation was observed on the target host. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: Admin credentials were likely harvested from LSASS on the source host. This mattered because the",
+    "token_count": 142,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1781,
+    "byte_offset_start": 791,
+    "chunk_id": "INV-2026-0096-003",
+    "report_title": "Lateral Movement (PsExec)",
+    "section": "Findings",
+    "source_report": "INV-2026-0096",
+    "tags": [
+      "lateral-movement",
+      "true-positive",
+      "PsExec",
+      "10.42.14.0/24",
+      "cobalt-strike"
+    ],
+    "text": "user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: Admin credentials were likely harvested from LSASS on the source host. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The event required full domain credential rotation. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to",
+    "token_count": 142,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 2495,
+    "byte_offset_start": 1603,
+    "chunk_id": "INV-2026-0096-004",
+    "report_title": "Lateral Movement (PsExec)",
+    "section": "Findings",
+    "source_report": "INV-2026-0096",
+    "tags": [
+      "lateral-movement",
+      "true-positive",
+      "PsExec",
+      "10.42.14.0/24",
+      "cobalt-strike"
+    ],
+    "text": "role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in a future case before borrowing this verdict. A high beacon score, encoded command, or rare destination can be benign when ownership, process context, and business workflow explain it. The same surface indicator becomes more serious when those benign explanations are absent or contradicted by other evidence. ## Retrieval Notes For future retrieval, this point should be treated as a discriminator rather than a keyword: PSEXESVC.exe service creation was observed on the target host. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage,",
+    "token_count": 142,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 946,
+    "byte_offset_start": 13,
+    "chunk_id": "INV-2026-0096-005",
+    "report_title": "Lateral Movement (PsExec)",
+    "section": "Findings",
+    "source_report": "INV-2026-0096",
+    "tags": [
+      "lateral-movement",
+      "true-positive",
+      "PsExec",
+      "10.42.14.0/24",
+      "cobalt-strike"
+    ],
+    "text": "on the target host. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: Admin credentials were likely harvested from LSASS on the source host. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The event required full domain",
+    "token_count": 142,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1899,
+    "byte_offset_start": 945,
+    "chunk_id": "INV-2026-0096-006",
+    "report_title": "Lateral Movement (PsExec)",
+    "section": "Verdict",
+    "source_report": "INV-2026-0096",
+    "tags": [
+      "lateral-movement",
+      "true-positive",
+      "PsExec",
+      "10.42.14.0/24",
+      "cobalt-strike"
+    ],
+    "text": "destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The event required full domain credential rotation. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. This case should be used carefully as precedent. A future alert may retrieve this report because it contains similar words, such as beacon, PowerShell, rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the",
+    "token_count": 142,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 3636,
+    "byte_offset_start": 2689,
+    "chunk_id": "INV-2026-0096-007",
+    "report_title": "Lateral Movement (PsExec)",
+    "section": "Recommendations",
+    "source_report": "INV-2026-0096",
+    "tags": [
+      "lateral-movement",
+      "true-positive",
+      "PsExec",
+      "10.42.14.0/24",
+      "cobalt-strike"
+    ],
+    "text": "rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence of corroborating malicious indicators. If those conditions are not present, this report may strengthen suspicion by showing what the benign version looked like. ## Analyst Notes The SOC recorded this report with enough operational detail to support later semantic retrieval. The report intentionally includes the alert shape, the entities involved, the observed telemetry, the decisive evidence, the benign or malicious explanation, and the conditions under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation,",
+    "token_count": 142,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 6165,
+    "byte_offset_start": 5227,
+    "chunk_id": "INV-2026-0096-008",
+    "report_title": "Lateral Movement (PsExec)",
+    "section": "Tags",
+    "source_report": "INV-2026-0096",
+    "tags": [
+      "lateral-movement",
+      "true-positive",
+      "PsExec",
+      "10.42.14.0/24",
+      "cobalt-strike"
+    ],
+    "text": "under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which parts apply. It should also state which parts do not apply. For example, a false-positive report about EDR heartbeat can help clear another EDR heartbeat, but it can also make a non-EDR beacon look more suspicious because the current process, destination, or user context does not match the benign pattern. ## Verdict **True Positive.** PsExec lateral movement was detected from SRV-APP04 to SRV-DB01 after the October Cobalt Strike incident. ## Recommendations 1. Retain follow-on lateral movement checks after C2 containment. 2. Correlate service creation with prior compromised hosts. ## Tags lateral-movement, true-positive, PsExec, 10.42.14.0/24, cobalt-strike",
+    "token_count": 141,
+    "verdict": "True Positive"
+  },
+  {
+    "byte_offset_end": 1094,
+    "byte_offset_start": 0,
+    "chunk_id": "INV-2026-0101-001",
+    "report_title": "Rare Destination (SaaS Vendor Onboarding)",
+    "section": "Summary",
+    "source_report": "INV-2026-0101",
+    "tags": [
+      "rare-destination",
+      "false-positive",
+      "vendor-onboarding",
+      "SaaS",
+      "10.42.10.0/24"
+    ],
+    "text": "# Investigation Report: INV-2026-0101 ## Metadata - **Report ID:** INV-2026-0101 - **Date:** 2026-02-20 - **Analyst:** R. Okonkwo - **Priority:** Medium - **Verdict:** False Positive - **Investigation Type:** Network - **Subnet:** 10.42.10.0/24 ## Summary DEV-WS09 connected to a rare destination during a CodeReview.io vendor evaluation. The rare destination was approved SaaS onboarding. This report is part of the Northwind Research SOC institutional memory corpus. It is written for retrieval during future investigations, so the key indicators, differentiators, and final verdict are explicit. The most useful retrieval terms for this case include rare-destination, false-positive, vendor-onboarding, SaaS, 10.42.10.0/24. ## Investigation Steps 1. Loaded the triggering alert and confirmed the affected host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known",
+    "token_count": 143,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1898,
+    "byte_offset_start": 818,
+    "chunk_id": "INV-2026-0101-002",
+    "report_title": "Rare Destination (SaaS Vendor Onboarding)",
+    "section": "Investigation Steps",
+    "source_report": "INV-2026-0101",
+    "tags": [
+      "rare-destination",
+      "false-positive",
+      "vendor-onboarding",
+      "SaaS",
+      "10.42.10.0/24"
+    ],
+    "text": "user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known malicious incidents in the SOC history. 5. Recorded the final verdict with the evidence that most strongly supported or weakened the alert. ## Findings The investigation team validated this point against telemetry, ownership records, and analyst notes: Procurement tracking confirmed manager-approved vendor evaluation. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: Traffic was interactive browsing rather than periodic beaconing. This mattered because the team needed to separate surface",
+    "token_count": 143,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1578,
+    "byte_offset_start": 570,
+    "chunk_id": "INV-2026-0101-003",
+    "report_title": "Rare Destination (SaaS Vendor Onboarding)",
+    "section": "Findings",
+    "source_report": "INV-2026-0101",
+    "tags": [
+      "rare-destination",
+      "false-positive",
+      "vendor-onboarding",
+      "SaaS",
+      "10.42.10.0/24"
+    ],
+    "text": "and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: Traffic was interactive browsing rather than periodic beaconing. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The destination became common two weeks later as more engineers evaluated the service. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to",
+    "token_count": 143,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 2571,
+    "byte_offset_start": 1634,
+    "chunk_id": "INV-2026-0101-004",
+    "report_title": "Rare Destination (SaaS Vendor Onboarding)",
+    "section": "Findings",
+    "source_report": "INV-2026-0101",
+    "tags": [
+      "rare-destination",
+      "false-positive",
+      "vendor-onboarding",
+      "SaaS",
+      "10.42.10.0/24"
+    ],
+    "text": "role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in a future case before borrowing this verdict. A high beacon score, encoded command, or rare destination can be benign when ownership, process context, and business workflow explain it. The same surface indicator becomes more serious when those benign explanations are absent or contradicted by other evidence. ## Retrieval Notes For future retrieval, this point should be treated as a discriminator rather than a keyword: Procurement tracking confirmed manager-approved vendor evaluation. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval,",
+    "token_count": 143,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 4115,
+    "byte_offset_start": 3152,
+    "chunk_id": "INV-2026-0101-005",
+    "report_title": "Rare Destination (SaaS Vendor Onboarding)",
+    "section": "Findings",
+    "source_report": "INV-2026-0101",
+    "tags": [
+      "rare-destination",
+      "false-positive",
+      "vendor-onboarding",
+      "SaaS",
+      "10.42.10.0/24"
+    ],
+    "text": "If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: Traffic was interactive browsing rather than periodic beaconing. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The destination became common two weeks later as more engineers evaluated the service.",
+    "token_count": 143,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 3798,
+    "byte_offset_start": 2851,
+    "chunk_id": "INV-2026-0101-006",
+    "report_title": "Rare Destination (SaaS Vendor Onboarding)",
+    "section": "Verdict",
+    "source_report": "INV-2026-0101",
+    "tags": [
+      "rare-destination",
+      "false-positive",
+      "vendor-onboarding",
+      "SaaS",
+      "10.42.10.0/24"
+    ],
+    "text": "same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The destination became common two weeks later as more engineers evaluated the service. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. This case should be used carefully as precedent. A future alert may retrieve this report because it contains similar words, such as beacon, PowerShell, rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business",
+    "token_count": 143,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 5553,
+    "byte_offset_start": 4608,
+    "chunk_id": "INV-2026-0101-007",
+    "report_title": "Rare Destination (SaaS Vendor Onboarding)",
+    "section": "Recommendations",
+    "source_report": "INV-2026-0101",
+    "tags": [
+      "rare-destination",
+      "false-positive",
+      "vendor-onboarding",
+      "SaaS",
+      "10.42.10.0/24"
+    ],
+    "text": "service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence of corroborating malicious indicators. If those conditions are not present, this report may strengthen suspicion by showing what the benign version looked like. ## Analyst Notes The SOC recorded this report with enough operational detail to support later semantic retrieval. The report intentionally includes the alert shape, the entities involved, the observed telemetry, the decisive evidence, the benign or malicious explanation, and the conditions under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite",
+    "token_count": 143,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 3523,
+    "byte_offset_start": 2598,
+    "chunk_id": "INV-2026-0101-008",
+    "report_title": "Rare Destination (SaaS Vendor Onboarding)",
+    "section": "Tags",
+    "source_report": "INV-2026-0101",
+    "tags": [
+      "rare-destination",
+      "false-positive",
+      "vendor-onboarding",
+      "SaaS",
+      "10.42.10.0/24"
+    ],
+    "text": "should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which parts apply. It should also state which parts do not apply. For example, a false-positive report about EDR heartbeat can help clear another EDR heartbeat, but it can also make a non-EDR beacon look more suspicious because the current process, destination, or user context does not match the benign pattern. ## Verdict **False Positive.** DEV-WS09 connected to a rare destination during a CodeReview.io vendor evaluation. The rare destination was approved SaaS onboarding. ## Recommendations 1. Use procurement context during rare-destination triage. 2. Do not classify rarity alone as malicious. ## Tags rare-destination, false-positive, vendor-onboarding, SaaS, 10.42.10.0/24",
+    "token_count": 138,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1102,
+    "byte_offset_start": 0,
+    "chunk_id": "INV-2026-0104-001",
+    "report_title": "DNS Tunneling Suspicion",
+    "section": "Summary",
+    "source_report": "INV-2026-0104",
+    "tags": [
+      "DNS-tunneling",
+      "inconclusive",
+      "monitoring",
+      "internal-domain",
+      "10.42.13.0/24"
+    ],
+    "text": "# Investigation Report: INV-2026-0104 ## Metadata - **Report ID:** INV-2026-0104 - **Date:** 2026-02-26 - **Analyst:** T. Vasquez - **Priority:** Medium - **Verdict:** Inconclusive - **Investigation Type:** Network - **Subnet:** 10.42.13.0/24 ## Summary QA-SVR03 generated high-frequency DNS queries to structured subdomains. Entropy was elevated but below tunneling thresholds. This report is part of the Northwind Research SOC institutional memory corpus. It is written for retrieval during future investigations, so the key indicators, differentiators, and final verdict are explicit. The most useful retrieval terms for this case include DNS-tunneling, inconclusive, monitoring, internal-domain, 10.42.13.0/24. ## Investigation Steps 1. Loaded the triggering alert and confirmed the affected host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and",
+    "token_count": 142,
+    "verdict": "Inconclusive"
+  },
+  {
+    "byte_offset_end": 1597,
+    "byte_offset_start": 559,
+    "chunk_id": "INV-2026-0104-002",
+    "report_title": "DNS Tunneling Suspicion",
+    "section": "Investigation Steps",
+    "source_report": "INV-2026-0104",
+    "tags": [
+      "DNS-tunneling",
+      "inconclusive",
+      "monitoring",
+      "internal-domain",
+      "10.42.13.0/24"
+    ],
+    "text": "and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known malicious incidents in the SOC history. 5. Recorded the final verdict with the evidence that most strongly supported or weakened the alert. ## Findings The investigation team validated this point against telemetry, ownership records, and analyst notes: The domain was owned by Northwind Research and no external resolution occurred. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The pattern could be internal telemetry or low-rate tunneling. This mattered because the",
+    "token_count": 142,
+    "verdict": "Inconclusive"
+  },
+  {
+    "byte_offset_end": 1953,
+    "byte_offset_start": 960,
+    "chunk_id": "INV-2026-0104-003",
+    "report_title": "DNS Tunneling Suspicion",
+    "section": "Findings",
+    "source_report": "INV-2026-0104",
+    "tags": [
+      "DNS-tunneling",
+      "inconclusive",
+      "monitoring",
+      "internal-domain",
+      "10.42.13.0/24"
+    ],
+    "text": "destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The pattern could be internal telemetry or low-rate tunneling. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: A 30-day monitoring plan was opened. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be",
+    "token_count": 142,
+    "verdict": "Inconclusive"
+  },
+  {
+    "byte_offset_end": 1445,
+    "byte_offset_start": 559,
+    "chunk_id": "INV-2026-0104-004",
+    "report_title": "DNS Tunneling Suspicion",
+    "section": "Findings",
+    "source_report": "INV-2026-0104",
+    "tags": [
+      "DNS-tunneling",
+      "inconclusive",
+      "monitoring",
+      "internal-domain",
+      "10.42.13.0/24"
+    ],
+    "text": "and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in a future case before borrowing this verdict. A high beacon score, encoded command, or rare destination can be benign when ownership, process context, and business workflow explain it. The same surface indicator becomes more serious when those benign explanations are absent or contradicted by other evidence. ## Retrieval Notes For future retrieval, this point should be treated as a discriminator rather than a keyword: The domain was owned by Northwind Research and no external resolution occurred. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role,",
+    "token_count": 142,
+    "verdict": "Inconclusive"
+  },
+  {
+    "byte_offset_end": 1368,
+    "byte_offset_start": 419,
+    "chunk_id": "INV-2026-0104-005",
+    "report_title": "DNS Tunneling Suspicion",
+    "section": "Findings",
+    "source_report": "INV-2026-0104",
+    "tags": [
+      "DNS-tunneling",
+      "inconclusive",
+      "monitoring",
+      "internal-domain",
+      "10.42.13.0/24"
+    ],
+    "text": "Research and no external resolution occurred. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The pattern could be internal telemetry or low-rate tunneling. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: A 30-day monitoring plan was",
+    "token_count": 142,
+    "verdict": "Inconclusive"
+  },
+  {
+    "byte_offset_end": 1904,
+    "byte_offset_start": 960,
+    "chunk_id": "INV-2026-0104-006",
+    "report_title": "DNS Tunneling Suspicion",
+    "section": "Verdict",
+    "source_report": "INV-2026-0104",
+    "tags": [
+      "DNS-tunneling",
+      "inconclusive",
+      "monitoring",
+      "internal-domain",
+      "10.42.13.0/24"
+    ],
+    "text": "destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: A 30-day monitoring plan was opened. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. This case should be used carefully as precedent. A future alert may retrieve this report because it contains similar words, such as beacon, PowerShell, rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same",
+    "token_count": 142,
+    "verdict": "Inconclusive"
+  },
+  {
+    "byte_offset_end": 5445,
+    "byte_offset_start": 4499,
+    "chunk_id": "INV-2026-0104-007",
+    "report_title": "DNS Tunneling Suspicion",
+    "section": "Recommendations",
+    "source_report": "INV-2026-0104",
+    "tags": [
+      "DNS-tunneling",
+      "inconclusive",
+      "monitoring",
+      "internal-domain",
+      "10.42.13.0/24"
+    ],
+    "text": "destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence of corroborating malicious indicators. If those conditions are not present, this report may strengthen suspicion by showing what the benign version looked like. ## Analyst Notes The SOC recorded this report with enough operational detail to support later semantic retrieval. The report intentionally includes the alert shape, the entities involved, the observed telemetry, the decisive evidence, the benign or malicious explanation, and the conditions under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the",
+    "token_count": 142,
+    "verdict": "Inconclusive"
+  },
+  {
+    "byte_offset_end": 6172,
+    "byte_offset_start": 5236,
+    "chunk_id": "INV-2026-0104-008",
+    "report_title": "DNS Tunneling Suspicion",
+    "section": "Tags",
+    "source_report": "INV-2026-0104",
+    "tags": [
+      "DNS-tunneling",
+      "inconclusive",
+      "monitoring",
+      "internal-domain",
+      "10.42.13.0/24"
+    ],
+    "text": "which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which parts apply. It should also state which parts do not apply. For example, a false-positive report about EDR heartbeat can help clear another EDR heartbeat, but it can also make a non-EDR beacon look more suspicious because the current process, destination, or user context does not match the benign pattern. ## Verdict **Inconclusive.** QA-SVR03 generated high-frequency DNS queries to structured subdomains. Entropy was elevated but below tunneling thresholds. ## Recommendations 1. Continue monitoring entropy and query volume. 2. Close if the pattern remains stable and internally owned. ## Tags DNS-tunneling, inconclusive, monitoring, internal-domain, 10.42.13.0/24",
+    "token_count": 139,
+    "verdict": "Inconclusive"
+  },
+  {
+    "byte_offset_end": 1104,
+    "byte_offset_start": 0,
+    "chunk_id": "INV-2026-0108-001",
+    "report_title": "Encoded PowerShell from Dev Workstation",
+    "section": "Summary",
+    "source_report": "INV-2026-0108",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "encoded-command",
+      "npm",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "# Investigation Report: INV-2026-0108 ## Metadata - **Report ID:** INV-2026-0108 - **Date:** 2026-03-04 - **Analyst:** K. Marchetti - **Priority:** Medium - **Verdict:** False Positive - **Investigation Type:** Endpoint - **Subnet:** 10.42.10.0/24 ## Summary DEV-WS02 ran encoded PowerShell from an npm postinstall script. The decoded command installed Azure Functions tooling. This report is part of the Northwind Research SOC institutional memory corpus. It is written for retrieval during future investigations, so the key indicators, differentiators, and final verdict are explicit. The most useful retrieval terms for this case include powershell, false-positive, encoded-command, npm, developer, 10.42.10.0/24. ## Investigation Steps 1. Loaded the triggering alert and confirmed the affected host, user, subnet, score, and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and",
+    "token_count": 145,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1421,
+    "byte_offset_start": 341,
+    "chunk_id": "INV-2026-0108-002",
+    "report_title": "Encoded PowerShell from Dev Workstation",
+    "section": "Investigation Steps",
+    "source_report": "INV-2026-0108",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "encoded-command",
+      "npm",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "and primary observable. 2. Reviewed process attribution and parent-child relationships where endpoint data was available. 3. Checked destination ownership, LOTS status, prior prevalence, and threat-intelligence coverage. 4. Compared the behavior against known benign patterns and known malicious incidents in the SOC history. 5. Recorded the final verdict with the evidence that most strongly supported or weakened the alert. ## Findings The investigation team validated this point against telemetry, ownership records, and analyst notes: Parent process was node.exe, not Code.exe directly. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The decoded command was Install-Module -Name Az.Functions -Scope CurrentUser -Force. This mattered because the team needed to separate surface similarity from",
+    "token_count": 145,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 2670,
+    "byte_offset_start": 1641,
+    "chunk_id": "INV-2026-0108-003",
+    "report_title": "Encoded PowerShell from Dev Workstation",
+    "section": "Findings",
+    "source_report": "INV-2026-0108",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "encoded-command",
+      "npm",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "together. The investigation team validated this point against telemetry, ownership records, and analyst notes: The decoded command was Install-Module -Name Az.Functions -Scope CurrentUser -Force. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The investigation team validated this point against telemetry, ownership records, and analyst notes: No network connections or child processes followed the PowerShell execution beyond the installer flow. This mattered because the team needed to separate surface similarity from operational meaning. Similar alerts can have different outcomes when process lineage, destination ownership, user role, and timing are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in",
+    "token_count": 145,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1505,
+    "byte_offset_start": 576,
+    "chunk_id": "INV-2026-0108-004",
+    "report_title": "Encoded PowerShell from Dev Workstation",
+    "section": "Findings",
+    "source_report": "INV-2026-0108",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "encoded-command",
+      "npm",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "are considered together. The key lesson from this case is not the verdict alone. The useful lesson is the discriminator. Analysts should ask what was true here that would also need to be true in a future case before borrowing this verdict. A high beacon score, encoded command, or rare destination can be benign when ownership, process context, and business workflow explain it. The same surface indicator becomes more serious when those benign explanations are absent or contradicted by other evidence. ## Retrieval Notes For future retrieval, this point should be treated as a discriminator rather than a keyword: Parent process was node.exe, not Code.exe directly. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the",
+    "token_count": 145,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 4158,
+    "byte_offset_start": 3173,
+    "chunk_id": "INV-2026-0108-005",
+    "report_title": "Encoded PowerShell from Dev Workstation",
+    "section": "Findings",
+    "source_report": "INV-2026-0108",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "encoded-command",
+      "npm",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: The decoded command was Install-Module -Name Az.Functions -Scope CurrentUser -Force. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: No network connections or child processes followed the PowerShell execution beyond the installer flow. If a later",
+    "token_count": 145,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 1277,
+    "byte_offset_start": 313,
+    "chunk_id": "INV-2026-0108-006",
+    "report_title": "Encoded PowerShell from Dev Workstation",
+    "section": "Verdict",
+    "source_report": "INV-2026-0108",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "encoded-command",
+      "npm",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "all observed events. For future retrieval, this point should be treated as a discriminator rather than a keyword: No network connections or child processes followed the PowerShell execution beyond the installer flow. If a later investigation shares only the surface alert name but not this discriminator, the old verdict should not be copied forward. Analysts should compare host role, user role, process lineage, destination ownership, service approval, timing, and whether the same explanation accounts for all observed events. This case should be used carefully as precedent. A future alert may retrieve this report because it contains similar words, such as beacon, PowerShell, rare destination, cloud service, or developer workstation. Similar vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence",
+    "token_count": 145,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 5623,
+    "byte_offset_start": 4683,
+    "chunk_id": "INV-2026-0108-007",
+    "report_title": "Encoded PowerShell from Dev Workstation",
+    "section": "Recommendations",
+    "source_report": "INV-2026-0108",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "encoded-command",
+      "npm",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "vocabulary is only the starting point. The analyst still needs to ask whether the current evidence has the same benign owner, the same expected process path, the same approved business workflow, and the same absence of corroborating malicious indicators. If those conditions are not present, this report may strengthen suspicion by showing what the benign version looked like. ## Analyst Notes The SOC recorded this report with enough operational detail to support later semantic retrieval. The report intentionally includes the alert shape, the entities involved, the observed telemetry, the decisive evidence, the benign or malicious explanation, and the conditions under which the verdict should or should not generalize. This structure helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which",
+    "token_count": 145,
+    "verdict": "False Positive"
+  },
+  {
+    "byte_offset_end": 6341,
+    "byte_offset_start": 5424,
+    "chunk_id": "INV-2026-0108-008",
+    "report_title": "Encoded PowerShell from Dev Workstation",
+    "section": "Tags",
+    "source_report": "INV-2026-0108",
+    "tags": [
+      "powershell",
+      "false-positive",
+      "encoded-command",
+      "npm",
+      "developer",
+      "10.42.10.0/24"
+    ],
+    "text": "helps an agent use the report as institutional memory rather than as a bare label. When this report is retrieved for a future investigation, the agent should cite the report ID and state exactly which parts apply. It should also state which parts do not apply. For example, a false-positive report about EDR heartbeat can help clear another EDR heartbeat, but it can also make a non-EDR beacon look more suspicious because the current process, destination, or user context does not match the benign pattern. ## Verdict **False Positive.** DEV-WS02 ran encoded PowerShell from an npm postinstall script. The decoded command installed Azure Functions tooling. ## Recommendations 1. Document npm postinstall encoded PowerShell as a known FP pattern. 2. Keep alerting when encoded PowerShell launches hidden windows or downloads payloads. ## Tags powershell, false-positive, encoded-command, npm, developer, 10.42.10.0/24",
+    "token_count": 138,
+    "verdict": "False Positive"
+  }
+]

@@ -1,0 +1,7 @@
+# Representative subset of known-bad JA3 client fingerprints.
+# Format: one lowercase JA3 MD5 hash per line. '#' lines are comments.
+# In the full system this is sourced from abuse.ch SSLBL + curated TI feeds.
+# These values are illustrative placeholders for the workshop sample, NOT a live feed.
+a0e9f5d64349fb13191bc781f81f42e1
+e7d705a3286e19ea42f587b344ee6865
+6734f37431670b3ab4292b8f60f29984

@@ -1,0 +1,552 @@
+name: Publish MCP Server Packages
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:  # Allow manual triggering
+    inputs:
+      tags:
+        description: 'Comma-separated list of package tags (e.g., gti-v1.0.0,secops-v2.1.0,secops-soar-v1.0.0,scc-v1.0.0)'
+        required: true
+
+jobs:
+  detect_changes:
+    runs-on: ubuntu-latest
+    name: Detect package changes
+    outputs:
+      gti_changed: ${{ steps.check_versions.outputs.gti_changed }}
+      scc_changed: ${{ steps.check_versions.outputs.scc_changed }}
+      secops_changed: ${{ steps.check_versions.outputs.secops_changed }}
+      soar_changed: ${{ steps.check_versions.outputs.soar_changed }}
+      # Package names
+      gti_name: ${{ steps.check_versions.outputs.gti_name }}
+      scc_name: ${{ steps.check_versions.outputs.scc_name }}
+      secops_name: ${{ steps.check_versions.outputs.secops_name }}
+      soar_name: ${{ steps.check_versions.outputs.soar_name }}
+      # Version information
+      gti_current_ver: ${{ steps.check_versions.outputs.gti_current_ver }}
+      scc_current_ver: ${{ steps.check_versions.outputs.scc_current_ver }}
+      secops_current_ver: ${{ steps.check_versions.outputs.secops_current_ver }}
+      soar_current_ver: ${{ steps.check_versions.outputs.soar_current_ver }}
+      gti_pub_status: ${{ steps.check_versions.outputs.gti_pub_status }}
+      scc_pub_status: ${{ steps.check_versions.outputs.scc_pub_status }}
+      secops_pub_status: ${{ steps.check_versions.outputs.secops_pub_status }}
+      soar_pub_status: ${{ steps.check_versions.outputs.soar_pub_status }}
+      # Status messages
+      gti_status: ${{ steps.check_versions.outputs.gti_status }}
+      scc_status: ${{ steps.check_versions.outputs.scc_status }}
+      secops_status: ${{ steps.check_versions.outputs.secops_status }}
+      soar_status: ${{ steps.check_versions.outputs.soar_status }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # Fetch all history for proper version comparison
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install packaging build twine
+
+      - name: Check version changes
+        id: check_versions
+        run: |
+          # Function to validate and set up package publishing
+          check_version_change() {
+            local package_path=$1
+            local output_var=$2
+            local name_var=$3
+            local current_ver_var=$4
+            local pub_status_var=$5
+            local status_var=$6
+            local should_publish="false"
+            
+            # Get package name and version from pyproject.toml
+            package_name=$(grep -Po "(?<=name = \").*(?=\")" "server/$package_path/pyproject.toml")
+            current_version=$(grep -Po "(?<=version = \").*(?=\")" "server/$package_path/pyproject.toml")
+            
+            # Export values to GitHub outputs
+            echo "${name_var}=${package_name}" >> $GITHUB_OUTPUT
+            echo "${current_ver_var}=${current_version}" >> $GITHUB_OUTPUT
+            
+            # Check if package exists on PyPI
+            if pip index versions $package_name &>/dev/null; then
+              echo "${name_var}_exists=true" >> $GITHUB_OUTPUT
+              echo "Package $package_name exists on PyPI"
+              PACKAGE_EXISTS="true"
+            else
+              echo "${name_var}_exists=false" >> $GITHUB_OUTPUT
+              echo "Package $package_name does not exist on PyPI - will be published as new package"
+              PACKAGE_EXISTS="false"
+            fi
+            
+            # Release event - check if this package matches the release tag
+            if [ "${{ github.event_name }}" == "release" ]; then
+              TAG_NAME="${GITHUB_EVENT_RELEASE_TAG_NAME}"
+              
+              # Check if this release tag is for this package
+              if [[ $TAG_NAME =~ ^${package_path}-v([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+                TAG_VERSION="${BASH_REMATCH[1]}"
+                echo "Release tag version: $TAG_VERSION, Package version: $current_version"
+                
+                # Compare tag version with pyproject.toml version
+                if [ "$TAG_VERSION" != "$current_version" ]; then
+                  echo "::error ::Version mismatch for $package_path: Tag version ($TAG_VERSION) does not match pyproject.toml version ($current_version)"
+                  echo "$output_var=false" >> $GITHUB_OUTPUT
+                  echo "${pub_status_var}=version_mismatch" >> $GITHUB_OUTPUT
+                  echo "${status_var}=❌ Version mismatch: Tag version ($TAG_VERSION) ≠ pyproject.toml version ($current_version)" >> $GITHUB_OUTPUT
+                  return 1
+                fi
+                
+                should_publish="true"
+              else
+                # This package doesn't match the release tag - do not publish
+                echo "$output_var=false" >> $GITHUB_OUTPUT
+                echo "${pub_status_var}=not_this_package" >> $GITHUB_OUTPUT
+                echo "${status_var}=Release tag ($TAG_NAME) is not for this package" >> $GITHUB_OUTPUT
+                return 0
+              fi
+            fi
+            
+            # Manual workflow dispatch - check if this package is in the requested tags
+            if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+              # Comma-separated list of tags
+              IFS=',' read -ra TAG_LIST <<< "${GITHUB_EVENT_INPUTS_TAGS}"
+              
+              for TAG in "${TAG_LIST[@]}"; do
+                # Remove any whitespace
+                TAG=$(echo $TAG | xargs)
+                
+                # Check if this tag is for this package
+                if [[ $TAG =~ ^${package_path}-v([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+                  TAG_VERSION="${BASH_REMATCH[1]}"
+                  echo "Tag version: $TAG_VERSION, Package version: $current_version"
+                  
+                  # Compare tag version with pyproject.toml version
+                  if [ "$TAG_VERSION" != "$current_version" ]; then
+                    echo "::error ::Version mismatch for $package_path: Tag version ($TAG_VERSION) does not match pyproject.toml version ($current_version)"
+                    echo "$output_var=false" >> $GITHUB_OUTPUT
+                    echo "${pub_status_var}=version_mismatch" >> $GITHUB_OUTPUT
+                    echo "${status_var}=❌ Version mismatch: Tag version ($TAG_VERSION) ≠ pyproject.toml version ($current_version)" >> $GITHUB_OUTPUT
+                    return 1
+                  fi
+                  
+                  should_publish="true"
+                  break
+                fi
+              done
+              
+              # If this package wasn't in the requested tags, don't publish
+              if [ "$should_publish" != "true" ]; then
+                echo "$output_var=false" >> $GITHUB_OUTPUT
+                echo "${pub_status_var}=not_specified" >> $GITHUB_OUTPUT
+                echo "${status_var}=Not specified in the provided tags" >> $GITHUB_OUTPUT
+                return 0
+              fi
+            fi
+            
+            # If we should publish this package
+            if [ "$should_publish" == "true" ]; then
+              echo "$output_var=true" >> $GITHUB_OUTPUT
+              
+              if [ "$PACKAGE_EXISTS" == "true" ]; then
+                echo "${pub_status_var}=update" >> $GITHUB_OUTPUT
+                echo "${status_var}=Will publish version $current_version (update)" >> $GITHUB_OUTPUT
+              else
+                echo "${pub_status_var}=new" >> $GITHUB_OUTPUT
+                echo "${status_var}=Will publish version $current_version (new package)" >> $GITHUB_OUTPUT
+              fi
+            else
+              # Default case - don't publish
+              echo "$output_var=false" >> $GITHUB_OUTPUT
+              echo "${pub_status_var}=not_requested" >> $GITHUB_OUTPUT
+              echo "${status_var}=No publication requested" >> $GITHUB_OUTPUT
+            fi
+            return 0
+          }
+          
+          # All tag processing now happens directly in check_version_change function
+          # Check each package against the provided tags
+          check_version_change "gti" "gti_changed" "gti_name" "gti_current_ver" "gti_pub_status" "gti_status"
+          check_version_change "scc" "scc_changed" "scc_name" "scc_current_ver" "scc_pub_status" "scc_status"
+          check_version_change "secops" "secops_changed" "secops_name" "secops_current_ver" "secops_pub_status" "secops_status"
+          check_version_change "secops-soar" "soar_changed" "soar_name" "soar_current_ver" "soar_pub_status" "soar_status"
+        env:
+          GITHUB_EVENT_RELEASE_TAG_NAME: ${{ github.event.release.tag_name }}
+          GITHUB_EVENT_INPUTS_TAGS: ${{ github.event.inputs.tags }}
+
+  display_summary:
+    needs: detect_changes
+    name: Change
+    runs-on: ubuntu-latest
+    if: ${{ needs.detect_changes.outputs.gti_changed == 'true' || 
+            needs.detect_changes.outputs.scc_changed == 'true' || 
+            needs.detect_changes.outputs.secops_changed == 'true' || 
+            needs.detect_changes.outputs.soar_changed == 'true' }}
+    steps:
+      - name: Generate summary
+        id: summary
+        run: |
+          # For console output
+          echo "::group::Package Changes Summary"
+          
+          # Display trigger information
+          if [ "${{ github.event_name }}" == "release" ]; then
+            echo "::notice title=Trigger::Release triggered with tag ${GITHUB_EVENT_RELEASE_TAG_NAME}"
+            echo "### Publishing triggered by GitHub Release" >> $GITHUB_STEP_SUMMARY
+            echo "* Release tag: \`${GITHUB_EVENT_RELEASE_TAG_NAME}\`" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "::notice title=Trigger::Manual trigger with tags: ${GITHUB_EVENT_INPUTS_TAGS}"
+            echo "### 🔖 Publishing triggered manually with tags" >> $GITHUB_STEP_SUMMARY
+            echo "* Tags: \`${GITHUB_EVENT_INPUTS_TAGS}\`" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "## Package Changes Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Package | Status | Current Version | Publication Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|-----------------|-------------------|" >> $GITHUB_STEP_SUMMARY
+          
+          # Create the summary text
+          summary=""
+          
+          # GTI
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CHANGED}" == "true" ]; then
+            echo "::notice title=Package Change::GTI ${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_STATUS}"
+            summary="$summary\n- GTI: ${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_STATUS}"
+            echo "| GTI | Will publish | ${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_PUB_STATUS} |" >> $GITHUB_STEP_SUMMARY
+            echo "GTI: Will publish v${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CURRENT_VER}"
+          else
+            echo "| GTI | No publication | ${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_PUB_STATUS} |" >> $GITHUB_STEP_SUMMARY
+            echo "GTI: No publication needed"
+          fi
+          
+          # SCC
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CHANGED}" == "true" ]; then
+            echo "::notice title=Package Change::SCC ${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_STATUS}"
+            summary="$summary\n- SCC: ${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_STATUS}"
+            echo "| SCC | Will publish | ${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_PUB_STATUS} |" >> $GITHUB_STEP_SUMMARY
+            echo "SCC: Will publish v${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CURRENT_VER}"
+          else
+            echo "| SCC | No publication | ${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_PUB_STATUS} |" >> $GITHUB_STEP_SUMMARY
+            echo "SCC: No publication needed"
+          fi
+          
+          # SecOps
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CHANGED}" == "true" ]; then
+            echo "::notice title=Package Change::SecOps ${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_STATUS}"
+            summary="$summary\n- SecOps: ${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_STATUS}"
+            echo "| SecOps | Will publish | ${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_PUB_STATUS} |" >> $GITHUB_STEP_SUMMARY
+            echo "SecOps: Will publish v${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CURRENT_VER}"
+          else
+            echo "| SecOps | No publication | ${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_PUB_STATUS} |" >> $GITHUB_STEP_SUMMARY
+            echo "SecOps: No publication needed"
+          fi
+          
+          # SecOps SOAR
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CHANGED}" == "true" ]; then
+            echo "::notice title=Package Change::SecOps SOAR ${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_STATUS}"
+            summary="$summary\n- SecOps SOAR: ${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_STATUS}"
+            echo "| SecOps SOAR | Will publish | ${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_PUB_STATUS} |" >> $GITHUB_STEP_SUMMARY
+            echo "SecOps SOAR: Will publish v${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CURRENT_VER}"
+          else
+            echo "| SecOps SOAR | No publication | ${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_PUB_STATUS} |" >> $GITHUB_STEP_SUMMARY
+            echo "SecOps SOAR: No publication needed"
+          fi
+          
+          echo "::endgroup::"
+          
+          # Save summary to output for other steps
+          summary="${summary:2}"
+          echo "summary<<EOF" >> $GITHUB_OUTPUT
+          echo "$summary" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          # Save to file for artifact
+          echo "# Package Changes Summary" > package_changes.md
+          echo "" >> package_changes.md
+          
+          # Add trigger information to artifact
+          if [ "${{ github.event_name }}" == "release" ]; then
+            echo "## Release Trigger" >> package_changes.md
+            echo "* Release tag: \`${GITHUB_EVENT_RELEASE_TAG_NAME}\`" >> package_changes.md
+            echo "* Release title: ${GITHUB_EVENT_RELEASE_NAME}" >> package_changes.md
+            echo "* Created by: ${GITHUB_EVENT_RELEASE_AUTHOR_LOGIN}" >> package_changes.md
+            echo "" >> package_changes.md
+          elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "## Manual Trigger with Tags" >> package_changes.md
+            echo "* Tags: \`${GITHUB_EVENT_INPUTS_TAGS}\`" >> package_changes.md
+            echo "" >> package_changes.md
+          fi
+          
+          echo "## Package Status" >> package_changes.md
+          echo "| Package | Status | Current Version | Publication Status |" >> package_changes.md
+          echo "|---------|--------|-----------------|-------------------|" >> package_changes.md
+          
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CHANGED}" == "true" ]; then
+            echo "| GTI | Will publish | ${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_PUB_STATUS} |" >> package_changes.md
+          else
+            echo "| GTI | No publication | ${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_PUB_STATUS} |" >> package_changes.md
+          fi
+          
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CHANGED}" == "true" ]; then
+            echo "| SCC | Will publish | ${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_PUB_STATUS} |" >> package_changes.md
+          else
+            echo "| SCC | No publication | ${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_PUB_STATUS} |" >> package_changes.md
+          fi
+          
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CHANGED}" == "true" ]; then
+            echo "| SecOps | Will publish | ${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_PUB_STATUS} |" >> package_changes.md
+          else
+            echo "| SecOps | No publication | ${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_PUB_STATUS} |" >> package_changes.md
+          fi
+          
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CHANGED}" == "true" ]; then
+            echo "| SecOps SOAR | Will publish | ${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_PUB_STATUS} |" >> package_changes.md
+          else
+            echo "| SecOps SOAR | No publication | ${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CURRENT_VER} | ${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_PUB_STATUS} |" >> package_changes.md
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Please review and approve this publication request" >> $GITHUB_STEP_SUMMARY
+          echo "_Packages will be published to PyPI_" >> $GITHUB_STEP_SUMMARY
+        env:
+          GITHUB_EVENT_RELEASE_TAG_NAME: ${{ github.event.release.tag_name }}
+          GITHUB_EVENT_INPUTS_TAGS: ${{ github.event.inputs.tags }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CHANGED: ${{ needs.detect_changes.outputs.gti_changed }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_GTI_STATUS: ${{ needs.detect_changes.outputs.gti_status }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CURRENT_VER: ${{ needs.detect_changes.outputs.gti_current_ver }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_GTI_PUB_STATUS: ${{ needs.detect_changes.outputs.gti_pub_status }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CHANGED: ${{ needs.detect_changes.outputs.scc_changed }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SCC_STATUS: ${{ needs.detect_changes.outputs.scc_status }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CURRENT_VER: ${{ needs.detect_changes.outputs.scc_current_ver }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SCC_PUB_STATUS: ${{ needs.detect_changes.outputs.scc_pub_status }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CHANGED: ${{ needs.detect_changes.outputs.secops_changed }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_STATUS: ${{ needs.detect_changes.outputs.secops_status }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CURRENT_VER: ${{ needs.detect_changes.outputs.secops_current_ver }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_PUB_STATUS: ${{ needs.detect_changes.outputs.secops_pub_status }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CHANGED: ${{ needs.detect_changes.outputs.soar_changed }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_STATUS: ${{ needs.detect_changes.outputs.soar_status }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CURRENT_VER: ${{ needs.detect_changes.outputs.soar_current_ver }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_PUB_STATUS: ${{ needs.detect_changes.outputs.soar_pub_status }}
+          GITHUB_EVENT_RELEASE_NAME: ${{ github.event.release.name }}
+          GITHUB_EVENT_RELEASE_AUTHOR_LOGIN: ${{ github.event.release.author.login }}
+      
+  request_approval:
+    needs: [detect_changes, display_summary]
+    runs-on: ubuntu-latest
+    name: Approve package publication
+    permissions: write-all
+    environment:
+      name: production # The workflow will continue only when approved
+    if: ${{ needs.detect_changes.outputs.gti_changed == 'true' || 
+            needs.detect_changes.outputs.scc_changed == 'true' || 
+            needs.detect_changes.outputs.secops_changed == 'true' || 
+            needs.detect_changes.outputs.soar_changed == 'true' }}
+    outputs:
+      gti_changed: ${{ needs.detect_changes.outputs.gti_changed }}
+      scc_changed: ${{ needs.detect_changes.outputs.scc_changed }}
+      secops_changed: ${{ needs.detect_changes.outputs.secops_changed }}
+      soar_changed: ${{ needs.detect_changes.outputs.soar_changed }}
+      gti_name: ${{ needs.detect_changes.outputs.gti_name }}
+      scc_name: ${{ needs.detect_changes.outputs.scc_name }}
+      secops_name: ${{ needs.detect_changes.outputs.secops_name }}
+      soar_name: ${{ needs.detect_changes.outputs.soar_name }}
+      gti_current_ver: ${{ needs.detect_changes.outputs.gti_current_ver }}
+      scc_current_ver: ${{ needs.detect_changes.outputs.scc_current_ver }}
+      secops_current_ver: ${{ needs.detect_changes.outputs.secops_current_ver }}
+      soar_current_ver: ${{ needs.detect_changes.outputs.soar_current_ver }}
+      gti_pub_status: ${{ needs.detect_changes.outputs.gti_pub_status }}
+      scc_pub_status: ${{ needs.detect_changes.outputs.scc_pub_status }}
+      secops_pub_status: ${{ needs.detect_changes.outputs.secops_pub_status }}
+      soar_pub_status: ${{ needs.detect_changes.outputs.soar_pub_status }}
+    steps:
+      - name: Create deployment
+        id: deployment
+        uses: bobheadxi/deployments@v1
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: production
+          desc: "PyPI Package Publication"
+
+      - name: Approved packages
+        run: |
+          echo "# Packages Approved for Publication" >> $GITHUB_STEP_SUMMARY
+          
+          # Add each package to the summary
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CHANGED}" == "true" ]; then
+            echo "- **${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_NAME}** (${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CURRENT_VER})" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CHANGED}" == "true" ]; then
+            echo "- **${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_NAME}** (${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CURRENT_VER})" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CHANGED}" == "true" ]; then
+            echo "- **${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_NAME}** (${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CURRENT_VER})" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CHANGED}" == "true" ]; then
+            echo "- **${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_NAME}** (${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CURRENT_VER})" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "_Publishing to PyPI_" >> $GITHUB_STEP_SUMMARY
+          
+          # Also display as GitHub notices
+          echo "::notice title=Packages Approved for Publication::The following packages will be published:"
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CHANGED}" == "true" ]; then
+            echo "::notice::${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_NAME} (${NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CURRENT_VER})"
+          fi
+          
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CHANGED}" == "true" ]; then
+            echo "::notice::${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_NAME} (${NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CURRENT_VER})"
+          fi
+          
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CHANGED}" == "true" ]; then
+            echo "::notice::${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_NAME} (${NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CURRENT_VER})"
+          fi
+          
+          if [ "${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CHANGED}" == "true" ]; then
+            echo "::notice::${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_NAME} (${NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CURRENT_VER})"
+          fi
+        env:
+          NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CHANGED: ${{ needs.detect_changes.outputs.gti_changed }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_GTI_NAME: ${{ needs.detect_changes.outputs.gti_name }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_GTI_CURRENT_VER: ${{ needs.detect_changes.outputs.gti_current_ver }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CHANGED: ${{ needs.detect_changes.outputs.scc_changed }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SCC_NAME: ${{ needs.detect_changes.outputs.scc_name }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SCC_CURRENT_VER: ${{ needs.detect_changes.outputs.scc_current_ver }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CHANGED: ${{ needs.detect_changes.outputs.secops_changed }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_NAME: ${{ needs.detect_changes.outputs.secops_name }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SECOPS_CURRENT_VER: ${{ needs.detect_changes.outputs.secops_current_ver }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CHANGED: ${{ needs.detect_changes.outputs.soar_changed }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_NAME: ${{ needs.detect_changes.outputs.soar_name }}
+          NEEDS_DETECT_CHANGES_OUTPUTS_SOAR_CURRENT_VER: ${{ needs.detect_changes.outputs.soar_current_ver }}
+      
+      - name: Update deployment status
+        if: always()
+        uses: bobheadxi/deployments@v1
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          env: production
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+
+  publish_gti:
+    needs: request_approval
+    if: ${{ needs.request_approval.outputs.gti_changed == 'true' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+      
+      - name: Build and publish
+        working-directory: ./server/gti
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          python -m build
+          python -m twine upload dist/*
+  
+  publish_scc:
+    needs: request_approval
+    if: ${{ needs.request_approval.outputs.scc_changed == 'true' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+      
+      - name: Build and publish
+        working-directory: ./server/scc
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          python -m build
+          python -m twine upload dist/*
+  
+  publish_secops:
+    needs: request_approval
+    if: ${{ needs.request_approval.outputs.secops_changed == 'true' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+      
+      - name: Build and publish
+        working-directory: ./server/secops
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          python -m build
+          python -m twine upload dist/*
+  
+  publish_soar:
+    needs: request_approval
+    if: ${{ needs.request_approval.outputs.soar_changed == 'true' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+      
+      - name: Build and publish
+        working-directory: ./server/secops-soar
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          python -m build
+          python -m twine upload dist/*

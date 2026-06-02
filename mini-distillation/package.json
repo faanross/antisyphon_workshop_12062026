@@ -1,0 +1,16 @@
+{
+  "name": "mini-distillation",
+  "version": "1.0.0",
+  "description": "Take-home mini distillation CLI: raw Zeek + Sysmon telemetry to scored detection candidates (beacon, TLS anomaly, PowerShell invocation anomaly).",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "distill": "tsx src/distill.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

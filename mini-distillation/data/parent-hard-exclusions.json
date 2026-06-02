@@ -1,0 +1,46 @@
+[
+  {
+    "source": "SCCM client",
+    "regex": "^C:\\\\Windows\\\\CCM\\\\(?:.*\\\\)?ccmexec\\.exe$"
+  },
+  {
+    "source": "Intune IME",
+    "regex": "^C:\\\\Program Files \\(x86\\)\\\\Microsoft Intune Management Extension\\\\(?:.*\\\\)?Microsoft\\.Management\\.Services\\.IntuneWindowsAgent\\.exe$"
+  },
+  {
+    "source": "Azure Guest Config / Arc",
+    "regex": "^C:\\\\Program Files\\\\AzureConnectedMachineAgent\\\\(?:.*\\\\)?gc_worker\\.exe$"
+  },
+  {
+    "source": "Defender SenseIR",
+    "regex": "^C:\\\\Program Files\\\\Windows Defender Advanced Threat Protection\\\\(?:.*\\\\)?SenseIR\\.exe$"
+  },
+  {
+    "source": "Defender MsMpEng",
+    "regex": "^C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\(?:.*\\\\)?MsMpEng\\.exe$"
+  },
+  {
+    "source": "Defender MpCmdRun / NisSrv",
+    "regex": "^C:\\\\ProgramData\\\\Microsoft\\\\Windows Defender\\\\(?:.*\\\\)?(MpCmdRun|NisSrv)\\.exe$"
+  },
+  {
+    "source": "Windows Update CBS",
+    "regex": "^C:\\\\Windows\\\\(servicing|WinSxS)\\\\(?:.*\\\\)?(TrustedInstaller|TiWorker)\\.exe$"
+  },
+  {
+    "source": "Windows Update CompatTel",
+    "regex": "^C:\\\\Windows\\\\System32\\\\CompatTelRunner\\.exe$"
+  },
+  {
+    "source": "Windows feature update SetupHost",
+    "regex": "^C:\\\\$WINDOWS\\.~BT\\\\Sources\\\\SetupHost\\.exe$"
+  },
+  {
+    "source": "Chocolatey",
+    "regex": "^C:\\\\ProgramData\\\\chocolatey\\\\(?:.*\\\\)?choco\\.exe$"
+  },
+  {
+    "source": "GPO scripts",
+    "regex": "^C:\\\\Windows\\\\System32\\\\gpscript\\.exe$"
+  }
+]

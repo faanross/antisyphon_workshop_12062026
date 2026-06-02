@@ -1,0 +1,132 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap");
+
+:root {
+  color-scheme: dark;
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-heading: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --brand-bg: #07070a;
+  --brand-card: #16161f;
+  --brand-elev: #1c1d27;
+  --brand-purple: #bd93f9;
+  --brand-purple-light: #d4b8fc;
+  --brand-yellow: #f5e663;
+  --brand-yellow-light: #faf0a0;
+  --brand-grey: #3d3d47;
+  --brand-grey-light: #5a5a66;
+  --brand-text: rgba(255, 255, 255, 0.9);
+  --brand-muted: rgba(255, 255, 255, 0.52);
+  --brand-line: rgba(189, 147, 249, 0.28);
+
+  --dracula-bg: var(--brand-elev);
+  --dracula-bg-deep: var(--brand-bg);
+  --dracula-surface: var(--brand-card);
+  --dracula-surface-2: var(--brand-elev);
+  --dracula-line: var(--brand-line);
+  --dracula-fg: var(--brand-text);
+  --dracula-muted: var(--brand-muted);
+  --dracula-comment: rgba(245, 230, 99, 0.58);
+  --dracula-cyan: var(--brand-yellow);
+  --dracula-green: #50fa7b;
+  --dracula-orange: var(--brand-yellow);
+  --dracula-pink: var(--brand-purple);
+  --dracula-purple: var(--brand-purple);
+  --dracula-red: #ff5555;
+  --dracula-yellow: var(--brand-yellow);
+
+  font-family: var(--font-body);
+  background: var(--dracula-bg-deep);
+  color: var(--dracula-fg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--dracula-bg-deep);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: var(--font-body);
+  background:
+    linear-gradient(135deg, rgba(189, 147, 249, 0.08), transparent 36rem),
+    linear-gradient(180deg, rgba(245, 230, 99, 0.035), transparent 24rem),
+    var(--brand-bg);
+  color: var(--dracula-fg);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  color: var(--dracula-fg);
+  letter-spacing: 0;
+}
+
+p {
+  color: var(--dracula-muted);
+}
+
+a {
+  color: var(--brand-yellow);
+}
+
+code,
+pre {
+  font-family: var(--font-mono);
+}
+
+select,
+input[type="text"],
+input[type="range"],
+textarea {
+  accent-color: var(--dracula-purple);
+}
+
+select,
+textarea,
+input:not([type="range"]) {
+  border: 1px solid var(--dracula-line);
+  border-radius: 8px;
+  background: var(--dracula-surface);
+  color: var(--dracula-fg);
+}
+
+select:focus,
+textarea:focus,
+input:focus {
+  outline: 2px solid rgba(189, 147, 249, 0.45);
+  outline-offset: 2px;
+}
+
+button {
+  border: 1px solid rgba(189, 147, 249, 0.5);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(189, 147, 249, 0.22), rgba(189, 147, 249, 0.09));
+  color: var(--dracula-fg);
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+::selection {
+  background: rgba(189, 147, 249, 0.35);
+}

@@ -1,0 +1,10 @@
+# parent_process_path_pattern,command_line_pattern
+# SCCM and Intune maintenance invocation patterns
+c:\windows\ccm\*\ccmexec.exe,*powershell*
+c:\program files (x86)\microsoft intune management extension\*\microsoft.management.services.intunewindowsagent.exe,*powershell*
+c:\program files\azureconnectedmachineagent\*\gc_worker.exe,*powershell*
+
+# Defender and servicing workflows
+c:\program files\windows defender advanced threat protection\*\senseir.exe,*powershell*
+c:\programdata\microsoft\windows defender\*\msmpeng.exe,*powershell*
+c:\windows\servicing\*\tiworker.exe,*powershell*

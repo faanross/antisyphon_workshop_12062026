@@ -1,0 +1,26 @@
+{
+  "candidate_types": {
+    "beacon": 5,
+    "data_transfer": 1,
+    "intel_match": 1,
+    "powershell_invocation_anomaly": 1,
+    "tls_anomaly": 1,
+    "unusual_parent_child_anomaly": 2
+  },
+  "counts": {
+    "candidates": 11,
+    "events": 3904,
+    "rag_chunks": 96,
+    "reports": 12
+  },
+  "generated_at": "2026-05-19T10:07:30.274Z",
+  "generator": "aionsec_HUNT/scripts/workshop/generate-antisiphon-2026-dataset.ts",
+  "name": "antisiphon-4hr-june-2026",
+  "output_dir": "/Users/faanross/Documents/Obsidian/faanross/Workshops/AntiSyphon_4hr_June_2026/generated-dataset",
+  "scenario_date": "2026-03-09",
+  "timezone_note": "America/New_York is EDT (UTC-04:00) on 2026-03-09; 14:00-22:00Z equals 10:00-18:00 local.",
+  "validation": {
+    "errors": [],
+    "ok": true
+  }
+}

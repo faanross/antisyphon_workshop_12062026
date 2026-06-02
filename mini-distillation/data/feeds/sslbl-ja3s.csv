@@ -1,0 +1,5 @@
+# Representative subset of known-bad JA3S server fingerprints.
+# Format: one lowercase JA3S MD5 hash per line. '#' lines are comments.
+# Illustrative placeholders for the workshop sample, NOT a live feed.
+623de93db17d313345d7ea481e7443cf
+ec74a5c51106f0419184d0dd08fb05bc

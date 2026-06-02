@@ -1,0 +1,11 @@
+{
+  "build_date": "2026-06-01T00:00:00Z",
+  "build_tool": "aionsec-hunt-workshop-generator",
+  "chunk_count": 96,
+  "chunk_overlap_tokens": 35,
+  "chunk_size_tokens": 150,
+  "corpus_size": 12,
+  "dimensions": 768,
+  "embedding_model": "antisiphon-local-hash-embed-v1",
+  "index_format": "raw-float32-row-major-cosine"
+}

@@ -1,0 +1,4 @@
+# Representative subset of known-bad JA4X certificate fingerprints.
+# Format: one lowercase JA4X hash per line. '#' lines are comments.
+# Illustrative placeholders for the workshop sample, NOT a live feed.
+2bab15409345_af684594efb4_000000000000

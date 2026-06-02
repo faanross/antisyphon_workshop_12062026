@@ -1,0 +1,92 @@
+[
+  {
+    "process_name": "powershell.exe",
+    "tier": "canonical",
+    "category": "powershell_host"
+  },
+  {
+    "process_name": "pwsh.exe",
+    "tier": "canonical",
+    "category": "powershell_host"
+  },
+  {
+    "process_name": "powershell_ise.exe",
+    "tier": "canonical",
+    "category": "powershell_host"
+  },
+  {
+    "process_name": "wsmprovhost.exe",
+    "tier": "canonical",
+    "category": "powershell_host"
+  },
+  {
+    "process_name": "winrshost.exe",
+    "tier": "canonical",
+    "category": "powershell_host"
+  },
+  {
+    "process_name": "servermanager.exe",
+    "tier": "ms_alternate",
+    "category": "windows_management"
+  },
+  {
+    "process_name": "dsac.exe",
+    "tier": "ms_alternate",
+    "category": "ad_management"
+  },
+  {
+    "process_name": "mmc.exe",
+    "tier": "ms_alternate",
+    "category": "management_console"
+  },
+  {
+    "process_name": "gc_worker.exe",
+    "tier": "vendor_alternate",
+    "category": "azure_arc",
+    "path_prefix": "C:\\Program Files\\AzureConnectedMachineAgent\\"
+  },
+  {
+    "process_name": "microsoft.management.services.intunewindowsagent.exe",
+    "tier": "vendor_alternate",
+    "category": "intune_ime",
+    "path_prefix": "C:\\Program Files (x86)\\Microsoft Intune Management Extension\\"
+  },
+  {
+    "process_name": "ccmexec.exe",
+    "tier": "vendor_alternate",
+    "category": "sccm",
+    "path_prefix": "C:\\Windows\\CCM\\"
+  },
+  {
+    "process_name": "senseir.exe",
+    "tier": "vendor_alternate",
+    "category": "defender",
+    "path_prefix": "C:\\Program Files\\Windows Defender Advanced Threat Protection\\"
+  },
+  {
+    "process_name": "msmpeng.exe",
+    "tier": "vendor_alternate",
+    "category": "defender",
+    "path_prefix": "C:\\ProgramData\\Microsoft\\Windows Defender\\"
+  },
+  {
+    "process_name": "rundll32.exe",
+    "tier": "lolbin",
+    "category": "lolbin"
+  },
+  {
+    "process_name": "regsvr32.exe",
+    "tier": "lolbin",
+    "category": "lolbin"
+  },
+  {
+    "process_name": "mshta.exe",
+    "tier": "lolbin",
+    "category": "lolbin"
+  },
+  {
+    "process_name": "installutil.exe",
+    "tier": "lolbin",
+    "category": "lolbin"
+  }
+]
