@@ -1,0 +1,44 @@
+name: Windows setup.ps1 (manual)
+
+# Manual-only: this NEVER runs on push/PR. Trigger it from the Actions tab
+# (or `gh workflow run "Windows setup.ps1 (manual)"`) when you want to verify
+# the Windows bootstrap on a real windows-latest runner. No scheduled or
+# push-triggered runs, so it costs nothing between manual invocations.
+on:
+  workflow_dispatch:
+
+jobs:
+  windows-setup:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 23.x = newer-but-UNSUPPORTED -> setup.ps1 must install Volta + 22.12.
+        # 22.12.0 = SUPPORTED -> setup.ps1 must skip Volta and use it as-is.
+        node: ["23.11.1", "22.12.0"]
+    name: "Node ${{ matrix.node }}"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pre-install Node ${{ matrix.node }} (the version the student arrives with)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Starting Node version
+        shell: cmd
+        run: node -v
+
+      - name: Run setup.ps1 exactly as a student would
+        shell: cmd
+        working-directory: hunting-agent
+        run: powershell -ExecutionPolicy Bypass -File setup.ps1
+
+      - name: Verify dependencies installed
+        shell: pwsh
+        working-directory: hunting-agent
+        run: |
+          if (-not (Test-Path node_modules)) { throw "FAIL: node_modules missing — npm install did not succeed" }
+          $sc = (Test-Path node_modules/.bin/svelte-check) -or (Test-Path node_modules/.bin/svelte-check.cmd)
+          if (-not $sc) { throw "FAIL: svelte-check binary missing from node_modules/.bin" }
+          Write-Host "PASS: node_modules present and svelte-check installed"
