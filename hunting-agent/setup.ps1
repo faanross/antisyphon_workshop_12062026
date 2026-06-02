@@ -23,7 +23,15 @@ if (Test-NodeOk) {
     }
     winget install Volta.Volta --silent --accept-source-agreements --accept-package-agreements
   }
-  $env:Path = "$env:USERPROFILE\.volta\bin;$env:Path"
+  # Make Volta usable in THIS shell. The Windows MSI installs volta.exe under
+  # Program Files and its shims under %LOCALAPPDATA%\Volta, and updates the
+  # registry PATH — none of which the current session sees yet. Refresh PATH
+  # from the registry and prepend Volta's own dirs so `volta` + its managed
+  # node/npm resolve immediately, without opening a new terminal.
+  if (-not $env:VOLTA_HOME) { $env:VOLTA_HOME = "$env:LOCALAPPDATA\Volta" }
+  $machinePath = [Environment]::GetEnvironmentVariable("Path", "Machine")
+  $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+  $env:Path = "$env:ProgramFiles\Volta;$env:VOLTA_HOME\bin;$machinePath;$userPath"
   volta install "node@$NodePin"
   Write-Host "OK: Now using Node $(node -v)."
 }
