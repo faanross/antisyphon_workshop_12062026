@@ -94,7 +94,7 @@ GEMINI_MODEL=gemini-2.5-flash</code></pre>
     </div>
 
     <p>
-      Lab 04 connects to Google Threat Intelligence through the GTI MCP server. That server expects
+      Lab 05 connects to Google Threat Intelligence through the GTI MCP server. That server expects
       a VirusTotal API key in the environment as <code>VT_APIKEY</code>.
     </p>
 

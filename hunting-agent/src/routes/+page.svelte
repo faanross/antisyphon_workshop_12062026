@@ -142,10 +142,10 @@
     <span class="eyebrow">AntiSyphon Workshop</span>
     <h1>Interactive Lab Console</h1>
     <div class="hero-links" aria-label="Workshop links">
-      <p class="repo-placeholder">
+      <a class="repo-link" href="https://github.com/faanross/antisyphon_workshop_12062026" target="_blank" rel="noreferrer">
+        <GithubLogoIcon size={20} weight="duotone" />
         <span>GitHub repository</span>
-        <code>link coming soon</code>
-      </p>
+      </a>
       <a class="instructions-link" href="/instructions">
         <BookOpenTextIcon size={22} weight="duotone" />
         <span>Setup instructions</span>
@@ -269,32 +269,27 @@
     margin: 1.3rem 0 0;
   }
 
-  .repo-placeholder {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .65rem;
+  .repo-link {
+    display: inline-flex;
+    gap: .45rem;
     align-items: center;
-    margin: 0;
-    color: var(--brand-muted);
+    border: 1px solid rgba(189, 147, 249, 0.28);
+    border-radius: 999px;
+    padding: .33rem .7rem;
+    background: rgba(189, 147, 249, 0.07);
+    color: var(--brand-text);
     font-family: var(--font-heading);
-    font-size: .78rem;
-    line-height: 1.5;
-  }
-
-  .repo-placeholder span {
-    color: var(--brand-yellow);
+    font-size: .74rem;
+    font-weight: 800;
+    text-decoration: none;
     text-transform: uppercase;
-    letter-spacing: 0;
+    transition: color .16s ease, border-color .16s ease, background .16s ease;
   }
 
-  .repo-placeholder code {
-    border: 1px solid rgba(245, 230, 99, 0.2);
-    border-radius: 3px;
-    padding: .18rem .48rem;
-    background: rgba(245, 230, 99, 0.06);
-    color: var(--brand-muted);
-    font-family: var(--font-heading);
-    font-size: .72rem;
+  .repo-link:hover {
+    border-color: rgba(245, 230, 99, 0.44);
+    background: rgba(245, 230, 99, 0.08);
+    color: var(--brand-yellow);
   }
 
   .instructions-link {
