@@ -576,11 +576,8 @@ compositeScore = max(beacon, intel, tls)</code></pre>
           <p class="cv-lead">Skills are content; the loader and endpoint are the machinery that runs them.</p>
           <pre class="cv-tree"><code><span class="tr-dir">hunting-agent/</span>
 │
-├─ <span class="tr-dir">skills/detection/</span>             <span class="tr-cm">← the detection skills (Markdown + YAML)</span>
-│  ├─ <span class="tr-file">hunt-c2-over-https.md</span>
-│  ├─ <span class="tr-file">hunt-data-exfiltration.md</span>
-│  ├─ <span class="tr-file">hunt-suspicious-process-chain.md</span>
-│  └─ <span class="tr-file">hunt-ai-tool-execution-anomaly.md</span>
+├─ <span class="tr-dir">skills/detection/</span>             <span class="tr-cm">← the detection skill (Markdown + YAML)</span>
+│  └─ <span class="tr-file">hunt-c2-over-https.md</span>
 │
 └─ <span class="tr-dir">src/</span>
    ├─ <span class="tr-dir">routes/lab/06/api/skills/</span>
