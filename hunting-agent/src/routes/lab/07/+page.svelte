@@ -193,6 +193,28 @@
   );
   const selectedRequirements = $derived(selectedAssessmentSkill?.metadata.contextRequirements ?? []);
 
+  // Drives the "layering strip": what detection established (baseline) → the context that was
+  // injected (the new input) → the categories this assessment layer adds on top.
+  const detectionBaseline = $derived.by(() => {
+    const f = detectionFinding;
+    if (!f) return null;
+    const tc = f.triggerCandidate && typeof f.triggerCandidate === "object"
+      ? (f.triggerCandidate as Record<string, unknown>)
+      : {};
+    const score = f.compositeScore ?? tc.score ?? null;
+    return {
+      candidateId: String(f.candidateId ?? tc.id ?? "candidate"),
+      score: score == null ? null : String(score),
+    };
+  });
+  const injectedContextIds = $derived(streamedContextBundle?.requirements.map((r) => r.id) ?? []);
+  const assessmentAdds = $derived.by(() => {
+    const name = executedSkill?.metadata.name ?? selectedAssessmentSkill?.metadata.name ?? "";
+    return name.includes("behavioral")
+      ? ["Behavioral verdict", "Baseline deviation", "Context judgement"]
+      : ["Severity", "Operational bottom line", "Business impact", "Escalation", "Recommended response"];
+  });
+
   onMount(async () => {
     await loadLab();
   });
@@ -1076,6 +1098,36 @@
       context and evidence are the user prompt. The model reads them and writes the finding below.
     </p>
 
+    {#if detectionBaseline}
+      <div class="layering">
+        <div class="lyr lyr-base">
+          <span class="lyr-tag">Detection established</span>
+          <strong>{detectionBaseline.candidateId}{detectionBaseline.score ? ` · ${detectionBaseline.score}` : ""}</strong>
+          <small>technical confidence — <em>is</em> it malicious</small>
+        </div>
+        <div class="lyr-join">
+          <span class="lyr-join-label">+ injected context</span>
+          {#if injectedContextIds.length}
+            <div class="lyr-chips">
+              {#each injectedContextIds as id}<span class="lyr-chip">{id}</span>{/each}
+            </div>
+          {/if}
+        </div>
+        <div class="lyr lyr-add">
+          <span class="lyr-tag">Assessment adds</span>
+          <div class="lyr-adds">
+            {#each assessmentAdds as a}<span class="lyr-add-chip">{a}</span>{/each}
+          </div>
+          <small>new, contextual judgement — <em>how bad for us</em></small>
+        </div>
+      </div>
+      <p class="layering-note">
+        Everything below is <strong>net-new from this layer</strong> — produced only because the
+        context above was injected. Detection said <em>whether</em> it's malicious; the assessment
+        adds <em>how severe it is in your environment</em>, grounding each claim in a named context file.
+      </p>
+    {/if}
+
     {#if findingText}
       <div class="markdown-body finding-markdown">
         {@render MarkdownView({ blocks: findingBlocks })}
@@ -1216,6 +1268,84 @@
     border-left: 3px solid rgba(139, 233, 253, .6);
     padding-left: .65rem;
     font-size: .82rem;
+  }
+
+  /* Layering strip: detection baseline → injected context → assessment adds */
+  .layering {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+    gap: .6rem;
+    margin-top: 1rem;
+  }
+  .lyr {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    border: 1px solid rgba(98, 114, 164, .4);
+    border-radius: 8px;
+    padding: .7rem .8rem;
+    background: rgba(25, 26, 33, .7);
+  }
+  .lyr-base { border-left: 3px solid rgba(139, 233, 253, .65); }
+  .lyr-add { border-left: 3px solid var(--dracula-green, #50fa7b); background: rgba(80, 250, 123, .06); }
+  .lyr-tag {
+    font-family: var(--font-heading);
+    font-size: .68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--brand-muted, rgba(255,255,255,.6));
+  }
+  .lyr-base .lyr-tag { color: #8be9fd; }
+  .lyr-add .lyr-tag { color: var(--dracula-green, #50fa7b); }
+  .lyr strong { color: var(--dracula-fg, #f8f8f2); font-size: 1rem; }
+  .lyr small { color: var(--brand-muted, rgba(255,255,255,.58)); font-size: .76rem; }
+  .lyr small em { color: var(--brand-yellow, #f5e663); font-style: normal; }
+  .lyr-join {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    min-width: 9rem;
+    text-align: center;
+  }
+  .lyr-join-label {
+    font-family: var(--font-heading);
+    font-size: .72rem;
+    font-weight: 800;
+    color: var(--brand-purple-light, #bd93f9);
+  }
+  .lyr-chips, .lyr-adds { display: flex; flex-wrap: wrap; gap: .3rem; }
+  .lyr-adds { justify-content: flex-start; }
+  .lyr-chip {
+    font-family: var(--font-heading);
+    font-size: .68rem;
+    color: var(--brand-purple-light, #bd93f9);
+    background: rgba(189, 147, 249, .1);
+    border: 1px solid rgba(189, 147, 249, .35);
+    border-radius: 999px;
+    padding: .1rem .45rem;
+  }
+  .lyr-add-chip {
+    font-size: .72rem;
+    color: var(--dracula-green, #50fa7b);
+    background: rgba(80, 250, 123, .08);
+    border: 1px solid rgba(80, 250, 123, .35);
+    border-radius: 5px;
+    padding: .12rem .45rem;
+  }
+  .layering-note {
+    margin-top: .75rem;
+    font-size: .84rem;
+    line-height: 1.6;
+    color: var(--brand-muted, rgba(255,255,255,.66));
+  }
+  .layering-note strong { color: var(--dracula-green, #50fa7b); }
+  .layering-note em { color: var(--brand-yellow, #f5e663); font-style: normal; }
+  @media (max-width: 760px) {
+    .layering { grid-template-columns: 1fr; }
   }
 
   .markdown-body {
