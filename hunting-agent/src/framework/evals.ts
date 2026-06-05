@@ -46,7 +46,7 @@ export const EVAL_CHECKS: EvalCheck[] = [
   {
     id: 'EVAL-005',
     category: 'attack_chain_reconstruction',
-    description: 'Narrative connected AI-tool execution anomaly and C2 through shared entities',
+    description: 'Narrative connected the Code.exe → PowerShell process chain to the C2 beacon through shared entities',
     expected: 'Attack narrative links Code.exe/PowerShell to C2 beaconing',
     verify: 'Search state.analyses for Code.exe and C2/185.225.73.217',
   },
