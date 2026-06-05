@@ -1,19 +1,13 @@
 <script lang="ts">
-  import BellRingingIcon from "phosphor-svelte/lib/BellRingingIcon";
   import BookOpenTextIcon from "phosphor-svelte/lib/BookOpenTextIcon";
-  import BooksIcon from "phosphor-svelte/lib/BooksIcon";
   import BrainIcon from "phosphor-svelte/lib/BrainIcon";
   import ChartBarIcon from "phosphor-svelte/lib/ChartBarIcon";
   import ChatCircleTextIcon from "phosphor-svelte/lib/ChatCircleTextIcon";
-  import CompassIcon from "phosphor-svelte/lib/CompassIcon";
-  import ExamIcon from "phosphor-svelte/lib/ExamIcon";
-  import GraphIcon from "phosphor-svelte/lib/GraphIcon";
   import GithubLogoIcon from "phosphor-svelte/lib/GithubLogoIcon";
   import HouseIcon from "phosphor-svelte/lib/HouseIcon";
   import LinkedinLogoIcon from "phosphor-svelte/lib/LinkedinLogoIcon";
   import PlugsConnectedIcon from "phosphor-svelte/lib/PlugsConnectedIcon";
   import RobotIcon from "phosphor-svelte/lib/RobotIcon";
-  import RocketLaunchIcon from "phosphor-svelte/lib/RocketLaunchIcon";
   import TargetIcon from "phosphor-svelte/lib/TargetIcon";
   import XLogoIcon from "phosphor-svelte/lib/XLogoIcon";
   import YoutubeLogoIcon from "phosphor-svelte/lib/YoutubeLogoIcon";
@@ -60,69 +54,6 @@
       description: "Discover detection skills, inspect YAML frontmatter and procedure body, assemble candidate evidence, and emit a DetectionFinding.",
       href: "/lab/06",
       icon: TargetIcon,
-    },
-    {
-      id: "07",
-      title: "Assessment Context",
-      description: "Run an assessment skill with an upstream DetectionFinding and an explicitly injected organization context bundle.",
-      href: "/lab/07",
-      icon: BrainIcon,
-    },
-    {
-      id: "08",
-      title: "RAG Prior Investigations",
-      description: "Retrieve prior investigations and inject relevant precedent into the agent context.",
-      href: "/lab/08",
-      icon: BooksIcon,
-    },
-    {
-      id: "09",
-      title: "Fan-Out / Fan-In",
-      description: "Dispatch independent detection jobs, collect structured findings, and inspect orchestration trace.",
-      href: "/lab/09",
-      icon: PlugsConnectedIcon,
-    },
-    {
-      id: "10",
-      title: "Knowledge Graph State",
-      description: "Turn findings into graph nodes and edges so entity overlap becomes explicit shared state.",
-      href: "/lab/10",
-      icon: GraphIcon,
-    },
-    {
-      id: "11",
-      title: "Graph Narrative",
-      description: "Read bounded graph context into narrative synthesis and ground claims in explicit relationships.",
-      href: "/lab/11",
-      icon: BookOpenTextIcon,
-    },
-    {
-      id: "12",
-      title: "Feedback + Report",
-      description: "Record analyst verdicts, generate the Markdown report, and send a notification event.",
-      href: "/lab/12",
-      icon: BellRingingIcon,
-    },
-    {
-      id: "13",
-      title: "Eval Harness",
-      description: "Run deterministic checks over the hunting workflow so improvement is measured, not guessed.",
-      href: "/lab/13",
-      icon: ExamIcon,
-    },
-    {
-      id: "14",
-      title: "Complete Hunt",
-      description: "Run the integrated capstone from orchestration through graph, narrative, feedback, and evals.",
-      href: "/lab/14",
-      icon: RocketLaunchIcon,
-    },
-    {
-      id: "15",
-      title: "Further Learning",
-      description: "Map next steps after the workshop: more skills, real integrations, persistent graph state, feedback, and evals.",
-      href: "/lab/15",
-      icon: CompassIcon,
     },
   ];
 
