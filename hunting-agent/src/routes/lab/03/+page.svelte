@@ -12,6 +12,9 @@
   import HardDrivesIcon from "phosphor-svelte/lib/HardDrivesIcon";
   import GearIcon from "phosphor-svelte/lib/GearIcon";
   import ArrowRightIcon from "phosphor-svelte/lib/ArrowRightIcon";
+  import ChatCircleTextIcon from "phosphor-svelte/lib/ChatCircleTextIcon";
+  import MagnifyingGlassIcon from "phosphor-svelte/lib/MagnifyingGlassIcon";
+  import CodeIcon from "phosphor-svelte/lib/CodeIcon";
 
   type Role = "user" | "assistant";
   interface Msg { role: Role; content: string; }
@@ -23,7 +26,7 @@
   let draft = $state("");
   let busy = $state(false);
   let status = $state("");
-  let activeTab = $state<"chat" | "context" | "code">("chat");
+  let activeTab = $state<"instructions" | "chat" | "context" | "code">("instructions");
   let budget = $state<ContextBudgetReport | null>(null);
   let compactionFlash = $state(false);
 
@@ -110,7 +113,7 @@
   </header>
 
   <!-- Persistent context meter: visible on both tabs so the live reaction is never hidden -->
-  {#if activeTab !== "code"}
+  {#if activeTab === "chat" || activeTab === "context"}
   <div class="meter" class:flash={compactionFlash}>
     <span class="m-label">context</span>
     <div class="m-track">
@@ -130,12 +133,133 @@
   {/if}
 
   <div class="tabs" role="tablist">
+    <button type="button" role="tab" class:active={activeTab === "instructions"} onclick={() => (activeTab = "instructions")}>Instructions</button>
     <button type="button" role="tab" class:active={activeTab === "chat"} onclick={() => (activeTab = "chat")}>Chat</button>
     <button type="button" role="tab" class:active={activeTab === "context"} onclick={() => (activeTab = "context")}>Context Window</button>
     <button type="button" role="tab" class:active={activeTab === "code"} onclick={() => (activeTab = "code")}>Code</button>
   </div>
 
-  {#if activeTab === "chat"}
+  {#if activeTab === "instructions"}
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- INSTRUCTIONS VIEW  (the workshop walkthrough)        -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="code-view">
+      <div class="code-inner">
+        <header class="cv-hero">
+          <span class="cv-eyebrow">Lab 03 · Walkthrough</span>
+          <h2>Give the agent a memory — and watch it manage it</h2>
+          <p>
+            In Lab 01 the agent forgot everything between messages. Here it remembers: every
+            turn shares one session, so the conversation builds up. But context isn't
+            infinite — so when it fills up, the harness <strong>compacts</strong> the oldest
+            turns into a summary instead of dropping them. Your job is to fill the window,
+            trigger a compaction, and prove the agent still remembers.
+          </p>
+        </header>
+
+        <ol class="flow">
+          <!-- Step 1 -->
+          <li class="flow-step" style="--d: 0ms">
+            <span class="flow-rail"><ChatCircleTextIcon size={22} weight="duotone" /></span>
+            <div class="flow-body">
+              <div class="flow-top">
+                <span class="flow-title">1 · Tell it a fact, then keep chatting</span>
+                <span class="flow-where">Chat tab</span>
+              </div>
+              <p>
+                On the <strong>Chat</strong> tab, give it something to remember in your first
+                message, then carry on a normal conversation. Unlike Lab 01, it keeps up —
+                because every turn is part of the same session.
+              </p>
+              <div class="gd-egs">
+                <span class="gd-eg">My name is Sam and I'm investigating a phishing case.</span>
+                <span class="gd-eg">…(send a few more messages about anything)…</span>
+              </div>
+            </div>
+          </li>
+
+          <!-- Step 2 -->
+          <li class="flow-step" style="--d: 110ms">
+            <span class="flow-rail"><GaugeIcon size={22} weight="duotone" /></span>
+            <div class="flow-body">
+              <div class="flow-top">
+                <span class="flow-title">2 · Watch the context meter fill</span>
+                <span class="flow-where">bar at the top</span>
+              </div>
+              <p>
+                The <strong>context</strong> bar above the tabs grows with every turn. The
+                little marker partway along is the <strong>compaction trigger</strong> — the
+                point where retained context gets too big and the harness steps in. Keep
+                sending messages and push the fill toward it.
+              </p>
+            </div>
+          </li>
+
+          <!-- Step 3 -->
+          <li class="flow-step" style="--d: 220ms">
+            <span class="flow-rail"><ArrowsInSimpleIcon size={22} weight="duotone" /></span>
+            <div class="flow-body">
+              <div class="flow-top">
+                <span class="flow-title">3 · Cross the line — watch it compact</span>
+                <span class="flow-where">⟳ compacted</span>
+              </div>
+              <p>
+                When retained context passes the trigger, the bar flashes
+                <strong>⟳ compacted</strong>. Behind the scenes the harness summarized the
+                oldest turns into a compact <em>memory</em> and dropped the raw versions —
+                freeing room so the conversation can keep going.
+              </p>
+            </div>
+          </li>
+
+          <!-- Step 4 -->
+          <li class="flow-step" style="--d: 330ms">
+            <span class="flow-rail"><BrainIcon size={22} weight="duotone" /></span>
+            <div class="flow-body">
+              <div class="flow-top">
+                <span class="flow-title">4 · Now test its memory</span>
+                <span class="flow-where">the payoff</span>
+              </div>
+              <p>
+                Ask about that very first fact — <em>"what's my name, and what am I
+                investigating?"</em> Even though that turn was compacted away, it still
+                answers correctly. That's the whole point: <strong>compaction is not
+                forgetting</strong> — the agent recalls it through the summary.
+              </p>
+            </div>
+          </li>
+
+          <!-- Step 5 -->
+          <li class="flow-step" style="--d: 440ms">
+            <span class="flow-rail"><MagnifyingGlassIcon size={22} weight="duotone" /></span>
+            <div class="flow-body">
+              <div class="flow-top">
+                <span class="flow-title">5 · Open the Context Window tab</span>
+                <span class="flow-where">Context Window tab</span>
+              </div>
+              <p>
+                This is where it all becomes concrete. See exactly what the harness assembles
+                for each model call: the <strong>system prompt</strong>, the
+                <strong>pinned</strong> and <strong>recent</strong> turns kept word-for-word,
+                and the older turns collapsed into a <strong>memory summary</strong>. The
+                colour-coded messages array shows which turns are kept verbatim vs. compacted.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <aside class="cv-callout">
+          <CodeIcon size={22} weight="duotone" />
+          <p>
+            <strong>The big idea:</strong> a real agent can't keep an infinite transcript, so
+            it trades old detail for a summary the moment it runs low on room — staying
+            coherent over long conversations. Curious how the budgeting and summarising
+            actually work? The optional <strong>Code</strong> tab walks the architecture.
+          </p>
+        </aside>
+      </div>
+    </div>
+  {:else if activeTab === "chat"}
     <section class="panel chat">
       <div class="transcript">
         {#each messages as m, i (i)}
@@ -1039,6 +1163,22 @@ MEMORY_KEEP_RECENT=2        <span class="c-cm">// latest turns kept</span></code
     color: #c2c2d2;
     font-size: 0.92rem;
     line-height: 1.7;
+  }
+
+  .gd-egs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-top: 0.8rem;
+  }
+  .gd-eg {
+    align-self: flex-start;
+    font-size: 0.84rem;
+    color: #d0d0da;
+    background: rgba(80, 250, 123, 0.07);
+    border: 1px solid rgba(80, 250, 123, 0.22);
+    border-radius: 999px;
+    padding: 0.3rem 0.75rem;
   }
 
   @keyframes cvRise {
