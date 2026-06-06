@@ -15,7 +15,7 @@
   const labs = [
     {
       id: "01",
-      title: "First Hunting Agent",
+      title: "Our First Agent",
       description: "Build the first model-backed pipeline with streaming output and visible immutable state.",
       href: "/lab/01",
       icon: RobotIcon,

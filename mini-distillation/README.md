@@ -63,6 +63,10 @@ The CLI accepts either a **JSON array** of events or **NDJSON** (one event per
 line). It prints a readable summary to stdout and writes candidates as NDJSON to
 `--out` (default `candidates.ndjson`).
 
+> **Want to run it on your own Zeek / Sysmon data?** The tool reads a *normalized*
+> event stream, not raw `conn.log`/`ssl.log` or Sysmon EVTX. See **[SCHEMA.md](./SCHEMA.md)**
+> for the exact input contract and a Zeek/Sysmon field-mapping cheatsheet.
+
 ### Example output
 
 ```

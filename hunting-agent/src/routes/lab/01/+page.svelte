@@ -14,9 +14,14 @@
   import ArrowDownIcon from "phosphor-svelte/lib/ArrowDownIcon";
   import ArrowRightIcon from "phosphor-svelte/lib/ArrowRightIcon";
   import TerminalWindowIcon from "phosphor-svelte/lib/TerminalWindowIcon";
+  import ChatCircleTextIcon from "phosphor-svelte/lib/ChatCircleTextIcon";
+  import ArrowsClockwiseIcon from "phosphor-svelte/lib/ArrowsClockwiseIcon";
+  import MagnifyingGlassIcon from "phosphor-svelte/lib/MagnifyingGlassIcon";
+  import CodeIcon from "phosphor-svelte/lib/CodeIcon";
+  import QuestionIcon from "phosphor-svelte/lib/QuestionIcon";
 
   // ── Tab ─────────────────────────────────────────────────
-  let activeTab = $state<"agent" | "deconstructed" | "code">("agent");
+  let activeTab = $state<"instructions" | "agent" | "deconstructed" | "code">("instructions");
 
   // ── Shared state ────────────────────────────────────────
   let userInput = $state("");
@@ -175,6 +180,13 @@
   <div class="tab-bar">
     <button
       class="tab-btn"
+      class:active={activeTab === "instructions"}
+      onclick={() => (activeTab = "instructions")}
+    >
+      Instructions
+    </button>
+    <button
+      class="tab-btn"
       class:active={activeTab === "agent"}
       onclick={() => (activeTab = "agent")}
     >
@@ -196,14 +208,149 @@
     </button>
   </div>
 
-  {#if activeTab === "agent"}
+  {#if activeTab === "instructions"}
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- INSTRUCTIONS VIEW  (the workshop walkthrough)        -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="code-view">
+      <div class="code-inner">
+        <header class="cv-hero">
+          <span class="cv-eyebrow">Lab 01 · Walkthrough</span>
+          <h2>Talk to your first agent</h2>
+          <p>
+            This first lab is the simplest possible loop: <strong>text in, text out</strong>.
+            You send the agent an observation or a question, and it answers. That's it —
+            no memory, no tools, no skills yet. Work through the four steps below in order;
+            each one sets up something you'll build on in later labs.
+          </p>
+        </header>
+
+        <ol class="flow">
+          <!-- Step 1 -->
+          <li class="flow-step" style="--d: 0ms">
+            <span class="flow-rail"><ChatCircleTextIcon size={22} weight="duotone" /></span>
+            <div class="flow-body">
+              <div class="flow-top">
+                <span class="flow-title">1 · Ask it anything</span>
+                <span class="flow-where">Agent tab</span>
+              </div>
+              <p>
+                Switch to the <strong>Agent</strong> tab, type something into the box, and
+                press <strong>Send</strong>. Watch the answer stream back word-by-word.
+                Treat it like any chatbot — ask a question or paste an observation:
+              </p>
+              <div class="gd-egs">
+                <span class="gd-eg">What is beaconing in a network?</span>
+                <span class="gd-eg">A host pings the same IP every 60 seconds. Suspicious?</span>
+              </div>
+            </div>
+          </li>
+
+          <!-- Step 2 -->
+          <li class="flow-step" style="--d: 110ms">
+            <span class="flow-rail"><ArrowsClockwiseIcon size={22} weight="duotone" /></span>
+            <div class="flow-body">
+              <div class="flow-top">
+                <span class="flow-title">2 · Now ask a follow-up</span>
+                <span class="flow-where">watch it forget</span>
+              </div>
+              <p>
+                Send a second message that depends on the first — for example
+                <em>"what did I just ask you?"</em> Notice it has <strong>no idea</strong>.
+                Each message is answered from a blank slate: there's no context window and
+                nothing is saved between turns yet.
+              </p>
+              <div class="gd-note">
+                <QuestionIcon size={18} weight="duotone" />
+                <span>
+                  This isn't a bug — it's the starting point. Giving the agent a
+                  <strong>memory</strong> is exactly what Lab 03 (Context Window) adds.
+                </span>
+              </div>
+            </div>
+          </li>
+
+          <!-- Step 3 -->
+          <li class="flow-step" style="--d: 220ms">
+            <span class="flow-rail"><MagnifyingGlassIcon size={22} weight="duotone" /></span>
+            <div class="flow-body">
+              <div class="flow-top">
+                <span class="flow-title">3 · Open the Deconstructed tab</span>
+                <span class="flow-where">Deconstructed tab</span>
+              </div>
+              <p>
+                Run the same thing again, but this time on the <strong>Deconstructed</strong>
+                tab. Watch it move <strong>stage by stage</strong> —
+                <code>STAGE 1 · addInput()</code> records your text, then
+                <code>STAGE 2 · addAnalysis()</code> calls the model and records the answer.
+                Then look closely at the <strong>API Call</strong> panel: every request is
+                built from <em>two</em> separate prompts. Make sure you understand the
+                difference:
+              </p>
+
+              <div class="gd-prompts">
+                <div class="gd-prompt">
+                  <div class="gd-prompt-head">
+                    <GearIcon size={18} weight="duotone" />
+                    <span class="gd-tag gd-tag-sys">systemPrompt</span>
+                  </div>
+                  <p>
+                    The agent's <strong>standing instructions</strong> — who it is and how
+                    it should behave. Set once by the developer and sent <em>unchanged</em>
+                    on every turn. You never type this.
+                  </p>
+                </div>
+                <div class="gd-prompt">
+                  <div class="gd-prompt-head">
+                    <ChatCircleTextIcon size={18} weight="duotone" />
+                    <span class="gd-tag gd-tag-usr">userPrompt</span>
+                  </div>
+                  <p>
+                    <strong>Your message</strong> — the observation or question you just
+                    typed. This is the part that changes every single turn.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <!-- Step 4 -->
+          <li class="flow-step" style="--d: 330ms">
+            <span class="flow-rail"><CodeIcon size={22} weight="duotone" /></span>
+            <div class="flow-body">
+              <div class="flow-top">
+                <span class="flow-title">4 · Curious how it's built?</span>
+                <span class="flow-where">Code tab · optional</span>
+              </div>
+              <p>
+                If you want to see what actually happens between pressing Send and the
+                answer streaming back, the <strong>Code</strong> tab is an optional,
+                visual walk through the architecture — the browser-to-server wall, immutable
+                state, the provider interface, and streaming. Skip it freely if you just
+                want to play.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <aside class="cv-callout">
+          <TerminalWindowIcon size={22} weight="duotone" />
+          <p>
+            <strong>The whole point of Lab 01:</strong> get one clean request/response loop
+            working end to end. Everything else in the workshop — memory, tools, MCP,
+            skills — is a layer added on top of this exact loop.
+          </p>
+        </aside>
+      </div>
+    </div>
+  {:else if activeTab === "agent"}
     <!-- ═══════════════════════════════════════════════════ -->
     <!-- AGENT VIEW                                          -->
     <!-- ═══════════════════════════════════════════════════ -->
     <div class="lab-container">
       <div class="chat-panel">
         <div class="panel-header">
-          <h2>Lab 01 — Your First Hunting Agent</h2>
+          <h2>Lab 01 — Our First Agent</h2>
           <p class="subtitle">
             Type an observation. The agent will analyze it.
           </p>
@@ -1850,6 +1997,71 @@
     color: #c2c2d2;
     font-size: 0.92rem;
     line-height: 1.7;
+  }
+
+  /* ── Instructions-specific bits ── */
+  .gd-egs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-top: 0.8rem;
+  }
+  .gd-eg {
+    align-self: flex-start;
+    font-size: 0.84rem;
+    color: #d0d0da;
+    background: rgba(80, 250, 123, 0.07);
+    border: 1px solid rgba(80, 250, 123, 0.22);
+    border-radius: 999px;
+    padding: 0.3rem 0.75rem;
+  }
+
+  .gd-note {
+    display: flex;
+    gap: 0.55rem;
+    align-items: flex-start;
+    margin-top: 0.85rem;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid rgba(245, 230, 99, 0.28);
+    border-left: 3px solid #f5e663;
+    border-radius: 6px;
+    background: rgba(245, 230, 99, 0.05);
+  }
+  .gd-note :global(svg) { color: #f5e663; flex-shrink: 0; margin-top: 1px; }
+  .gd-note span { color: #c2c2d2; font-size: 0.86rem; line-height: 1.6; }
+
+  .gd-prompts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+    margin-top: 0.95rem;
+  }
+  .gd-prompt {
+    border: 1px solid #1c1c30;
+    border-radius: 8px;
+    background: #0d0d14;
+    padding: 0.8rem 0.9rem;
+  }
+  .gd-prompt-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .gd-prompt-head :global(svg) { color: #8be9fd; }
+  .gd-prompt p { margin: 0; color: #aeaebe; font-size: 0.85rem; line-height: 1.6; }
+  .gd-tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+  }
+  .gd-tag-sys { color: #bd93f9; background: rgba(189, 147, 249, 0.12); border: 1px solid rgba(189, 147, 249, 0.35); }
+  .gd-tag-usr { color: #50fa7b; background: rgba(80, 250, 123, 0.1); border: 1px solid rgba(80, 250, 123, 0.32); }
+
+  @media (max-width: 640px) {
+    .gd-prompts { grid-template-columns: 1fr; }
   }
 
   /* Animations */
