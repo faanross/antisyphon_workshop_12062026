@@ -1228,6 +1228,21 @@
     overflow-wrap: anywhere;
   }
 
+  /* Inline code inside the Instructions/Code prose must stay inline
+     (the global `code { display: block }` above is for the trace cards;
+     real code blocks live in <pre class="cv-code/cv-tree">, not <p>). */
+  .code-view p code {
+    display: inline;
+    overflow: visible;
+    white-space: normal;
+    font-size: 0.86em;
+    color: #f1fa8c;
+    background: rgba(241, 250, 140, 0.07);
+    border: 1px solid rgba(241, 250, 140, 0.12);
+    border-radius: 3px;
+    padding: 0.05em 0.35em;
+  }
+
   @media (max-width: 1100px) {
     .tao-row {
       grid-template-columns: 1fr;
