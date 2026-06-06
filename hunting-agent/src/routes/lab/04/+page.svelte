@@ -429,14 +429,15 @@
           <div class="code-inner">
             <header class="cv-hero">
               <span class="cv-eyebrow">Lab 04 · Walkthrough</span>
-              <h2>Can the agent pick the right tool for the job?</h2>
+              <h2>Run a real triage — and watch how the agent works</h2>
               <p>
-                Here's the setup: we hand the agent a <strong>toolbox</strong> — six tools, each
-                with a short description of what it does — and then we give it a <strong>job</strong>.
-                What we deliberately <em>don't</em> do is tell it which tool to use. The entire
-                point of this lab is to see whether the agent can <strong>choose the right tool
-                (or sequence of tools) on its own</strong>. That selection is the core agent skill;
-                everything else is plumbing.
+                This is a genuine triage: you investigate the distilled candidates, follow the
+                evidence, and reach conclusions about what's actually going on. <strong>The hunt
+                and your findings are the job.</strong> But there's a second thing worth watching
+                while you do it — we hand the agent a <strong>toolbox</strong> (six tools, each
+                described) and give it a goal <em>without</em> saying which tool to use. So as you
+                work, also notice whether it <strong>reaches for the right tool</strong> for each
+                question. Both matter: the answer it reaches <em>and</em> how it got there.
               </p>
             </header>
 
@@ -463,14 +464,15 @@
                 <span class="flow-rail"><ChatCircleTextIcon size={22} weight="duotone" /></span>
                 <div class="flow-body">
                   <div class="flow-top">
-                    <span class="flow-title">2 · Give it a job — never a tool</span>
+                    <span class="flow-title">2 · Start investigating</span>
                     <span class="flow-where">Chat tab</span>
                   </div>
                   <p>
-                    Phrase each request as an <strong>outcome</strong>, the way you'd brief a
-                    junior analyst — never "call <code>explain_score</code>". Each prompt below is
-                    written to need a <em>different</em> tool. Read it, predict which tool the
-                    agent should reach for, then send it:
+                    Ask real questions about the candidates and read the answers — this is the
+                    actual hunt. Phrase requests as <strong>outcomes</strong>, the way you'd brief
+                    a junior analyst, rather than naming a tool. As a bonus, each prompt below
+                    happens to call for a <em>different</em> tool, so you can also predict which
+                    one the agent should reach for:
                   </p>
                   <div class="gd-match">
                     <div class="gd-match-row"><span class="gd-q">"Which beacons scored above 0.8?"</span><span class="gd-tool">query_candidates</span></div>
@@ -488,16 +490,16 @@
                 <span class="flow-rail"><MagnifyingGlassIcon size={22} weight="duotone" /></span>
                 <div class="flow-body">
                   <div class="flow-top">
-                    <span class="flow-title">3 · Check the trace — did it choose well?</span>
+                    <span class="flow-title">3 · Read the trace behind the answer</span>
                     <span class="flow-where">Execution Trace tab</span>
                   </div>
                   <p>
-                    Open <strong>Execution Trace</strong>. For each turn, look at the
-                    <strong>Tool Action</strong>: the <em>Selection Note</em> (its reasoning) and
-                    the <em>Action</em> — <code>tool(args)</code>, the tool it actually picked.
-                    Compare that against your prediction. Did it match the job, with sensible
-                    arguments? <strong>That choice — not the prose answer — is what we're really
-                    evaluating.</strong>
+                    Open <strong>Execution Trace</strong> to see how each answer was built. For
+                    every turn you get the <strong>Tool Action</strong>: the <em>Selection Note</em>
+                    (its reasoning), the <em>Action</em> — <code>tool(args)</code> it ran — and the
+                    <em>Observation</em> it got back. Two things to judge here: did the
+                    <strong>conclusion hold up</strong> given that evidence, and did it
+                    <strong>pick the right tool</strong>, with sensible arguments, to find it?
                   </p>
                 </div>
               </li>
@@ -524,11 +526,11 @@
             <aside class="cv-callout">
               <CodeIcon size={22} weight="duotone" />
               <p>
-                <strong>The skill under test:</strong> a chatbot answers from what it already
-                knows; an agent works out <em>which capability to invoke</em> to get what it
-                doesn't. Picking the right tool, with the right arguments, in the right order —
-                that's the skill. The optional <strong>Code</strong> tab shows how the toolbox and
-                the JSON tool-decision contract are wired up.
+                <strong>What this lab adds:</strong> the agent stops just answering and starts
+                <em>doing the legwork</em> — gathering its own evidence to triage the candidates.
+                Judge it on both fronts: the quality of the investigation and conclusions, and
+                whether it chose the right tools to get there. The optional <strong>Code</strong>
+                tab shows how the toolbox and the JSON tool-decision contract are wired up.
               </p>
             </aside>
           </div>
