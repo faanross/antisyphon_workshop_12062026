@@ -12,6 +12,9 @@
   import HardDrivesIcon from "phosphor-svelte/lib/HardDrivesIcon";
   import FloppyDiskIcon from "phosphor-svelte/lib/FloppyDiskIcon";
   import ArrowRightIcon from "phosphor-svelte/lib/ArrowRightIcon";
+  import ChatCircleTextIcon from "phosphor-svelte/lib/ChatCircleTextIcon";
+  import MagnifyingGlassIcon from "phosphor-svelte/lib/MagnifyingGlassIcon";
+  import CodeIcon from "phosphor-svelte/lib/CodeIcon";
 
   type Trace = {
     id?: string;
@@ -144,7 +147,7 @@
 
 
   let sessionId = $state(`lab03-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-  let activeTab = $state<"chat" | "trace" | "code">("chat");
+  let activeTab = $state<"instructions" | "chat" | "trace" | "code">("instructions");
   let message = $state("");
   let turns = $state<Turn[]>([]);
   let availableTools = $state<ToolDefinition[]>(initialTools);
@@ -371,7 +374,7 @@
   </header>
 
   <section class="workspace">
-    <section class="console panel" class:bare={activeTab === "code"}>
+    <section class="console panel" class:bare={activeTab === "code" || activeTab === "instructions"}>
       <div class="panel-title">
         <h2>Agent Console</h2>
         <div class="panel-actions">
@@ -380,6 +383,15 @@
         </div>
       </div>
       <div class="tabs" role="tablist" aria-label="Lab 04 view">
+        <button
+          type="button"
+          role="tab"
+          class:active={activeTab === "instructions"}
+          aria-selected={activeTab === "instructions"}
+          onclick={() => activeTab = "instructions"}
+        >
+          Instructions
+        </button>
         <button
           type="button"
           role="tab"
@@ -409,7 +421,114 @@
         </button>
       </div>
 
-      {#if activeTab === "chat"}
+      {#if activeTab === "instructions"}
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!-- INSTRUCTIONS VIEW  (the workshop walkthrough)        -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <div class="code-view">
+          <div class="code-inner">
+            <header class="cv-hero">
+              <span class="cv-eyebrow">Lab 04 · Walkthrough</span>
+              <h2>Interrogate the candidates — and watch the agent reason</h2>
+              <p>
+                Lab 03 gave the agent a memory; this one gives it <strong>tools</strong> and a
+                job. Ask it about the distilled candidates and it doesn't just answer from
+                thin air — it <em>looks things up</em>, deciding which tool to call, reading
+                the result, then deciding what to check next. Chat with it, then open the
+                trace to watch it think.
+              </p>
+            </header>
+
+            <ol class="flow">
+              <!-- Step 1 -->
+              <li class="flow-step" style="--d: 0ms">
+                <span class="flow-rail"><ChatCircleTextIcon size={22} weight="duotone" /></span>
+                <div class="flow-body">
+                  <div class="flow-top">
+                    <span class="flow-title">1 · Ask a broad question</span>
+                    <span class="flow-where">Chat tab</span>
+                  </div>
+                  <p>
+                    On the <strong>Chat</strong> tab, start wide and let the agent go digging.
+                    It'll pick tools, pull candidate rows, and summarise what it found:
+                  </p>
+                  <div class="gd-egs">
+                    <span class="gd-eg">What are the most suspicious candidates here?</span>
+                    <span class="gd-eg">Show me the highest-scoring beacons.</span>
+                  </div>
+                </div>
+              </li>
+
+              <!-- Step 2 -->
+              <li class="flow-step" style="--d: 110ms">
+                <span class="flow-rail"><ArrowsClockwiseIcon size={22} weight="duotone" /></span>
+                <div class="flow-body">
+                  <div class="flow-top">
+                    <span class="flow-title">2 · Drill in with follow-ups</span>
+                    <span class="flow-where">it remembers the case</span>
+                  </div>
+                  <p>
+                    Now build on what it found. Because turns share one session, you can refer
+                    back — and each follow-up triggers <em>fresh</em> tool calls to gather more
+                    evidence:
+                  </p>
+                  <div class="gd-egs">
+                    <span class="gd-eg">Tell me more about the top one.</span>
+                    <span class="gd-eg">Why did it score so high?</span>
+                    <span class="gd-eg">Is there any threat intel on it?</span>
+                  </div>
+                </div>
+              </li>
+
+              <!-- Step 3 -->
+              <li class="flow-step" style="--d: 220ms">
+                <span class="flow-rail"><MagnifyingGlassIcon size={22} weight="duotone" /></span>
+                <div class="flow-body">
+                  <div class="flow-top">
+                    <span class="flow-title">3 · Open the Execution Trace</span>
+                    <span class="flow-where">Execution Trace tab</span>
+                  </div>
+                  <p>
+                    This is the real lesson. For every turn you'll see the exact
+                    <strong>Prompt</strong>, then each <strong>Tool Action</strong> broken into
+                    <em>Selection Note</em> (why it chose that tool), <em>Action</em>
+                    (<code>tool(args)</code>), and <em>Observation</em> (what came back) — then
+                    the final <strong>Output</strong>. That's the think → act → observe loop,
+                    made visible.
+                  </p>
+                </div>
+              </li>
+
+              <!-- Step 4 -->
+              <li class="flow-step" style="--d: 330ms">
+                <span class="flow-rail"><WrenchIcon size={22} weight="duotone" /></span>
+                <div class="flow-body">
+                  <div class="flow-top">
+                    <span class="flow-title">4 · Peek at the toolbox</span>
+                    <span class="flow-where">Available Tools panel</span>
+                  </div>
+                  <p>
+                    Expand <strong>Available Tools</strong> below the console. The agent wasn't
+                    hard-coded to run these in order — it was handed the menu and
+                    <em>chose</em> which to call, and when. That choice is what makes it an
+                    agent rather than a script.
+                  </p>
+                </div>
+              </li>
+            </ol>
+
+            <aside class="cv-callout">
+              <CodeIcon size={22} weight="duotone" />
+              <p>
+                <strong>The shift in this lab:</strong> the model stops being a text generator
+                and starts <em>taking actions</em> to answer you. Want to see how the loop,
+                the JSON tool-decision contract, and the tools are wired up? The optional
+                <strong>Code</strong> tab walks the architecture.
+              </p>
+            </aside>
+          </div>
+        </div>
+      {:else if activeTab === "chat"}
         <div class="messages">
           {#if turns.length === 0}
             <article class="agent placeholder">
@@ -703,7 +822,7 @@
         </div>
       {/if}
 
-      {#if activeTab !== "code"}
+      {#if activeTab === "chat" || activeTab === "trace"}
       <form onsubmit={(event) => { event.preventDefault(); send(); }}>
         <input bind:value={message} aria-label="Message" disabled={busy} />
         <button disabled={busy || !message.trim()}>{busy ? statusText || "Working" : "Send"}</button>
@@ -711,7 +830,7 @@
       {/if}
     </section>
 
-    {#if activeTab !== "code"}
+    {#if activeTab === "chat" || activeTab === "trace"}
     <details class="panel tools-panel" bind:open={toolsOpen}>
       <summary>
         <div class="panel-title">
@@ -1481,6 +1600,22 @@
     color: #c2c2d2;
     font-size: 0.92rem;
     line-height: 1.7;
+  }
+
+  .gd-egs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-top: 0.8rem;
+  }
+  .gd-eg {
+    align-self: flex-start;
+    font-size: 0.84rem;
+    color: #d0d0da;
+    background: rgba(80, 250, 123, 0.07);
+    border: 1px solid rgba(80, 250, 123, 0.22);
+    border-radius: 999px;
+    padding: 0.3rem 0.75rem;
   }
 
   @keyframes cvRise {
