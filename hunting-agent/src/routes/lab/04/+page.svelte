@@ -429,53 +429,56 @@
           <div class="code-inner">
             <header class="cv-hero">
               <span class="cv-eyebrow">Lab 04 · Walkthrough</span>
-              <h2>Interrogate the candidates — and watch the agent reason</h2>
+              <h2>Can the agent pick the right tool for the job?</h2>
               <p>
-                Lab 03 gave the agent a memory; this one gives it <strong>tools</strong> and a
-                job. Ask it about the distilled candidates and it doesn't just answer from
-                thin air — it <em>looks things up</em>, deciding which tool to call, reading
-                the result, then deciding what to check next. Chat with it, then open the
-                trace to watch it think.
+                Here's the setup: we hand the agent a <strong>toolbox</strong> — six tools, each
+                with a short description of what it does — and then we give it a <strong>job</strong>.
+                What we deliberately <em>don't</em> do is tell it which tool to use. The entire
+                point of this lab is to see whether the agent can <strong>choose the right tool
+                (or sequence of tools) on its own</strong>. That selection is the core agent skill;
+                everything else is plumbing.
               </p>
             </header>
 
             <ol class="flow">
               <!-- Step 1 -->
               <li class="flow-step" style="--d: 0ms">
-                <span class="flow-rail"><ChatCircleTextIcon size={22} weight="duotone" /></span>
+                <span class="flow-rail"><ToolboxIcon size={22} weight="duotone" /></span>
                 <div class="flow-body">
                   <div class="flow-top">
-                    <span class="flow-title">1 · Ask a broad question</span>
-                    <span class="flow-where">Chat tab</span>
+                    <span class="flow-title">1 · See what's in the toolbox</span>
+                    <span class="flow-where">Available Tools panel</span>
                   </div>
                   <p>
-                    On the <strong>Chat</strong> tab, start wide and let the agent go digging.
-                    It'll pick tools, pull candidate rows, and summarise what it found:
+                    First, expand <strong>Available Tools</strong> below the console. These six —
+                    and <em>only</em> these — are what the agent can reach, each with a one-line
+                    purpose. Read them so you know what a <em>correct</em> choice looks like
+                    before you start asking.
                   </p>
-                  <div class="gd-egs">
-                    <span class="gd-eg">What are the most suspicious candidates here?</span>
-                    <span class="gd-eg">Show me the highest-scoring beacons.</span>
-                  </div>
                 </div>
               </li>
 
               <!-- Step 2 -->
               <li class="flow-step" style="--d: 110ms">
-                <span class="flow-rail"><ArrowsClockwiseIcon size={22} weight="duotone" /></span>
+                <span class="flow-rail"><ChatCircleTextIcon size={22} weight="duotone" /></span>
                 <div class="flow-body">
                   <div class="flow-top">
-                    <span class="flow-title">2 · Drill in with follow-ups</span>
-                    <span class="flow-where">it remembers the case</span>
+                    <span class="flow-title">2 · Give it a job — never a tool</span>
+                    <span class="flow-where">Chat tab</span>
                   </div>
                   <p>
-                    Now build on what it found. Because turns share one session, you can refer
-                    back — and each follow-up triggers <em>fresh</em> tool calls to gather more
-                    evidence:
+                    Phrase each request as an <strong>outcome</strong>, the way you'd brief a
+                    junior analyst — never "call <code>explain_score</code>". Each prompt below is
+                    written to need a <em>different</em> tool. Read it, predict which tool the
+                    agent should reach for, then send it:
                   </p>
-                  <div class="gd-egs">
-                    <span class="gd-eg">Tell me more about the top one.</span>
-                    <span class="gd-eg">Why did it score so high?</span>
-                    <span class="gd-eg">Is there any threat intel on it?</span>
+                  <div class="gd-match">
+                    <div class="gd-match-row"><span class="gd-q">"Which beacons scored above 0.8?"</span><span class="gd-tool">query_candidates</span></div>
+                    <div class="gd-match-row"><span class="gd-q">"Open up the top candidate — give me the full record."</span><span class="gd-tool">get_candidate_detail</span></div>
+                    <div class="gd-match-row"><span class="gd-q">"Show me the raw events behind it."</span><span class="gd-tool">get_related_events</span></div>
+                    <div class="gd-match-row"><span class="gd-q">"Whose machine is this, and what runs on it?"</span><span class="gd-tool">lookup_asset</span></div>
+                    <div class="gd-match-row"><span class="gd-q">"Is that destination IP known-bad?"</span><span class="gd-tool">lookup_threat_intel</span></div>
+                    <div class="gd-match-row"><span class="gd-q">"Why did it score so high?"</span><span class="gd-tool">explain_score</span></div>
                   </div>
                 </div>
               </li>
@@ -485,33 +488,34 @@
                 <span class="flow-rail"><MagnifyingGlassIcon size={22} weight="duotone" /></span>
                 <div class="flow-body">
                   <div class="flow-top">
-                    <span class="flow-title">3 · Open the Execution Trace</span>
+                    <span class="flow-title">3 · Check the trace — did it choose well?</span>
                     <span class="flow-where">Execution Trace tab</span>
                   </div>
                   <p>
-                    This is the real lesson. For every turn you'll see the exact
-                    <strong>Prompt</strong>, then each <strong>Tool Action</strong> broken into
-                    <em>Selection Note</em> (why it chose that tool), <em>Action</em>
-                    (<code>tool(args)</code>), and <em>Observation</em> (what came back) — then
-                    the final <strong>Output</strong>. That's the think → act → observe loop,
-                    made visible.
+                    Open <strong>Execution Trace</strong>. For each turn, look at the
+                    <strong>Tool Action</strong>: the <em>Selection Note</em> (its reasoning) and
+                    the <em>Action</em> — <code>tool(args)</code>, the tool it actually picked.
+                    Compare that against your prediction. Did it match the job, with sensible
+                    arguments? <strong>That choice — not the prose answer — is what we're really
+                    evaluating.</strong>
                   </p>
                 </div>
               </li>
 
               <!-- Step 4 -->
               <li class="flow-step" style="--d: 330ms">
-                <span class="flow-rail"><WrenchIcon size={22} weight="duotone" /></span>
+                <span class="flow-rail"><ArrowsClockwiseIcon size={22} weight="duotone" /></span>
                 <div class="flow-body">
                   <div class="flow-top">
-                    <span class="flow-title">4 · Peek at the toolbox</span>
-                    <span class="flow-where">Available Tools panel</span>
+                    <span class="flow-title">4 · Make it chain tools</span>
+                    <span class="flow-where">the hard case</span>
                   </div>
                   <p>
-                    Expand <strong>Available Tools</strong> below the console. The agent wasn't
-                    hard-coded to run these in order — it was handed the menu and
-                    <em>chose</em> which to call, and when. That choice is what makes it an
-                    agent rather than a script.
+                    Now ask something no single tool can answer, so it has to combine several and
+                    decide the order itself — e.g. <em>"Give me the full picture of the most
+                    suspicious host: who's on it, what it's talking to, and whether that
+                    destination is known-bad."</em> Watch the trace: each pass it picks the next
+                    tool based on what the last one returned.
                   </p>
                 </div>
               </li>
@@ -520,10 +524,11 @@
             <aside class="cv-callout">
               <CodeIcon size={22} weight="duotone" />
               <p>
-                <strong>The shift in this lab:</strong> the model stops being a text generator
-                and starts <em>taking actions</em> to answer you. Want to see how the loop,
-                the JSON tool-decision contract, and the tools are wired up? The optional
-                <strong>Code</strong> tab walks the architecture.
+                <strong>The skill under test:</strong> a chatbot answers from what it already
+                knows; an agent works out <em>which capability to invoke</em> to get what it
+                doesn't. Picking the right tool, with the right arguments, in the right order —
+                that's the skill. The optional <strong>Code</strong> tab shows how the toolbox and
+                the JSON tool-decision contract are wired up.
               </p>
             </aside>
           </div>
@@ -1602,21 +1607,36 @@
     line-height: 1.7;
   }
 
-  .gd-egs {
+  /* Question → expected-tool matching rows */
+  .gd-match {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
-    margin-top: 0.8rem;
+    gap: 0.45rem;
+    margin-top: 0.85rem;
   }
-  .gd-eg {
-    align-self: flex-start;
-    font-size: 0.84rem;
-    color: #d0d0da;
-    background: rgba(80, 250, 123, 0.07);
-    border: 1px solid rgba(80, 250, 123, 0.22);
-    border-radius: 999px;
-    padding: 0.3rem 0.75rem;
+  .gd-match-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid #1c1c30;
+    border-radius: 7px;
+    background: rgba(18, 18, 26, 0.6);
   }
+  .gd-q { color: #d6d6e2; font-size: 0.86rem; }
+  .gd-tool {
+    flex-shrink: 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.78rem;
+    color: #50fa7b;
+    background: rgba(80, 250, 123, 0.1);
+    border: 1px solid rgba(80, 250, 123, 0.32);
+    border-radius: 5px;
+    padding: 0.18rem 0.5rem;
+  }
+  .gd-tool::before { content: "→ "; color: #6f6f86; }
 
   @keyframes cvRise {
     from { opacity: 0; transform: translateY(14px); }
