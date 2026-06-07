@@ -154,6 +154,50 @@
   let statusText = $state("");
   let busy = $state(false);
   let toolsOpen = $state(false);
+  let wiringOpen = $state(true);
+
+  // Faithful (lightly trimmed) view of the two prompts the TAO loop sends the model
+  // each decision step. The tool catalog is part of the USER prompt — see WIRE_CATALOG.
+  const WIRE_SYS = `You are a threat-hunting triage analyst inside an agentic hunting harness.
+You operate in a bounded TAO loop: Thought, Action, Observation.
+The harness exposes read-only tools. Choose one useful tool action at a time.
+The harness validates and executes the selected tool; you reason over the observation.
+… triage method, LOTS guidance, verdict vocabulary …`;
+
+  const WIRE_U1 = `TOOL_SELECTION_REQUEST
+
+Choose the next best action for this investigation.
+
+`;
+  const WIRE_CATALOG = `Available tools:
+- query_candidates
+  purpose: Find candidates by type, score, host, destination, process, or id.
+  args: type?, minBeaconScore?, host?, destIp?, candidateIds?
+  returns: Compact candidate rows sorted by score.
+- get_candidate_detail
+  purpose: Open one candidate for attribution, enrichment, and evidence ids.
+  args: candidateId
+  returns: Detailed candidate record.
+  … all six tools, in the same format, exactly as listed in Available Tools above …`;
+  const WIRE_U2 = `
+
+Return ONLY one JSON object. Do not wrap it in markdown.
+
+`;
+  const WIRE_EXAMPLES = `To call a tool:
+{"thought":"…","action":"call_tool","tool":"query_candidates","args":{"type":"beacon","minBeaconScore":0.7}}
+
+To stop when you have enough evidence:
+{"thought":"…","action":"finish","finalAnswer":"…"}`;
+  const WIRE_U3 = `
+
+Current user message:
+`;
+  const WIRE_PH = `{ the analyst's message goes here }`;
+  const WIRE_U4 = `
+
+Observations already returned this turn:
+None yet.`;
 
   function createId(prefix: string): string {
     return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -854,6 +898,51 @@
               <small>{tool.args.join(", ")}</small>
             </article>
           {/each}
+        </div>
+      {/if}
+    </details>
+
+    <details class="panel wiring-panel" bind:open={wiringOpen}>
+      <summary>
+        <div class="panel-title">
+          <h2>How the model is told about these tools</h2>
+          <span>{wiringOpen ? "collapse" : "expand"}</span>
+        </div>
+      </summary>
+      {#if wiringOpen}
+        <div class="wiring">
+          <p class="wire-lead">
+            Every decision step, the harness sends the model <strong>two</strong> prompts. The
+            <strong>system prompt</strong> sets the role and the TAO loop. The
+            <strong>user prompt</strong> is where the harness actually <em>injects the tool
+            catalog</em> — each tool's name, arguments, and return shape — together with worked
+            examples of how to call one. So the answer to "where do the tools live?" is:
+            <strong>in the user prompt, rebuilt and re-sent on every single step</strong> — not
+            baked into the system prompt.
+          </p>
+
+          <div class="wire-prompts">
+            <article class="wire-card">
+              <div class="wire-head">
+                <span class="wire-tag sys">systemPrompt</span>
+                <span class="wire-sub">role + loop · mentions tools, never lists them</span>
+              </div>
+              <pre class="wire-pre">{WIRE_SYS}</pre>
+            </article>
+
+            <article class="wire-card">
+              <div class="wire-head">
+                <span class="wire-tag usr">userPrompt</span>
+                <span class="wire-sub">rebuilt every decision step</span>
+              </div>
+              <pre class="wire-pre">{WIRE_U1}<span class="wire-inject">{WIRE_CATALOG}</span>{WIRE_U2}<span class="wire-ex">{WIRE_EXAMPLES}</span>{WIRE_U3}<span class="wire-ph">{WIRE_PH}</span>{WIRE_U4}</pre>
+              <p class="wire-foot">
+                <span class="dot inject"></span> the injected tool catalog
+                <span class="dot ex"></span> call / finish examples
+                <span class="dot ph"></span> your input slots in here
+              </p>
+            </article>
+          </div>
         </div>
       {/if}
     </details>
@@ -1654,6 +1743,29 @@
     padding: 0.18rem 0.5rem;
   }
   .gd-tool::before { content: "→ "; color: #6f6f86; }
+
+  /* ── Tool-wiring deconstruction card ── */
+  .wiring { padding: 0.25rem 0 0.1rem; }
+  .wire-lead { margin: 0 0 1rem; max-width: 92ch; color: #aeaebe; font-size: 0.92rem; line-height: 1.62; }
+  .wire-lead strong { color: #e8e8f0; }
+  .wire-lead em { color: #bd93f9; font-style: normal; }
+  .wire-prompts { display: flex; flex-direction: column; gap: 0.8rem; }
+  .wire-card { border: 1px solid rgba(189, 147, 249, 0.22); border-radius: 8px; background: rgba(13, 13, 20, 0.6); padding: 0.85rem 1rem; }
+  .wire-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.7rem; margin-bottom: 0.6rem; }
+  .wire-tag { font-family: "JetBrains Mono", monospace; font-size: 0.8rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 4px; }
+  .wire-tag.sys { color: #bd93f9; background: rgba(189, 147, 249, 0.12); border: 1px solid rgba(189, 147, 249, 0.35); }
+  .wire-tag.usr { color: #50fa7b; background: rgba(80, 250, 123, 0.10); border: 1px solid rgba(80, 250, 123, 0.32); }
+  .wire-sub { color: #6f6f86; font-size: 0.78rem; }
+  .wire-pre { margin: 0; padding: 0.8rem 0.9rem; background: #0b0b11; border: 1px solid #1a1a2e; border-radius: 6px; overflow-x: auto; color: #b6b6c6; font-family: "JetBrains Mono", monospace; font-size: 0.8rem; line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
+  .wire-inject, .wire-ex, .wire-ph { border-radius: 3px; padding: 0.02em 0.25em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .wire-inject { background: rgba(245, 230, 99, 0.12); color: #e9dfa6; }
+  .wire-ex { background: rgba(139, 233, 253, 0.10); color: #bfe9f3; }
+  .wire-ph { background: rgba(80, 250, 123, 0.14); color: #9affc0; }
+  .wire-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 1.1rem; margin: 0.6rem 0 0; color: #8a8a9a; font-size: 0.78rem; }
+  .dot { display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 2px; margin-right: 0.3rem; vertical-align: -1px; }
+  .dot.inject { background: rgba(245, 230, 99, 0.5); }
+  .dot.ex { background: rgba(139, 233, 253, 0.5); }
+  .dot.ph { background: rgba(80, 250, 123, 0.55); }
 
   @keyframes cvRise {
     from { opacity: 0; transform: translateY(14px); }
