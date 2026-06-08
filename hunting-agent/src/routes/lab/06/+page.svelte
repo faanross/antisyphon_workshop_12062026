@@ -15,6 +15,13 @@
   import ArrowsInIcon from "phosphor-svelte/lib/ArrowsInIcon";
   import FoldersIcon from "phosphor-svelte/lib/FoldersIcon";
   import ArrowsClockwiseIcon from "phosphor-svelte/lib/ArrowsClockwiseIcon";
+  import CertificateIcon from "phosphor-svelte/lib/CertificateIcon";
+  import FingerprintIcon from "phosphor-svelte/lib/FingerprintIcon";
+  import ShieldCheckIcon from "phosphor-svelte/lib/ShieldCheckIcon";
+  import GlobeHemisphereWestIcon from "phosphor-svelte/lib/GlobeHemisphereWestIcon";
+  import UploadSimpleIcon from "phosphor-svelte/lib/UploadSimpleIcon";
+  import GaugeIcon from "phosphor-svelte/lib/GaugeIcon";
+  import PlusIcon from "phosphor-svelte/lib/PlusIcon";
 
   type SkillMetadata = {
     name: string;
@@ -117,8 +124,9 @@
   let findingUsage = $state<Record<string, unknown> | null>(null);
 
   // Active tab within the glass cards that hold more than one peer view.
-  let activeTab = $state<"instructions" | "lab" | "targeting" | "code" | "author">("instructions");
+  let activeTab = $state<"instructions" | "lab" | "targeting" | "scoring" | "code" | "author">("instructions");
   let skillTab = $state<"frontmatter" | "procedure" | "reference">("frontmatter");
+  let scoringTab = $state<"tls" | "intel" | "data">("tls");
   let promptTab = $state<"system" | "user">("system");
 
   const hasExecution = $derived(Boolean(executedSkill));
@@ -317,6 +325,7 @@
     <button class="tab-btn-top" class:active={activeTab === "instructions"} onclick={() => (activeTab = "instructions")}>Instructions</button>
     <button class="tab-btn-top" class:active={activeTab === "lab"} onclick={() => (activeTab = "lab")}>Lab</button>
     <button class="tab-btn-top" class:active={activeTab === "targeting"} onclick={() => (activeTab = "targeting")}>Targeting</button>
+    <button class="tab-btn-top" class:active={activeTab === "scoring"} onclick={() => (activeTab = "scoring")}>Scoring</button>
     <button class="tab-btn-top" class:active={activeTab === "code"} onclick={() => (activeTab = "code")}>Code</button>
     <button class="tab-btn-top" class:active={activeTab === "author"} onclick={() => (activeTab = "author")}>Author</button>
   </div>
@@ -701,6 +710,141 @@
             explains is exactly the false positive you don't chase. The real threat is the beacon where
             <em>independent evidence converges</em> and nothing explains it away — BEA-001 at 0.90, not
             the 0.93 CrowdFalcon beacon. The harness targets and gathers; the model then judges.
+          </p>
+        </aside>
+      </div>
+    </div>
+  {:else if activeTab === "scoring"}
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- SCORING VIEW  (how the 3 correlating candidates score)-->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="code-view">
+      <div class="code-inner">
+        <header class="cv-hero">
+          <span class="cv-eyebrow">Lab 06 · Candidate Scoring</span>
+          <h2>How the other three dimensions are scored</h2>
+          <p>
+            The detection skill fuses four candidate scores:
+            <code>max(beacon, intel, tls, exfil)</code>. You saw <strong>beacon</strong> scoring in
+            Lab 02. Here's the gist of the other three. Each is produced by a deterministic scorer in
+            the distillation pipeline — the workshop hardcodes the results, but this is the real logic.
+            Notice each one <em>fuses its signals a different way</em>.
+          </p>
+          <div class="cv-mental-model">
+            <FingerprintIcon size={18} weight="duotone" /><span>TLS · max-of-3</span>
+            <span class="cv-mm-sep">·</span>
+            <GlobeHemisphereWestIcon size={18} weight="duotone" /><span>Intel · multiply → corroborate</span>
+            <span class="cv-mm-sep">·</span>
+            <UploadSimpleIcon size={18} weight="duotone" /><span>Data · 50 / 50 blend</span>
+          </div>
+        </header>
+
+        <div class="sc-subtabs" role="tablist">
+          <button role="tab" class:active={scoringTab === "tls"} onclick={() => (scoringTab = "tls")}><FingerprintIcon size={16} weight="duotone" /> TLS Anomaly</button>
+          <button role="tab" class:active={scoringTab === "intel"} onclick={() => (scoringTab = "intel")}><GlobeHemisphereWestIcon size={16} weight="duotone" /> Intel Match</button>
+          <button role="tab" class:active={scoringTab === "data"} onclick={() => (scoringTab = "data")}><UploadSimpleIcon size={16} weight="duotone" /> Data Transfer</button>
+        </div>
+
+        {#if scoringTab === "tls"}
+          <p class="sc-gist"><strong>tls_anomaly_signature</strong> = the strongest of three independent red-flag dimensions. The worst signal wins — no averaging.</p>
+          <div class="sc-dims">
+            <article class="sc-card">
+              <div class="sc-card-head"><CertificateIcon size={22} weight="duotone" /><h4>Certificate</h4></div>
+              <p class="sc-sub">Red flags <em>add up</em> (cap 1.0):</p>
+              <ul class="sc-list">
+                <li><span>self-signed</span><b>+0.40</b></li>
+                <li><span>expired</span><b>+0.20</b></li>
+                <li><span>validity &lt; 7 days</span><b>+0.15</b></li>
+                <li><span>validity &gt; 10 years</span><b>+0.15</b></li>
+                <li><span>serial &lt; 4 bytes</span><b>+0.10</b></li>
+              </ul>
+              <p class="sc-note">self-signed → an internal IP is excluded (that's normal).</p>
+            </article>
+            <article class="sc-card">
+              <div class="sc-card-head"><FingerprintIcon size={22} weight="duotone" /><h4>Fingerprint</h4></div>
+              <p class="sc-sub">Known-bad JA3/JA4 lookup — <em>best hit wins</em>:</p>
+              <ul class="sc-list">
+                <li><span>JA3 + JA3S pair</span><b>0.95</b></li>
+                <li><span>JA4X</span><b>0.95</b></li>
+                <li><span>JA3</span><b>0.90</b></li>
+                <li><span>JA3S</span><b>0.80</b></li>
+              </ul>
+              <p class="sc-note">matched against SSLBL-style feeds.</p>
+            </article>
+            <article class="sc-card">
+              <div class="sc-card-head"><ShieldCheckIcon size={22} weight="duotone" /><h4>SNI</h4></div>
+              <p class="sc-sub"><em>Best of</em>:</p>
+              <ul class="sc-list">
+                <li><span>SNI ≠ certificate</span><b>0.70</b></li>
+                <li><span>SNI but raw-IP dial</span><b>0.60</b></li>
+                <li><span>missing SNI</span><b>0.50</b></li>
+              </ul>
+              <p class="sc-note">handshake says one thing, the cert/DNS another.</p>
+            </article>
+          </div>
+          <div class="sc-combine">
+            <span class="sc-op">max(</span><span class="sc-chip">cert</span><span class="sc-chip">fingerprint</span><span class="sc-chip">sni</span><span class="sc-op">)</span>
+            <ArrowRightIcon size={16} weight="bold" />
+            <span class="sc-result">tls_anomaly_signature</span>
+          </div>
+          <p class="sc-foot">Grouped per (src, dst, port); each dimension takes its max across all handshakes in the group. Must clear 0.30 to emit a candidate.</p>
+
+        {:else if scoringTab === "intel"}
+          <p class="sc-gist"><strong>infrastructure_reputation</strong> = is the destination in a threat-intel feed? Each feed's confidence is a <em>chain of multipliers</em>; then independent feeds reinforce one another.</p>
+          <div class="sc-chain">
+            <span class="sc-factor"><b>precision</b><small>hash &gt; IP &gt; domain &gt; ASN</small></span>
+            <span class="sc-mul">×</span>
+            <span class="sc-factor"><b>reliability</b><small>feed confidence / source tier</small></span>
+            <span class="sc-mul">×</span>
+            <span class="sc-factor"><b>freshness</b><small>decays as the IoC ages</small></span>
+            <span class="sc-mul">×</span>
+            <span class="sc-factor"><b>anti-signal</b><small>warninglist / GreyNoise dampening</small></span>
+            <ArrowRightIcon size={16} weight="bold" />
+            <span class="sc-result">source fidelity</span>
+          </div>
+          <p class="sc-why">A whole-ASN "match" is weak; an exact file hash is strong. Stale intel counts less. If the indicator is also on a known-good list, it's dampened — that's what kills false positives on popular infrastructure.</p>
+          <article class="sc-corro">
+            <div class="sc-card-head"><StackIcon size={22} weight="duotone" /><h4>Corroboration — independent feeds reinforce</h4></div>
+            <p>Multiple <em>independent</em> sources flagging the same indicator combine (noisy-OR):</p>
+            <pre class="cv-code"><code>score = 1 − Π(1 − fidelityᵢ)</code></pre>
+            <p class="sc-example">two independent 0.7 feeds → 1 − (0.3 × 0.3) = <b>0.91</b>. Same-provenance duplicates don't double-count.</p>
+          </article>
+          <div class="sc-combine">
+            <span class="sc-result">corroborated_fidelity</span>
+            <ArrowRightIcon size={16} weight="bold" />
+            <span class="sc-chip">routing tier: immediate · standard · low</span>
+          </div>
+
+        {:else}
+          <p class="sc-gist"><strong>exfil_volume_anomaly</strong> = lots of bytes going <em>out</em> vs coming <em>in</em>. Shape + size, half and half. Gated at ≥ 1 MB outbound.</p>
+          <div class="sc-dims sc-two">
+            <article class="sc-card">
+              <div class="sc-card-head"><ScalesIcon size={22} weight="duotone" /><h4>PCR — the shape</h4></div>
+              <pre class="cv-code"><code>(bytes_out − bytes_in) / total</code></pre>
+              <p class="sc-sub">≈ 1.0 = almost pure upload (exfil shape); ≈ 0 = balanced. Clamped ≥ 0.</p>
+              <span class="sc-weight">weight 0.50</span>
+            </article>
+            <article class="sc-card">
+              <div class="sc-card-head"><GaugeIcon size={22} weight="duotone" /><h4>Volume — the size</h4></div>
+              <pre class="cv-code"><code>min(bytes_out / 100 MB, 1.0)</code></pre>
+              <p class="sc-sub">How much actually left, normalised and capped.</p>
+              <span class="sc-weight">weight 0.50</span>
+            </article>
+          </div>
+          <div class="sc-combine">
+            <span class="sc-result">exfil_volume_anomaly</span>
+            <span class="sc-op">=</span> <span class="sc-chip">0.5 · PCR</span> <PlusIcon size={14} weight="bold" /> <span class="sc-chip">0.5 · Volume</span>
+          </div>
+          <p class="sc-foot">Burstiness, PCR-consistency and transfer-rate are computed too — but as context in the record, not part of the score.</p>
+        {/if}
+
+        <aside class="cv-callout">
+          <ScalesIcon size={22} weight="duotone" />
+          <p>
+            <strong>Three different fusion styles, on purpose.</strong> TLS takes the <em>max</em> (any one red
+            flag is decisive). Data transfer <em>blends</em> two signals 50/50 (you need both shape and size).
+            Intel <em>multiplies</em> factors then corroborates across feeds. The detection skill then takes the
+            <em>max</em> of all four candidate composites — the strongest decisive signal carries the finding.
           </p>
         </aside>
       </div>
@@ -1929,6 +2073,68 @@ How to combine the evidence into a verdict.</code></pre>
     color: #c2c2d2;
     font-size: 0.92rem;
     line-height: 1.7;
+  }
+
+  /* ── Scoring tab ── */
+  .sc-subtabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.6rem 0 1.4rem; }
+  .sc-subtabs button {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid rgba(189, 147, 249, 0.24);
+    border-radius: 999px;
+    background: rgba(28, 29, 39, 0.7);
+    color: var(--brand-muted);
+    font-family: var(--font-heading); font-size: 0.85rem; font-weight: 800;
+    cursor: pointer; transition: border-color 0.2s, background 0.2s, color 0.2s;
+  }
+  .sc-subtabs button:hover { border-color: rgba(245, 230, 99, 0.4); color: #c0c0d0; }
+  .sc-subtabs button.active { border-color: rgba(245, 230, 99, 0.7); background: rgba(245, 230, 99, 0.1); color: var(--brand-yellow); }
+  .sc-subtabs button :global(svg) { color: #8be9fd; }
+
+  .sc-gist { margin: 0 0 1.2rem; max-width: 80ch; color: #b6b6c6; font-size: 0.96rem; line-height: 1.65; }
+  .sc-gist strong { color: #f5e663; font-family: "JetBrains Mono", monospace; font-weight: 700; }
+  .sc-gist em { color: #bd93f9; font-style: normal; }
+
+  .sc-dims { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+  .sc-dims.sc-two { grid-template-columns: repeat(2, 1fr); }
+  .sc-card { border: 1px solid #1c1c30; border-radius: 10px; background: rgba(18, 18, 26, 0.6); padding: 0.95rem 1rem; }
+  .sc-card-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; color: #bd93f9; }
+  .sc-card-head :global(svg) { color: #8be9fd; flex-shrink: 0; }
+  .sc-card-head h4 { margin: 0; font-size: 1rem; color: #f0f0f6; font-weight: 700; }
+  .sc-sub { margin: 0 0 0.5rem; color: #9a9aaa; font-size: 0.84rem; line-height: 1.5; }
+  .sc-sub em { color: #bd93f9; font-style: normal; }
+  .sc-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.28rem; }
+  .sc-list li { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; font-size: 0.84rem; color: #c6c6d2; border-bottom: 1px solid #15151f; padding-bottom: 0.28rem; }
+  .sc-list li:last-child { border-bottom: none; }
+  .sc-list b { color: #f5e663; font-family: "JetBrains Mono", monospace; font-size: 0.82rem; }
+  .sc-note { margin: 0.6rem 0 0; color: #6f6f86; font-size: 0.76rem; line-height: 1.45; }
+  .sc-weight { display: inline-block; margin-top: 0.6rem; font-family: "JetBrains Mono", monospace; font-size: 0.74rem; color: #50fa7b; background: rgba(80, 250, 123, 0.1); border: 1px solid rgba(80, 250, 123, 0.3); border-radius: 999px; padding: 0.15rem 0.55rem; }
+
+  .sc-combine { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 1.1rem 0 0; padding: 0.85rem 1rem; border: 1px solid rgba(80, 250, 123, 0.28); border-radius: 9px; background: rgba(80, 250, 123, 0.05); font-family: "JetBrains Mono", monospace; }
+  .sc-combine :global(svg) { color: #50fa7b; }
+  .sc-op { color: #ff79c6; font-size: 0.95rem; }
+  .sc-chip { font-size: 0.8rem; color: #cfcfe0; background: #0d0d14; border: 1px solid #2a2a40; border-radius: 5px; padding: 0.22rem 0.55rem; }
+  .sc-result { font-size: 0.84rem; font-weight: 700; color: #50fa7b; background: rgba(80, 250, 123, 0.1); border: 1px solid rgba(80, 250, 123, 0.4); border-radius: 5px; padding: 0.22rem 0.6rem; }
+  .sc-foot { margin: 0.85rem 0 0; color: #8a8a9a; font-size: 0.82rem; line-height: 1.55; }
+
+  /* Intel chain */
+  .sc-chain { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; padding: 0.4rem 0 0.2rem; }
+  .sc-chain :global(svg) { color: #50fa7b; flex-shrink: 0; }
+  .sc-factor { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.5rem 0.7rem; border: 1px solid #1c1c30; border-radius: 8px; background: rgba(18, 18, 26, 0.6); }
+  .sc-factor b { color: #bd93f9; font-size: 0.86rem; }
+  .sc-factor small { color: #8a8a9a; font-size: 0.72rem; }
+  .sc-mul { color: #ff79c6; font-family: "JetBrains Mono", monospace; font-size: 1.05rem; }
+  .sc-why { margin: 1rem 0 0; max-width: 80ch; color: #aeaebe; font-size: 0.86rem; line-height: 1.6; }
+  .sc-corro { margin: 1.1rem 0 0; border: 1px solid #1c1c30; border-radius: 10px; background: rgba(18, 18, 26, 0.6); padding: 0.95rem 1rem; }
+  .sc-corro p { margin: 0.5rem 0 0; color: #aeaebe; font-size: 0.86rem; line-height: 1.6; }
+  .sc-corro em { color: #bd93f9; font-style: normal; }
+  .sc-corro .cv-code { margin: 0.7rem 0; }
+  .sc-example { color: #c6c6d2 !important; }
+  .sc-example b { color: #50fa7b; }
+
+  @media (max-width: 820px) {
+    .sc-dims, .sc-dims.sc-two { grid-template-columns: 1fr; }
+    .sc-chain { flex-direction: column; align-items: stretch; }
   }
 
   /* Targeting tab: code snippet */
