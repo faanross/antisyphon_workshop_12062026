@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-  <title>Lab 01 — Your First Hunting Agent</title>
+  <title>Lab 01 — Our First Agent</title>
 </svelte:head>
 
 {@render children()}
