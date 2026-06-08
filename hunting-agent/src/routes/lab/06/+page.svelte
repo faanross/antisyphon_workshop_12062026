@@ -596,7 +596,7 @@
 <span class="c-key">correlatingCandidates</span>:                        <span class="c-cm"># what corroboration to seek</span>
   - type: tls_anomaly    scope: same_network_tuple
   - type: intel_match    scope: destination
-  - type: data_transfer  scope: same_process_secondary_flow</code></pre>
+  - type: data_transfer  scope: same_network_tuple</code></pre>
         </details>
 
         <!-- B · The funnel -->
