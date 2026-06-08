@@ -266,9 +266,8 @@
                 (different kinds of indicator tend to pull different GTI tools):
               </p>
               <div class="gd-egs">
-                <span class="gd-eg">Look up the IP 185.225.73.217 on VirusTotal.</span>
-                <span class="gd-eg">What's the reputation of the domain malware-traffic-analysis.net?</span>
-                <span class="gd-eg">Is this file hash known-malicious? &lt;sha256&gt;</span>
+                <span class="gd-eg">Look up the IP 185.225.73.217 on VirusTotal. <em>(comes back quiet — a clean result is still a real answer)</em></span>
+                <span class="gd-eg">Is the file with hash 44d88612fea8a8f36de82e1278abb02f malicious? <em>(EICAR test file — a guaranteed hit, and 100% safe)</em></span>
               </div>
             </div>
           </li>
