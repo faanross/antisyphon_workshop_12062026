@@ -110,24 +110,35 @@
     return new Date(value * 1000).toISOString().replace("T", " ").slice(0, 19) + " UTC";
   }
 
-  function renderedFields(): Array<{ label: string; value: string }> {
+  type Field = { label: string; value: string };
+  const keepFields = (fields: Array<{ label: string; value: string | null }>): Field[] =>
+    fields.filter((f): f is Field => Boolean(f.value));
+
+  // Neutral identity / metadata (not a verdict either way).
+  function metaFields(): Field[] {
     const root = asRecord(parsedJson);
     const attributes = resultAttributes();
     const rdap = asRecord(attributes?.rdap);
-    const votes = asRecord(attributes?.total_votes);
-
-    return [
+    return keepFields([
       { label: "GTI type", value: scalar(root?.type) },
-      { label: "Reputation", value: scalar(attributes?.reputation) },
       { label: "Country", value: scalar(attributes?.country ?? rdap?.country ?? attributes?.continent) },
       { label: "Registry", value: scalar(attributes?.regional_internet_registry) },
       { label: "Network", value: scalar(rdap?.name ?? rdap?.handle) },
       { label: "Range", value: scalar(rdap?.start_address && rdap?.end_address ? `${rdap.start_address} - ${rdap.end_address}` : null) },
-      { label: "Malicious votes", value: scalar(votes?.malicious) },
-      { label: "Harmless votes", value: scalar(votes?.harmless) },
       { label: "Last analysis", value: epochDate(attributes?.last_analysis_date) },
       { label: "Last modified", value: epochDate(attributes?.last_modification_date) },
-    ].filter((field): field is { label: string; value: string } => Boolean(field.value));
+    ]);
+  }
+
+  // Community signals: crowd votes + reputation. Opinions, not scans.
+  function communityFields(): Field[] {
+    const attributes = resultAttributes();
+    const votes = asRecord(attributes?.total_votes);
+    return keepFields([
+      { label: "Reputation", value: scalar(attributes?.reputation) },
+      { label: "Malicious votes", value: scalar(votes?.malicious) },
+      { label: "Harmless votes", value: scalar(votes?.harmless) },
+    ]);
   }
 
   function renderedTags(): string[] {
@@ -277,16 +288,16 @@
             <span class="flow-rail"><PlugsConnectedIcon size={22} weight="duotone" /></span>
             <div class="flow-body">
               <div class="flow-top">
-                <span class="flow-title">2 · Watch the MCP lifecycle</span>
-                <span class="flow-where">MCP Lifecycle panel</span>
+                <span class="flow-title">2 · Watch the lifecycle stream</span>
+                <span class="flow-where">Event Log</span>
               </div>
               <p>
-                Hit <strong>Ask the Agent</strong> and follow the four stages light up:
-                <strong>connect</strong> (handshake with the GTI server), <strong>discover</strong>
-                (<code>listTools()</code> — ask the server what it can do), <strong>decide</strong>
-                (the <em>agent</em> reads that list and picks a tool), and <strong>call</strong>
-                (<code>callTool()</code> runs the live lookup). Only <em>decide</em> is the model
-                thinking — the rest is the protocol.
+                Hit <strong>Ask the Agent</strong> and watch the <strong>Event Log</strong> stream
+                the four stages: <strong>connect</strong> (handshake with the GTI server),
+                <strong>discover</strong> (<code>listTools()</code> — ask the server what it can do),
+                <strong>decide</strong> (the <em>agent</em> reads that list and picks a tool), and
+                <strong>call</strong> (<code>callTool()</code> runs the live lookup). Only
+                <em>decide</em> is the model thinking — the rest is the protocol.
               </p>
             </div>
           </li>
@@ -315,13 +326,15 @@
             <div class="flow-body">
               <div class="flow-top">
                 <span class="flow-title">4 · Read the real result</span>
-                <span class="flow-where">Rendered &amp; Raw result panels</span>
+                <span class="flow-where">GTI Result · Raw MCP Result</span>
               </div>
               <p>
-                The <strong>Rendered GTI Result</strong> lays out the intelligence in a readable
-                form; <strong>Raw MCP Result</strong> is the full payload that came back over the
-                wire. This is genuine data from Google Threat Intelligence — reputation, detections,
-                and context you can fold into an investigation.
+                The <strong>GTI Result</strong> card lays the intelligence out in two clearly
+                separated parts: <strong>AV engine detections</strong> (how many scanners flagged
+                it — the closest thing to a verdict) and <strong>community signals</strong> (votes
+                and reputation — opinions, which can disagree with the engines). <strong>Raw MCP
+                Result</strong> is the full payload off the wire. Real Google Threat Intelligence
+                data you can fold into an investigation.
               </p>
             </div>
           </li>
@@ -365,20 +378,23 @@
 
   <details class="panel" open>
     <summary class="panel-title">
-        <h2>MCP Lifecycle</h2>
-        <span>{events.length} events</span>
+        <h2>Event Log</h2>
+        <span>NDJSON stream · connect → discover → decide → call</span>
     </summary>
 
-    <div class="steps">
-        {#each ["connect", "discover", "decide", "call"] as step}
-          {@const event = latest(step as StepName)}
-          <article class:active={event?.status === "start"} class:ok={event?.status === "ok"} class:failed={event?.status === "error"}>
-            <strong>{step}</strong>
-            <span>{statusLabel(step as StepName)}{event?.durationMs !== undefined ? ` | ${event.durationMs}ms` : ""}</span>
-            <p>{event?.message ?? "Not started yet."}</p>
-          </article>
-        {/each}
-    </div>
+      {#if events.length > 0}
+        <div class="event-log">
+          {#each events as event, index}
+            <article class={event.status}>
+              <strong>{index + 1}. {event.step}</strong>
+              <span>{event.status}{event.durationMs !== undefined ? ` · ${event.durationMs}ms` : ""}</span>
+              <p>{event.message}</p>
+            </article>
+          {/each}
+        </div>
+      {:else}
+        <p class="empty">Ask the agent — each lifecycle step (connect, discover, decide, call) streams in here as the server emits it.</p>
+      {/if}
   </details>
 
   <details class="panel" open>
@@ -432,83 +448,51 @@
       {/if}
   </details>
 
-  <details class="panel" open>
-    <summary class="panel-title">
-        <h2>Result Summary</h2>
-        <span>{parsedJson ? "parsed" : textResult ? "text" : "waiting"}</span>
-    </summary>
-
-      {#if parsedJson}
-        {@const attributes = resultAttributes()}
-        {@const stats = resultStats()}
-        <div class="summary">
-          <strong>{String(asRecord(parsedJson)?.type ?? agentDecision?.toolName ?? "GTI result")}</strong>
-          {#if attributes}
-            <p>Reputation: {String(attributes.reputation ?? "n/a")}</p>
-            <p>Country: {String(attributes.country ?? attributes.continent ?? "n/a")}</p>
-          {/if}
-          {#if stats}
-            <div class="stats">
-              {#each Object.entries(stats) as [name, count]}
-                <span>{name}: {String(count)}</span>
-              {/each}
-            </div>
-          {/if}
-        </div>
-      {:else if textResult}
-        <pre>{textResult}</pre>
-      {:else}
-        <p class="empty">No GTI result yet.</p>
-      {/if}
-  </details>
-
-  <details class="panel" open>
-    <summary class="panel-title">
-        <h2>Event Log</h2>
-        <span>NDJSON stream</span>
-    </summary>
-
-      {#if events.length > 0}
-        <div class="event-log">
-          {#each events as event, index}
-            <article class={event.status}>
-              <strong>{index + 1}. {event.step}</strong>
-              <span>{event.status}</span>
-              <p>{event.message}</p>
-            </article>
-          {/each}
-        </div>
-      {:else}
-        <p class="empty">Lifecycle events will appear as the server streams them.</p>
-      {/if}
-  </details>
-
   <details class="panel rendered" open>
     <summary class="panel-title">
-      <h2>Rendered GTI Result</h2>
+      <h2>GTI Result</h2>
       <span>{parsedJson ? "analyst view" : "waiting"}</span>
     </summary>
 
     {#if parsedJson}
-      {@const fields = renderedFields()}
+      {@const meta = metaFields()}
+      {@const community = communityFields()}
       {@const stats = resultStats()}
       {@const tags = renderedTags()}
       <div class="rendered-layout">
-        <div class="field-grid">
-          {#each fields as field}
-            <article class="field-card">
-              <span>{field.label}</span>
-              <strong>{field.value}</strong>
-            </article>
-          {/each}
-        </div>
+        {#if meta.length > 0}
+          <div class="field-grid">
+            {#each meta as field}
+              <article class="field-card">
+                <span>{field.label}</span>
+                <strong>{field.value}</strong>
+              </article>
+            {/each}
+          </div>
+        {/if}
 
         {#if stats}
-          <section class="mini-section">
-            <h3>Detection Stats</h3>
+          <section class="mini-section src-engines">
+            <h3>AV engine detections</h3>
+            <p class="src-note">How many of VirusTotal's ~70 antivirus engines flagged this. The closest thing to a verdict — this is what "known bad" really means.</p>
             <div class="stats large">
               {#each Object.entries(stats) as [name, count]}
                 <span>{name}: {String(count)}</span>
+              {/each}
+            </div>
+          </section>
+        {/if}
+
+        {#if community.length > 0}
+          <section class="mini-section src-community">
+            <h3>Community signals</h3>
+            <p class="src-note">Votes and a reputation score from VirusTotal users — opinions and context, not scans. These can <em>disagree</em> with the engines (e.g. the EICAR test file: engines flag it, the crowd votes it harmless because they know it's safe).</p>
+            <div class="field-grid">
+              {#each community as field}
+                <article class="field-card">
+                  <span>{field.label}</span>
+                  <strong>{field.value}</strong>
+                </article>
               {/each}
             </div>
           </section>
@@ -528,7 +512,7 @@
     {:else if textResult}
       <pre>{textResult}</pre>
     {:else}
-      <p class="empty">Run the lifecycle to render GTI result fields here.</p>
+      <p class="empty">Ask the agent to see the GTI result here.</p>
     {/if}
   </details>
 
@@ -1034,6 +1018,25 @@
     color: var(--dracula-fg);
     overflow-wrap: anywhere;
   }
+
+  /* Source split inside the GTI Result card */
+  .src-note {
+    margin: 0;
+    max-width: 74ch;
+    color: var(--brand-muted);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+  .src-note :global(em) { color: var(--brand-muted); font-style: italic; }
+  .mini-section.src-engines,
+  .mini-section.src-community {
+    padding-left: 0.85rem;
+    border-left: 2px solid;
+  }
+  .mini-section.src-engines { border-left-color: rgba(255, 121, 121, 0.55); }
+  .mini-section.src-community { border-left-color: rgba(139, 233, 253, 0.5); }
+  .mini-section.src-engines h3 { color: #ff9b9b; }
+  .mini-section.src-community h3 { color: var(--dracula-cyan); }
 
   .stats.large span,
   .tags span {
