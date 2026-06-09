@@ -905,6 +905,12 @@
                 it arrives. The server relays those over a live connection, and the page
                 appends them — that's the typewriter effect you see.
               </p>
+              <p class="cv-card-note">
+                True for the Gemini, OpenAI, Anthropic and Claude&nbsp;Code providers. The
+                <code>codex-cli</code> provider is the one exception: the Codex CLI hands back the
+                finished answer in one piece (no token deltas), so the harness re-chunks that text
+                to keep the same effect — simulated, not live.
+              </p>
               <div class="cv-stream">
                 <span class="cv-tok">The</span>
                 <span class="cv-tok">host</span>
@@ -1835,6 +1841,16 @@
     color: #aeaebe;
     font-size: 0.9rem;
     line-height: 1.65;
+  }
+  .cv-card-note {
+    margin: -0.4rem 0 0.9rem;
+    padding: 0.5rem 0.65rem;
+    border-left: 2px solid rgba(245, 230, 99, 0.4);
+    background: rgba(245, 230, 99, 0.04);
+    border-radius: 4px;
+    color: #9a9aaa;
+    font-size: 0.82rem;
+    line-height: 1.55;
   }
 
   /* Wall diagram */
