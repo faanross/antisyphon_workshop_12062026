@@ -13,6 +13,7 @@
   import RobotIcon from "phosphor-svelte/lib/RobotIcon";
   import BracketsCurlyIcon from "phosphor-svelte/lib/BracketsCurlyIcon";
   import ChatCircleTextIcon from "phosphor-svelte/lib/ChatCircleTextIcon";
+  import StackIcon from "phosphor-svelte/lib/StackIcon";
 
   type StepName = "connect" | "discover" | "decide" | "call" | "done";
   type StepStatus = "start" | "ok" | "error";
@@ -40,7 +41,7 @@
     model?: string;
   };
 
-  let activeTab = $state<"instructions" | "live" | "code">("instructions");
+  let activeTab = $state<"instructions" | "live" | "code" | "scale">("instructions");
   let query = $state("Look up the IP 185.225.73.217 on VirusTotal");
   let events = $state<LifecycleEvent[]>([]);
   let discoveredTools = $state<ToolSummary[]>([]);
@@ -227,6 +228,7 @@
     <button class="tab-btn" class:active={activeTab === "instructions"} onclick={() => (activeTab = "instructions")}>Instructions</button>
     <button class="tab-btn" class:active={activeTab === "live"} onclick={() => (activeTab = "live")}>Live</button>
     <button class="tab-btn" class:active={activeTab === "code"} onclick={() => (activeTab = "code")}>Code</button>
+    <button class="tab-btn" class:active={activeTab === "scale"} onclick={() => (activeTab = "scale")}>At Scale</button>
   </div>
 
   {#if activeTab === "instructions"}
@@ -523,6 +525,108 @@
       <pre>No raw MCP result yet</pre>
     {/if}
   </details>
+  {:else if activeTab === "scale"}
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- AT SCALE  (progressive tool discovery — non-interactive)-->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="code-view">
+      <div class="code-inner">
+        <header class="cv-hero">
+          <span class="cv-eyebrow">Lab 05 · At Scale</span>
+          <h2>What changes when you have many MCP servers</h2>
+          <p>
+            With one server, the simple approach is fine. But the default — connect,
+            <code>listTools()</code>, and inject <strong>every</strong> tool from
+            <strong>every</strong> server into <strong>every</strong> model call — bloats the prompt
+            as you add servers. Here's the cost, and the pattern teams move to: load tools
+            <em>on demand</em>, the same way Skills (and this lab's own agent) already work.
+          </p>
+        </header>
+
+        <details class="cv-section" open>
+          <summary class="cv-h3"><span class="cv-num">A</span> The default: all tools, every turn<span class="cv-chev" aria-hidden="true">▸</span></summary>
+          <p class="cv-lead">Every request carries the full catalog of all connected servers — re-sent each turn.</p>
+          <div class="scl-flow">
+            <span class="scl-node">user request</span>
+            <ArrowRightIcon size={16} weight="bold" />
+            <div class="scl-cat">
+              <span class="scl-cat-label">tool catalog · every turn</span>
+              <span class="scl-srv">gti · 14 tools</span>
+              <span class="scl-srv">edr · 22 tools</span>
+              <span class="scl-srv">tickets · 9 tools</span>
+              <span class="scl-grow">…grows with every server you add</span>
+            </div>
+            <ArrowRightIcon size={16} weight="bold" />
+            <span class="scl-node scl-model"><RobotIcon size={16} weight="duotone" /> model</span>
+          </div>
+          <p class="cv-note">Why it's the default: you need a tool's full schema to <em>call</em> it, and one-shot tool-use is simple. Prompt caching softens the cost (the static block is cached) — but the prompt still grows with every server.</p>
+        </details>
+
+        <details class="cv-section" open>
+          <summary class="cv-h3"><span class="cv-num">B</span> The scalable pattern: load on demand<span class="cv-chev" aria-hidden="true">▸</span></summary>
+          <p class="cv-lead">Show the model a cheap index; let it pull the full schema only for the server it actually needs.</p>
+          <ol class="flow">
+            <li class="flow-step" style="--d: 0ms">
+              <span class="flow-rail"><StackIcon size={22} weight="duotone" /></span>
+              <div class="flow-body">
+                <div class="flow-top"><span class="flow-title">1 · The model sees a cheap index</span><span class="flow-where">names, not schemas</span></div>
+                <p>Just server names + one-line descriptions in the prompt — a few tokens, not hundreds of full tool definitions.</p>
+              </div>
+            </li>
+            <li class="flow-step" style="--d: 110ms">
+              <span class="flow-rail"><RobotIcon size={22} weight="duotone" /></span>
+              <div class="flow-body">
+                <div class="flow-top"><span class="flow-title">2 · It decides what it needs</span><span class="flow-where">the model step</span></div>
+                <p>"This question needs the GTI server" — chosen from the index, the same way it already picks a tool in the Live tab.</p>
+              </div>
+            </li>
+            <li class="flow-step" style="--d: 220ms">
+              <span class="flow-rail"><MagnifyingGlassIcon size={22} weight="duotone" /></span>
+              <div class="flow-body">
+                <div class="flow-top"><span class="flow-title">3 · It loads that server's tools on demand</span><span class="flow-where">meta-tool call</span></div>
+                <p>A <code>search/load_tools</code> meta-tool returns just those schemas, and the harness wires them in for the next turn.</p>
+              </div>
+            </li>
+            <li class="flow-step" style="--d: 330ms">
+              <span class="flow-rail"><LightningIcon size={22} weight="duotone" /></span>
+              <div class="flow-body">
+                <div class="flow-top"><span class="flow-title">4 · It makes the specific call</span><span class="flow-where">now it has the schema</span></div>
+                <p>The real tool call — exactly like Live's <code>call</code> step — but the prompt never carried the other servers' tools.</p>
+              </div>
+            </li>
+          </ol>
+          <aside class="cv-callout">
+            <BracketsCurlyIcon size={22} weight="duotone" />
+            <p>
+              <strong>The one catch:</strong> you can't <em>call</em> a tool from its name alone — you
+              need its JSON schema. So "on demand" means the meta-tool returns the schema and the
+              harness registers it for the next turn. That registration step is the only thing that
+              makes this more involved than Skills (which are just text the model reads).
+            </p>
+          </aside>
+        </details>
+
+        <details class="cv-section" open>
+          <summary class="cv-h3"><span class="cv-num">C</span> You've already seen this idea<span class="cv-chev" aria-hidden="true">▸</span></summary>
+          <p class="cv-lead">Progressive disclosure — show a little, load the rest on demand — is everywhere:</p>
+          <div class="cv-cards">
+            <article class="cv-card"><p><strong>Skills (Lab 06)</strong> — the agent sees a skill's name + description, and loads the full procedure only when it invokes it.</p></article>
+            <article class="cv-card"><p><strong>This lab's agent</strong> — it discovers GTI's tools at runtime and picks one; it isn't shipped knowing them.</p></article>
+            <article class="cv-card"><p><strong>Coding agents like Claude Code</strong> — most tools are deferred; the model loads a tool's schema on demand via a search instead of carrying all of them.</p></article>
+          </div>
+        </details>
+
+        <details class="cv-section" open>
+          <summary class="cv-h3"><span class="cv-num">D</span> The trade-off<span class="cv-chev" aria-hidden="true">▸</span></summary>
+          <p class="cv-lead">You trade tokens for round-trips and a good index:</p>
+          <div class="scl-tradeoff">
+            <div class="scl-col scl-win"><h4>You gain</h4><ul><li>far fewer tokens per call</li><li>cost stops growing with every server</li></ul></div>
+            <div class="scl-col scl-cost"><h4>You pay</h4><ul><li>extra model turns (discover → load → call) = more latency</li><li>the model can only pick what the index makes legible — terse descriptions hide tools</li><li>harder to eval/debug than one-shot tool-use</li></ul></div>
+          </div>
+          <p class="cv-note">Worth it exactly when you have many servers — increasingly the norm.</p>
+        </details>
+      </div>
+    </div>
   {:else}
     <!-- ═══════════════════════════════════════════════════ -->
     <!-- CODE VIEW  (architectural reference, non-interactive)-->
@@ -1471,6 +1575,31 @@
     border: 1px solid rgba(80, 250, 123, 0.22);
     border-radius: 999px;
     padding: 0.3rem 0.75rem;
+  }
+
+  /* ── At Scale tab ── */
+  .scl-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin: 0.4rem 0 0; }
+  .scl-flow :global(svg) { color: #50fa7b; flex-shrink: 0; }
+  .scl-node { font-family: "JetBrains Mono", monospace; font-size: 0.82rem; color: #cfcfe0; background: #0d0d14; border: 1px solid #2a2a40; border-radius: 6px; padding: 0.4rem 0.7rem; }
+  .scl-model { display: inline-flex; align-items: center; gap: 0.35rem; color: #bd93f9; }
+  .scl-model :global(svg) { color: #bd93f9; }
+  .scl-cat { display: flex; flex-direction: column; gap: 0.3rem; padding: 0.6rem 0.75rem; border: 1px solid rgba(245, 230, 99, 0.3); border-radius: 8px; background: rgba(245, 230, 99, 0.05); }
+  .scl-cat-label { font-family: "JetBrains Mono", monospace; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: #f5e663; }
+  .scl-srv { font-family: "JetBrains Mono", monospace; font-size: 0.8rem; color: #c6c6d2; }
+  .scl-grow { font-size: 0.76rem; color: #ff9b9b; }
+
+  .scl-tradeoff { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .scl-col { border: 1px solid #1c1c30; border-radius: 10px; padding: 0.85rem 1rem; background: rgba(18, 18, 26, 0.6); }
+  .scl-col h4 { margin: 0 0 0.5rem; font-size: 0.92rem; }
+  .scl-win { border-left: 2px solid rgba(80, 250, 123, 0.5); }
+  .scl-win h4 { color: #50fa7b; }
+  .scl-cost { border-left: 2px solid rgba(255, 155, 155, 0.5); }
+  .scl-cost h4 { color: #ff9b9b; }
+  .scl-col ul { margin: 0; padding-left: 1.1rem; color: #aeaebe; font-size: 0.86rem; line-height: 1.55; }
+  .scl-col li + li { margin-top: 0.3rem; }
+
+  @media (max-width: 760px) {
+    .scl-tradeoff { grid-template-columns: 1fr; }
   }
 
   @keyframes cvRise {
