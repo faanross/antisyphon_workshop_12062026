@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>AntiSyphon Workshop — Setup Guide</title>
+<style>
+  :root {
+    --bg: #07070a;
+    --panel: #14141d;
+    --panel-2: #1b1b26;
+    --line: rgba(189,147,249,0.22);
+    --line-strong: rgba(245,230,99,0.40);
+    --text: rgba(255,255,255,0.90);
+    --muted: rgba(255,255,255,0.56);
+    --purple: #bd93f9;
+    --yellow: #f5e663;
+    --green: #50fa7b;
+    --cyan: #8be9fd;
+    --pink: #ff79c6;
+    --red: #ff6b6b;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing: border-box; }
+  @page { size: A4; margin: 0; }
+
+  html, body { margin: 0; padding: 0; background: var(--bg); }
+  body {
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 10.5pt;
+    line-height: 1.55;
+  }
+
+  .wrap { padding: 14mm 15mm 16mm; }
+
+  /* ── Cover ── */
+  .cover {
+    min-height: 100vh;
+    padding: 22mm 15mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background:
+      radial-gradient(900px 360px at 18% 12%, rgba(189,147,249,0.12), transparent 60%),
+      radial-gradient(700px 300px at 90% 88%, rgba(245,230,99,0.06), transparent 60%),
+      var(--bg);
+    border-bottom: 1px solid var(--line);
+    break-after: page;
+  }
+  .cover .eyebrow { color: var(--purple); }
+  .cover h1 {
+    margin: 8px 0 0;
+    font-size: 40pt;
+    line-height: 1.02;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+  .cover .sub {
+    margin-top: 14px;
+    max-width: 60ch;
+    color: var(--muted);
+    font-size: 12.5pt;
+    line-height: 1.6;
+  }
+  .cover .meta {
+    margin-top: 26px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .pill {
+    font-family: var(--mono);
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+    background: rgba(189,147,249,0.06);
+  }
+  .pill.y { color: var(--yellow); border-color: var(--line-strong); background: rgba(245,230,99,0.06); }
+  .cover .foot { margin-top: auto; padding-top: 30px; color: var(--muted); font-family: var(--mono); font-size: 8.5pt; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 8.5pt;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--purple);
+  }
+
+  /* ── Section headings ── */
+  h2 {
+    margin: 30px 0 4px;
+    font-size: 18pt;
+    font-weight: 800;
+    color: #fff;
+    break-after: avoid;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 12pt;
+    color: var(--yellow);
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    padding: 2px 10px;
+    flex-shrink: 0;
+  }
+  h2 + .lead { margin-top: 2px; color: var(--muted); break-after: avoid; }
+  h3 { margin: 20px 0 6px; font-size: 12.5pt; font-weight: 800; color: var(--cyan); break-after: avoid; }
+  h4 { margin: 14px 0 4px; font-size: 10.5pt; font-weight: 800; color: var(--text); }
+
+  p { margin: 7px 0; }
+  a { color: var(--cyan); text-decoration: none; word-break: break-all; }
+  strong { color: #fff; }
+  em { color: var(--purple); font-style: normal; }
+  ul, ol { margin: 7px 0; padding-left: 20px; }
+  li { margin: 3px 0; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 9pt;
+    color: var(--yellow);
+    background: rgba(245,230,99,0.08);
+    border: 1px solid rgba(245,230,99,0.16);
+    border-radius: 4px;
+    padding: 1px 5px;
+    word-break: break-word;
+  }
+
+  pre {
+    margin: 10px 0;
+    padding: 11px 13px;
+    background: #0c0c13;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--green);
+    border-radius: 8px;
+    overflow: hidden;
+    break-inside: avoid;
+  }
+  pre code {
+    display: block;
+    background: none;
+    border: none;
+    padding: 0;
+    color: #e6e6f0;
+    font-size: 9pt;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  pre code .c { color: #6272a4; }       /* comment */
+  pre code .p { color: var(--purple); } /* prompt $ */
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--panel);
+    padding: 12px 14px;
+    break-inside: avoid;
+  }
+  .card h4 { margin-top: 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 9pt;
+    break-inside: avoid;
+  }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  th {
+    font-family: var(--mono);
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--purple);
+    border-bottom: 1px solid var(--line-strong);
+  }
+  td code { font-size: 8.5pt; }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.018); }
+
+  .callout {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    margin: 12px 0;
+    padding: 11px 14px;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--purple);
+    border-radius: 8px;
+    background: rgba(189,147,249,0.06);
+    break-inside: avoid;
+  }
+  .callout .tag { font-family: var(--mono); font-weight: 800; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.06em; color: var(--purple); }
+  .callout p { margin: 0; font-size: 9.5pt; color: #d6d6e2; }
+  .callout.warn { border-left-color: var(--red); background: rgba(255,107,107,0.06); }
+  .callout.warn .tag { color: var(--red); }
+  .callout.tip { border-left-color: var(--green); background: rgba(80,250,123,0.05); }
+  .callout.tip .tag { color: var(--green); }
+
+  .os-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 7.5pt;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-bottom: 4px;
+  }
+  .os-mac { color: var(--cyan); background: rgba(139,233,253,0.10); border: 1px solid rgba(139,233,253,0.3); }
+  .os-win { color: var(--yellow); background: rgba(245,230,99,0.10); border: 1px solid rgba(245,230,99,0.3); }
+
+  .step-row { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; margin: 9px 0; break-inside: avoid; }
+  .step-n {
+    font-family: var(--mono); font-weight: 800; font-size: 10pt; color: var(--bg);
+    background: var(--purple); border-radius: 6px; width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .step-row p { margin: 0; }
+
+  hr { border: none; border-top: 1px solid var(--line); margin: 26px 0; }
+
+  .toc { columns: 2; column-gap: 28px; margin: 10px 0 0; }
+  .toc a { display: block; color: var(--text); font-size: 9.5pt; padding: 3px 0; }
+  .toc .tnum { color: var(--yellow); font-family: var(--mono); margin-right: 8px; }
+
+  .docfoot {
+    margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--line);
+    color: var(--muted); font-family: var(--mono); font-size: 8pt;
+    display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════ COVER ════════════ -->
+<div class="cover">
+  <span class="eyebrow">AntiSyphon Workshop · 12 June 2026</span>
+  <h1>Agentic Threat&nbsp;Hunting<br/>Setup Guide</h1>
+  <p class="sub">Please complete setup <strong>before</strong> the workshop. Stuck? Ask in Discord.</p>
+  <div class="meta">
+    <span class="pill y">~10 minutes</span>
+    <span class="pill">macOS · Linux · Windows</span>
+    <span class="pill">No prior Node install needed</span>
+    <span class="pill">Free model option included</span>
+  </div>
+  <div class="foot">aionsec.ai — please complete setup BEFORE the workshop. Stuck? Ask in Discord.</div>
+</div>
+
+<div class="wrap">
+
+  <!-- ════════════ 2 — DOWNLOAD ════════════ -->
+  <h2 id="s1"><span class="num">1</span> Download the repo</h2>
+  <p class="lead">Pick whichever is easier — both end with the project folder on your machine.</p>
+
+  <h3>Option A — Git (recommended)</h3>
+  <p>If you have <code>git</code> installed, clone it:</p>
+  <pre><code><span class="p">$</span> git clone https://github.com/faanross/antisyphon_workshop_12062026.git
+<span class="p">$</span> cd antisyphon_workshop_12062026</code></pre>
+
+  <h3>Option B — Download a ZIP (no git needed)</h3>
+  <div class="step-row"><div class="step-n">1</div><p>Open <a href="https://github.com/faanross/antisyphon_workshop_12062026">github.com/faanross/antisyphon_workshop_12062026</a> in a browser.</p></div>
+  <div class="step-row"><div class="step-n">2</div><p>Click the green <strong>Code</strong> button → <strong>Download ZIP</strong>.</p></div>
+  <div class="step-row"><div class="step-n">3</div><p>Unzip it somewhere easy to find (e.g. your Desktop), then <code>cd</code> into the unzipped folder in your terminal.</p></div>
+
+
+  <!-- ════════════ 3 — INSTALLER ════════════ -->
+  <h2 id="s2"><span class="num">2</span> Run the installer script</h2>
+  <p class="lead">From the project folder, move into <code>hunting-agent/</code> and run the script for your OS. It is safe to re-run.</p>
+
+  <h3><span class="os-tag os-mac">macOS / Linux</span></h3>
+  <pre><code><span class="p">$</span> cd hunting-agent
+<span class="p">$</span> bash ./setup.sh</code></pre>
+
+  <h3><span class="os-tag os-win">Windows (PowerShell)</span></h3>
+  <pre><code><span class="p">&gt;</span> cd hunting-agent
+<span class="p">&gt;</span> powershell -ExecutionPolicy Bypass -File setup.ps1</code></pre>
+
+  <h4>What the script actually does</h4>
+  <ul>
+    <li>Checks whether you already have a supported <strong>Node</strong> (20.19+, 22.12+, or 24+; it deliberately avoids 21/23).</li>
+    <li>If not, it installs <strong>Volta</strong> (a small, cross-platform Node version manager) and pins <strong>Node 22.12.0</strong> — without touching any other Node you might have.</li>
+    <li>Runs <code>npm install</code> to download the app's dependencies.</li>
+  </ul>
+  <div class="callout warn"><span class="tag">Windows note</span><p>The <code>-ExecutionPolicy Bypass</code> part is required — without it PowerShell refuses to run scripts. On Windows the script uses <code>winget</code> to install Volta; if you don't have winget, install Volta manually from <a href="https://volta.sh">volta.sh</a>, reopen PowerShell, and re-run.</p></div>
+  <div class="callout"><span class="tag">If Node was just installed</span><p>Close the terminal, open a fresh one, <code>cd</code> back into <code>hunting-agent</code>, and run the script again. Volta updates your PATH, and a new terminal is the cleanest way to pick it up.</p></div>
+
+  <!-- ════════════ 4 — PROVIDER ════════════ -->
+  <h2 id="s3"><span class="num">3</span> Choose a model provider</h2>
+  <p class="lead">The labs call a real language model. You tell the app which one via a <code>.env</code> file. First, create it from the template:</p>
+
+  <pre><code><span class="c"># macOS / Linux</span>
+<span class="p">$</span> cp .env.example .env
+
+<span class="c"># Windows (PowerShell)</span>
+<span class="p">&gt;</span> copy .env.example .env</code></pre>
+
+  <div class="callout warn"><span class="tag">Important</span><p>In <code>.env</code>, only ONE provider's lines should be active. Whatever provider you pick, make sure <strong>every line for the other providers is commented out</strong> with a leading <code>#</code> — otherwise you'll get confusing errors.</p></div>
+
+  <p>Open <code>.env</code> in any text editor. Set <strong>one</strong> line — <code>LLM_PROVIDER</code> — to your choice, fill in that provider's key/model, and <strong>comment out (put a <code>#</code> in front of) every line belonging to the providers you are not using</strong>, so that only your selected provider's lines are active. Here are all five options:</p>
+
+  <table>
+    <tr><th>LLM_PROVIDER</th><th>What you need</th><th>Set in .env</th></tr>
+    <tr>
+      <td><code>gemini</code></td>
+      <td>An API key from Google AI Studio (has a free tier).</td>
+      <td><code>GEMINI_API_KEY=…</code><br/><code>GEMINI_MODEL=gemini-2.5-flash</code></td>
+    </tr>
+    <tr>
+      <td><code>openai</code></td>
+      <td>An OpenAI API key (paid account).</td>
+      <td><code>OPENAI_API_KEY=…</code><br/><code>OPENAI_MODEL=gpt-5.4-mini</code></td>
+    </tr>
+    <tr>
+      <td><code>anthropic</code></td>
+      <td>An Anthropic API key (paid account).</td>
+      <td><code>ANTHROPIC_API_KEY=…</code><br/><code>ANTHROPIC_MODEL=claude-haiku-4-5-20251001</code></td>
+    </tr>
+    <tr>
+      <td><code>claude-code</code></td>
+      <td>The <strong>Claude Code</strong> CLI already installed and logged in. No API key in <code>.env</code>.</td>
+      <td><code>CLAUDE_CODE_MODEL=sonnet</code></td>
+    </tr>
+    <tr>
+      <td><code>codex-cli</code></td>
+      <td>The <strong>Codex</strong> CLI already installed and logged in. No API key in <code>.env</code>.</td>
+      <td><code>CODEX_MODEL=gpt-5.4</code></td>
+    </tr>
+  </table>
+
+  <div class="callout"><span class="tag">Model IDs change</span><p>Model names get updated over time. If a model ID is rejected, swap it for a current one from the provider's model list — the links are in the comments at the top of <code>.env.example</code>.</p></div>
+
+  <div class="callout"><span class="tag">Free vs paid</span><p>We're provider-agnostic — use whatever you have or prefer. Two honest notes: <code>gemini-2.5-flash</code> has a <strong>free</strong> tier, which is great for trying it, but the free tier is <strong>heavily rate-limited</strong> — during the workshop you'll likely hit <code>500</code>s and interruptions. If you'd rather work uninterrupted, a <strong>paid</strong> API key (any provider) is smoother: the entire course costs roughly <strong>$5–10 of tokens at most</strong>, even with a stronger model such as Claude Sonnet.</p></div>
+
+  <h3>Example: getting a free Gemini key (Google AI Studio)</h3>
+  <p>One concrete walkthrough — the free option (keep the rate-limit caveat above in mind):</p>
+  <div class="step-row"><div class="step-n">1</div><p>Go to <a href="https://aistudio.google.com">aistudio.google.com</a> and sign in with a Google account.</p></div>
+  <div class="step-row"><div class="step-n">2</div><p>In the left sidebar open <strong>Dashboard</strong>, then <strong>API Keys</strong>.</p></div>
+  <div class="step-row"><div class="step-n">3</div><p>Click <strong>Create API key</strong> (top right). A key is created under a project on the <strong>Free tier</strong>.</p></div>
+  <div class="step-row"><div class="step-n">4</div><p>Copy the key.</p></div>
+  <div class="step-row"><div class="step-n">5</div><p>In <code>.env</code> set:</p></div>
+  <pre><code>LLM_PROVIDER=gemini
+GEMINI_API_KEY=<span style="color:var(--yellow)">your-key-here</span>
+GEMINI_MODEL=gemini-2.5-flash
+<span class="c"># keep every other provider's lines commented out with #</span></code></pre>
+  <p style="margin-top:6px;">Save the file. That's it — you're ready to run.</p>
+
+  <div class="callout warn"><span class="tag">Keep it secret</span><p>Your <code>.env</code> holds a credential. Don't paste it into chat, screenshots, or commit it (the repo already ignores <code>.env</code>). Treat it like a password.</p></div>
+
+  <!-- ════════════ 5 — RUN ════════════ -->
+  <h2 id="s4"><span class="num">4</span> Start the server</h2>
+  <p class="lead">From inside <code>hunting-agent/</code>:</p>
+  <pre><code><span class="p">$</span> npm run dev</code></pre>
+  <p>It prints a local URL — usually <a href="http://localhost:5173">http://localhost:5173</a> (if that port is busy it picks the next one, so use whatever URL it prints). Open it in your browser. Leave this terminal running for the whole workshop; press <code>Ctrl + C</code> in it to stop the server.</p>
+
+  <!-- ════════════ 6 — TEST ════════════ -->
+  <h2 id="s5"><span class="num">5</span> Confirm it worked</h2>
+  <p class="lead">A 30-second smoke test that proves the app, your key, and the model are all wired up:</p>
+  <div class="step-row"><div class="step-n">1</div><p>On the landing page, open <strong>Lab 01 — Our First Agent</strong>.</p></div>
+  <div class="step-row"><div class="step-n">2</div><p>Click the <strong>Agent</strong> tab, type anything (e.g. <em>"What is beaconing?"</em>), and press <strong>Send</strong>.</p></div>
+  <div class="step-row"><div class="step-n">3</div><p>You should see a reply <strong>stream in word by word</strong>. That's success — the browser reached your local server, which called the model with your key. ✔</p></div>
+  <div class="callout warn"><span class="tag">If it errors</span><p>An error here almost always means the <code>.env</code> step: provider not set, a key still left as <code>paste-your-key-here</code>, or a model ID the provider rejected. Re-check Section&nbsp;3, save <code>.env</code>, and restart <code>npm run dev</code>. See Section&nbsp;8 for specifics.</p></div>
+
+  <hr/>
+
+  <!-- ════════════ 7 — MCP ════════════ -->
+  <h2 id="s6"><span class="num">6</span> The MCP lab (Lab 05)</h2>
+  <p class="lead">Every lab works with just the steps above <em>except</em> Lab&nbsp;05, which makes a real call to Google Threat Intelligence over MCP. For that one lab you also need two things:</p>
+  <h4>1. Install <code>uv</code> (a single binary; it fetches Python for you)</h4>
+  <pre><code><span class="c"># macOS / Linux</span>
+<span class="p">$</span> curl -LsSf https://astral.sh/uv/install.sh | sh
+
+<span class="c"># Windows (PowerShell)</span>
+<span class="p">&gt;</span> powershell -c "irm https://astral.sh/uv/install.ps1 | iex"</code></pre>
+  <h4>2. Add a free VirusTotal API key to <code>.env</code></h4>
+  <p>Get one at <a href="https://www.virustotal.com/gui/my-apikey">virustotal.com/gui/my-apikey</a>, then set:</p>
+  <pre><code>VT_APIKEY=<span style="color:var(--yellow)">your-virustotal-key</span></code></pre>
+  <div class="callout tip"><span class="tag">Expected</span><p>The MCP server is already bundled in the repo (<code>mcp-security/</code>) — no separate download. The <strong>first</strong> Lab&nbsp;05 run may pause a few seconds while <code>uv</code> fetches the server's Python dependencies. That's normal, and only happens once.</p></div>
+
+  <!-- ════════════ 8 — BONUS ════════════ -->
+  <h2 id="s7"><span class="num">7</span> Optional — bonus take-home</h2>
+  <p class="lead">Two extras you can explore after the workshop. Neither is needed for the core labs.</p>
+
+  <h3>Give the Agent a Shell (in-app)</h3>
+  <p>The <strong>Bonus — Give the Agent a Shell</strong> card on the landing page runs entirely in the app you already have. It executes real commands on your machine, gated by a policy file at <code>hunting-agent/command-policy.json</code> (a <code>deny</code> / <code>ask</code> list you can edit). Read its <em>Lesson</em> and <em>Instructions</em> tabs first — and only run it on a machine you're comfortable with.</p>
+
+  <h3>mini-distillation (command-line)</h3>
+  <p>A standalone CLI that turns raw telemetry into scored candidates. It has its own dependencies (the setup script doesn't touch it), so install once:</p>
+  <pre><code><span class="c"># from the repo root</span>
+<span class="p">$</span> cd mini-distillation
+<span class="p">$</span> npm install
+<span class="p">$</span> npx tsx src/distill.ts score all examples/events.sample.json</code></pre>
+  <p>It writes results to <code>candidates.ndjson</code>. See <code>mini-distillation/README.md</code> and <code>SCHEMA.md</code> for how to read the output and run it on your own data.</p>
+
+  <hr/>
+
+  <!-- ════════════ 9 — TROUBLESHOOTING ════════════ -->
+  <h2 id="s8"><span class="num">8</span> Troubleshooting</h2>
+  <table>
+    <tr><th>Symptom</th><th>Fix</th></tr>
+    <tr><td><code>node: command not found</code> (or "unsupported") right after setup</td><td>Close the terminal, open a new one, <code>cd</code> back in, and re-run the setup script. Volta's PATH change needs a fresh shell.</td></tr>
+    <tr><td>Windows: <em>"running scripts is disabled on this system"</em></td><td>You omitted the policy flag. Use exactly: <code>powershell -ExecutionPolicy Bypass -File setup.ps1</code></td></tr>
+    <tr><td>Windows: <em>winget not found</em> during setup</td><td>Install Volta manually from <a href="https://volta.sh">volta.sh</a> (MSI), reopen PowerShell, re-run the script.</td></tr>
+    <tr><td><code>LLM_PROVIDER not set</code> / <code>… not set in .env</code></td><td>You didn't create/edit <code>.env</code>, or a value is still <code>paste-your-key-here</code>. Re-do Section&nbsp;3 and restart the server.</td></tr>
+    <tr><td>Model errors / 401 / "invalid model"</td><td>Wrong or expired key, or a model ID the provider no longer offers. Re-check the key and pick a current model ID from the provider's list (links in <code>.env.example</code>).</td></tr>
+    <tr><td>"Port 5173 is in use"</td><td>Not a problem — Vite picks the next free port. Open whatever URL it prints.</td></tr>
+    <tr><td><code>npm install</code> fails behind a corporate network</td><td>You're likely behind a proxy. Configure npm's proxy settings, or try from a home/non-restricted network.</td></tr>
+    <tr><td>Lab 05 fails or hangs</td><td>Confirm Section&nbsp;6: <code>uv</code> installed and <code>VT_APIKEY</code> set. The first run is slow while <code>uv</code> fetches dependencies.</td></tr>
+  </table>
+
+  <div class="callout tip"><span class="tag">Remember</span><p>The detailed, per-lab instructions live <em>inside the app</em> — each lab opens on an <strong>Instructions</strong> tab. This guide only gets you to the front door.</p></div>
+
+  <div class="docfoot">
+    <span>AntiSyphon — Agentic Threat Hunting · Workshop 12 June 2026</span>
+    <span>Questions? Ask in Discord before the workshop.</span>
+  </div>
+
+</div>
+</body>
+</html>
