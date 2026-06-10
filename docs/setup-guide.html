@@ -26,14 +26,21 @@
   @page { size: A4; margin: 0; }
 
   html, body { margin: 0; padding: 0; background: var(--bg); }
+
+  /* Repeats on every printed page → guarantees full-bleed dark, no white bands */
+  .page-bg { position: fixed; inset: 0; background: var(--bg); z-index: -1; }
+
+  /* Manual vertical spacer for nudging page breaks. Default ≈ a few newlines.
+     Override per-spot with inline style="height:NNmm" where more/less is wanted. */
+  .vsp { height: 16mm; }
   body {
     color: var(--text);
     font-family: var(--sans);
     font-size: 10.5pt;
-    line-height: 1.55;
+    line-height: 1.62;
   }
 
-  .wrap { padding: 14mm 15mm 16mm; }
+  .wrap { padding: 15mm 16mm 8mm; }
 
   /* ── Cover ── */
   .cover {
@@ -95,7 +102,8 @@
 
   /* ── Section headings ── */
   h2 {
-    margin: 30px 0 4px;
+    margin: 30px 0 10px;
+    padding-top: 18px;
     font-size: 18pt;
     font-weight: 800;
     color: #fff;
@@ -104,6 +112,7 @@
     align-items: baseline;
     gap: 12px;
   }
+  h2:first-of-type { margin-top: 8px; }
   h2 .num {
     font-family: var(--mono);
     font-size: 12pt;
@@ -113,11 +122,11 @@
     padding: 2px 10px;
     flex-shrink: 0;
   }
-  h2 + .lead { margin-top: 2px; color: var(--muted); break-after: avoid; }
-  h3 { margin: 20px 0 6px; font-size: 12.5pt; font-weight: 800; color: var(--cyan); break-after: avoid; }
-  h4 { margin: 14px 0 4px; font-size: 10.5pt; font-weight: 800; color: var(--text); }
+  h2 + .lead { margin-top: 4px; color: var(--muted); break-after: avoid; }
+  h3 { margin: 30px 0 8px; font-size: 12.5pt; font-weight: 800; color: var(--cyan); break-after: avoid; }
+  h4 { margin: 22px 0 6px; font-size: 10.5pt; font-weight: 800; color: var(--text); break-after: avoid; }
 
-  p { margin: 7px 0; }
+  p { margin: 9px 0; }
   a { color: var(--cyan); text-decoration: none; word-break: break-all; }
   strong { color: #fff; }
   em { color: var(--purple); font-style: normal; }
@@ -136,8 +145,8 @@
   }
 
   pre {
-    margin: 10px 0;
-    padding: 11px 13px;
+    margin: 14px 0;
+    padding: 13px 15px;
     background: #0c0c13;
     border: 1px solid var(--line);
     border-left: 3px solid var(--green);
@@ -173,14 +182,15 @@
   table {
     width: 100%;
     border-collapse: collapse;
-    margin: 12px 0;
+    margin: 16px 0;
     font-size: 9pt;
     break-inside: avoid;
   }
+  tr { break-inside: avoid; }
   th, td {
     text-align: left;
     vertical-align: top;
-    padding: 8px 10px;
+    padding: 10px 12px;
     border-bottom: 1px solid var(--line);
   }
   th {
@@ -198,8 +208,8 @@
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 10px;
-    margin: 12px 0;
-    padding: 11px 14px;
+    margin: 16px 0;
+    padding: 13px 16px;
     border: 1px solid var(--line);
     border-left: 3px solid var(--purple);
     border-radius: 8px;
@@ -227,7 +237,7 @@
   .os-mac { color: var(--cyan); background: rgba(139,233,253,0.10); border: 1px solid rgba(139,233,253,0.3); }
   .os-win { color: var(--yellow); background: rgba(245,230,99,0.10); border: 1px solid rgba(245,230,99,0.3); }
 
-  .step-row { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; margin: 9px 0; break-inside: avoid; }
+  .step-row { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; margin: 12px 0; break-inside: avoid; }
   .step-n {
     font-family: var(--mono); font-weight: 800; font-size: 10pt; color: var(--bg);
     background: var(--purple); border-radius: 6px; width: 24px; height: 24px;
@@ -235,33 +245,28 @@
   }
   .step-row p { margin: 0; }
 
-  hr { border: none; border-top: 1px solid var(--line); margin: 26px 0; }
+  hr { border: none; border-top: 1px solid var(--line); margin: 36px 0; }
 
   .toc { columns: 2; column-gap: 28px; margin: 10px 0 0; }
   .toc a { display: block; color: var(--text); font-size: 9.5pt; padding: 3px 0; }
   .toc .tnum { color: var(--yellow); font-family: var(--mono); margin-right: 8px; }
 
   .docfoot {
-    margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--line);
-    color: var(--muted); font-family: var(--mono); font-size: 8pt;
+    margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line);
+    color: var(--muted); font-family: var(--mono); font-size: 7.5pt;
     display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    break-inside: avoid;
   }
 </style>
 </head>
 <body>
+<div class="page-bg"></div>
 
 <!-- ════════════ COVER ════════════ -->
 <div class="cover">
   <span class="eyebrow">AntiSyphon Workshop · 12 June 2026</span>
-  <h1>Agentic Threat&nbsp;Hunting<br/>Setup Guide</h1>
+  <h1>Build Your Own<br/>AI Security Agent<br/>Setup Guide</h1>
   <p class="sub">Please complete setup <strong>before</strong> the workshop. Stuck? Ask in Discord.</p>
-  <div class="meta">
-    <span class="pill y">~10 minutes</span>
-    <span class="pill">macOS · Linux · Windows</span>
-    <span class="pill">No prior Node install needed</span>
-    <span class="pill">Free model option included</span>
-  </div>
-  <div class="foot">aionsec.ai — please complete setup BEFORE the workshop. Stuck? Ask in Discord.</div>
 </div>
 
 <div class="wrap">
@@ -299,6 +304,7 @@
     <li>If not, it installs <strong>Volta</strong> (a small, cross-platform Node version manager) and pins <strong>Node 22.12.0</strong> — without touching any other Node you might have.</li>
     <li>Runs <code>npm install</code> to download the app's dependencies.</li>
   </ul>
+  <div class="vsp"></div>
   <div class="callout warn"><span class="tag">Windows note</span><p>The <code>-ExecutionPolicy Bypass</code> part is required — without it PowerShell refuses to run scripts. On Windows the script uses <code>winget</code> to install Volta; if you don't have winget, install Volta manually from <a href="https://volta.sh">volta.sh</a>, reopen PowerShell, and re-run.</p></div>
   <div class="callout"><span class="tag">If Node was just installed</span><p>Close the terminal, open a fresh one, <code>cd</code> back into <code>hunting-agent</code>, and run the script again. Volta updates your PATH, and a new terminal is the cleanest way to pick it up.</p></div>
 
@@ -345,12 +351,12 @@
     </tr>
   </table>
 
+  <div class="vsp"></div>
   <div class="callout"><span class="tag">Model IDs change</span><p>Model names get updated over time. If a model ID is rejected, swap it for a current one from the provider's model list — the links are in the comments at the top of <code>.env.example</code>.</p></div>
 
   <div class="callout"><span class="tag">Free vs paid</span><p>We're provider-agnostic — use whatever you have or prefer. Two honest notes: <code>gemini-2.5-flash</code> has a <strong>free</strong> tier, which is great for trying it, but the free tier is <strong>heavily rate-limited</strong> — during the workshop you'll likely hit <code>500</code>s and interruptions. If you'd rather work uninterrupted, a <strong>paid</strong> API key (any provider) is smoother: the entire course costs roughly <strong>$5–10 of tokens at most</strong>, even with a stronger model such as Claude Sonnet.</p></div>
 
   <h3>Example: getting a free Gemini key (Google AI Studio)</h3>
-  <p>One concrete walkthrough — the free option (keep the rate-limit caveat above in mind):</p>
   <div class="step-row"><div class="step-n">1</div><p>Go to <a href="https://aistudio.google.com">aistudio.google.com</a> and sign in with a Google account.</p></div>
   <div class="step-row"><div class="step-n">2</div><p>In the left sidebar open <strong>Dashboard</strong>, then <strong>API Keys</strong>.</p></div>
   <div class="step-row"><div class="step-n">3</div><p>Click <strong>Create API key</strong> (top right). A key is created under a project on the <strong>Free tier</strong>.</p></div>
@@ -364,14 +370,32 @@ GEMINI_MODEL=gemini-2.5-flash
 
   <div class="callout warn"><span class="tag">Keep it secret</span><p>Your <code>.env</code> holds a credential. Don't paste it into chat, screenshots, or commit it (the repo already ignores <code>.env</code>). Treat it like a password.</p></div>
 
+  <!-- ════════════ 4 — GTI / MCP PREREQS ════════════ -->
+  <h2 id="s4"><span class="num">4</span> Set up the GTI lab (MCP)</h2>
+  <p class="lead">Lab&nbsp;05 makes a <strong>real</strong> call to Google Threat Intelligence over MCP — it's part of the course, not an extra. Set up its two prerequisites <em>now</em>, while you're still installing things, so the single fresh terminal in the next step picks up everything at once.</p>
+  <h4>1. Install <code>uv</code> (a single binary; it fetches Python for you)</h4>
+  <pre><code><span class="c"># macOS / Linux</span>
+<span class="p">$</span> curl -LsSf https://astral.sh/uv/install.sh | sh
+
+<span class="c"># Windows (PowerShell) — run BOTH lines, in order</span>
+<span class="p">&gt;</span> Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+<span class="p">&gt;</span> powershell -c "irm https://astral.sh/uv/install.ps1 | iex"</code></pre>
+  <div class="callout warn"><span class="tag">Windows note</span><p>On a fresh Windows machine the execution policy is <code>Restricted</code>, and uv's installer refuses to run under it (you'll see <em>"PowerShell requires an execution policy in [Unrestricted, RemoteSigned, Bypass]"</em>). The first line fixes that — it only affects your user account and is the standard dev setting. Answer <strong>Y</strong> if it prompts, then run the install line. <strong>Don't restart anything yet</strong> — the next step opens one fresh terminal that picks up both Node and uv together.</p></div>
+  <h4>2. Add a free VirusTotal API key to <code>.env</code></h4>
+  <p>Get one at <a href="https://www.virustotal.com/gui/my-apikey">virustotal.com/gui/my-apikey</a>, then add this line to the <code>.env</code> you created in Section&nbsp;3:</p>
+  <pre><code>VT_APIKEY=<span style="color:var(--yellow)">your-virustotal-key</span></code></pre>
+  <div class="callout tip"><span class="tag">Expected</span><p>The MCP server is already bundled in the repo (<code>mcp-security/</code>) — no separate download. The <strong>first</strong> Lab&nbsp;05 run may pause a few seconds while <code>uv</code> fetches the server's Python dependencies. That's normal, and only happens once.</p></div>
+
   <!-- ════════════ 5 — RUN ════════════ -->
-  <h2 id="s4"><span class="num">4</span> Start the server</h2>
+  <h2 id="s5"><span class="num">5</span> Start the server</h2>
+  <div class="callout warn"><span class="tag">Do this once — open ONE fresh terminal</span><p>Setup installed <strong>Node</strong> (via Volta) and <strong>uv</strong>, and both updated your <code>PATH</code>. Any terminal you already had open won't see those changes, so <code>npm</code> and <code>uv</code> will read as "not recognized." <strong>Close every PowerShell / terminal window</strong> — on Windows, fully quit <strong>Windows Terminal</strong> (the whole app, not just the tab) — then open <strong>one brand-new</strong> terminal and <code>cd</code> into <code>hunting-agent/</code>. Confirm both: <code>npm -v</code> and <code>uv --version</code> should each print a version. (If either is missing, sign out of Windows and back in.) Start the server from <em>this</em> terminal — the labs it launches inherit its PATH, which is how Lab&nbsp;05 finds <code>uv</code>.</p></div>
+  <div class="vsp"></div>
   <p class="lead">From inside <code>hunting-agent/</code>:</p>
   <pre><code><span class="p">$</span> npm run dev</code></pre>
   <p>It prints a local URL — usually <a href="http://localhost:5173">http://localhost:5173</a> (if that port is busy it picks the next one, so use whatever URL it prints). Open it in your browser. Leave this terminal running for the whole workshop; press <code>Ctrl + C</code> in it to stop the server.</p>
 
   <!-- ════════════ 6 — TEST ════════════ -->
-  <h2 id="s5"><span class="num">5</span> Confirm it worked</h2>
+  <h2 id="s6"><span class="num">6</span> Confirm it worked</h2>
   <p class="lead">A 30-second smoke test that proves the app, your key, and the model are all wired up:</p>
   <div class="step-row"><div class="step-n">1</div><p>On the landing page, open <strong>Lab 01 — Our First Agent</strong>.</p></div>
   <div class="step-row"><div class="step-n">2</div><p>Click the <strong>Agent</strong> tab, type anything (e.g. <em>"What is beaconing?"</em>), and press <strong>Send</strong>.</p></div>
@@ -380,21 +404,7 @@ GEMINI_MODEL=gemini-2.5-flash
 
   <hr/>
 
-  <!-- ════════════ 7 — MCP ════════════ -->
-  <h2 id="s6"><span class="num">6</span> The MCP lab (Lab 05)</h2>
-  <p class="lead">Every lab works with just the steps above <em>except</em> Lab&nbsp;05, which makes a real call to Google Threat Intelligence over MCP. For that one lab you also need two things:</p>
-  <h4>1. Install <code>uv</code> (a single binary; it fetches Python for you)</h4>
-  <pre><code><span class="c"># macOS / Linux</span>
-<span class="p">$</span> curl -LsSf https://astral.sh/uv/install.sh | sh
-
-<span class="c"># Windows (PowerShell)</span>
-<span class="p">&gt;</span> powershell -c "irm https://astral.sh/uv/install.ps1 | iex"</code></pre>
-  <h4>2. Add a free VirusTotal API key to <code>.env</code></h4>
-  <p>Get one at <a href="https://www.virustotal.com/gui/my-apikey">virustotal.com/gui/my-apikey</a>, then set:</p>
-  <pre><code>VT_APIKEY=<span style="color:var(--yellow)">your-virustotal-key</span></code></pre>
-  <div class="callout tip"><span class="tag">Expected</span><p>The MCP server is already bundled in the repo (<code>mcp-security/</code>) — no separate download. The <strong>first</strong> Lab&nbsp;05 run may pause a few seconds while <code>uv</code> fetches the server's Python dependencies. That's normal, and only happens once.</p></div>
-
-  <!-- ════════════ 8 — BONUS ════════════ -->
+  <!-- ════════════ 7 — BONUS ════════════ -->
   <h2 id="s7"><span class="num">7</span> Optional — bonus take-home</h2>
   <p class="lead">An optional bonus you can explore after the workshop — not needed for the core labs.</p>
 
@@ -407,6 +417,7 @@ GEMINI_MODEL=gemini-2.5-flash
   <h2 id="s8"><span class="num">8</span> Troubleshooting</h2>
   <table>
     <tr><th>Symptom</th><th>Fix</th></tr>
+    <tr><td><code>npm</code> / <code>node</code> <em>"not recognized"</em> when you run <code>npm run dev</code> (setup succeeded)</td><td>Your terminal is using the old <code>PATH</code>. <strong>Close all terminals — on Windows fully quit Windows Terminal</strong> — open a brand-new one, <code>cd</code> back into <code>hunting-agent/</code>, and try again. Confirm with <code>npm -v</code>. Still missing? Sign out of Windows and back in (or reboot).</td></tr>
     <tr><td><code>node: command not found</code> (or "unsupported") right after setup</td><td>Close the terminal, open a new one, <code>cd</code> back in, and re-run the setup script. Volta's PATH change needs a fresh shell.</td></tr>
     <tr><td>Windows: <em>"running scripts is disabled on this system"</em></td><td>You omitted the policy flag. Use exactly: <code>powershell -ExecutionPolicy Bypass -File setup.ps1</code></td></tr>
     <tr><td>Windows: <em>winget not found</em> during setup</td><td>Install Volta manually from <a href="https://volta.sh">volta.sh</a> (MSI), reopen PowerShell, re-run the script.</td></tr>
@@ -414,13 +425,15 @@ GEMINI_MODEL=gemini-2.5-flash
     <tr><td>Model errors / 401 / "invalid model"</td><td>Wrong or expired key, or a model ID the provider no longer offers. Re-check the key and pick a current model ID from the provider's list (links in <code>.env.example</code>).</td></tr>
     <tr><td>"Port 5173 is in use"</td><td>Not a problem — Vite picks the next free port. Open whatever URL it prints.</td></tr>
     <tr><td><code>npm install</code> fails behind a corporate network</td><td>You're likely behind a proxy. Configure npm's proxy settings, or try from a home/non-restricted network.</td></tr>
-    <tr><td>Lab 05 fails or hangs</td><td>Confirm Section&nbsp;6: <code>uv</code> installed and <code>VT_APIKEY</code> set. The first run is slow while <code>uv</code> fetches dependencies.</td></tr>
+    <tr><td>Windows: uv install errors with <em>"requires an execution policy in [Unrestricted, RemoteSigned, Bypass]"</em></td><td>Default policy is <code>Restricted</code>. Run <code>Set-ExecutionPolicy RemoteSigned -Scope CurrentUser</code> (answer <strong>Y</strong>), then re-run the uv install line. See Section&nbsp;4.</td></tr>
+    <tr><td>Lab 05: <code>MCP error -32000: Connection closed</code>, and the server terminal shows <code>'uv' is not recognized</code></td><td>You installed uv <em>after</em> the dev server was already running, so the server can't see it on <code>PATH</code>. Stop the server (<code>Ctrl + C</code>), open a <strong>fresh</strong> terminal (so both <code>npm</code> and <code>uv</code> resolve), <code>cd</code> into <code>hunting-agent/</code>, and run <code>npm run dev</code> again from there. See Section&nbsp;5.</td></tr>
+    <tr><td>Lab 05 fails or hangs</td><td>Confirm Section&nbsp;4: <code>uv</code> installed and <code>VT_APIKEY</code> set, and that you started the server from a terminal opened <em>after</em> installing uv. The first run is slow while <code>uv</code> fetches dependencies.</td></tr>
   </table>
 
   <div class="callout tip"><span class="tag">Remember</span><p>The detailed, per-lab instructions live <em>inside the app</em> — each lab opens on an <strong>Instructions</strong> tab. This guide only gets you to the front door.</p></div>
 
   <div class="docfoot">
-    <span>AntiSyphon — Agentic Threat Hunting · Workshop 12 June 2026</span>
+    <span>AntiSyphon — Build Your Own AI Security Agent · Workshop 12 June 2026</span>
     <span>Questions? Ask in Discord before the workshop.</span>
   </div>
 
