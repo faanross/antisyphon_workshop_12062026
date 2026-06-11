@@ -75,6 +75,16 @@
       note: "Roberto Rodriguez (Cyb3rWard0g) — hands-on agents for security data analysis.",
     },
     {
+      label: "Reinventing Agentic AI Security With Architectural Controls (Black Hat USA 2025)",
+      url: "https://www.youtube.com/watch?v=iLX4OdAEznY",
+      note: "David Brauchler (NCC Group) — why prompt-level guardrails aren't enough, and how to secure agents with architectural controls.",
+    },
+    {
+      label: "Deep Dive into LLMs like ChatGPT",
+      url: "https://www.youtube.com/watch?v=7xTGNNLPyMI",
+      note: "Andrej Karpathy — a ~3.5-hour general-audience walk through the full LLM training stack; the best grounding for what the model under your agent actually is.",
+    },
+    {
       label: "AI Engineer — YouTube channel",
       url: "https://www.youtube.com/@aiDotEngineer",
       note: "Not security-specific, but a deep, high-quality library on building with agents and LLMs — very relevant.",
