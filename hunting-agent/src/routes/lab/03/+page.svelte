@@ -284,7 +284,23 @@
           <div class="stat"><strong>{budget.systemPromptTokens}</strong><span>system prompt</span></div>
           <div class="stat"><strong>{budget.currentMessageTokens}</strong><span>your input</span></div>
           <div class="stat"><strong>{budget.currentTurnOutputTokens}</strong><span>output</span></div>
-          <div class="stat"><strong>{budget.retainedContextTokens}</strong><span>retained context</span></div>
+          <div class="stat">
+            <strong>{budget.retainedContextTokens}</strong>
+            <span class="stat-label">
+              retained context
+              <button type="button" class="info-dot" aria-label="What is retained context, and why isn't it exactly your input plus output?">i</button>
+              <span class="info-pop" role="tooltip">
+                <strong>Retained context</strong> is the whole conversation the harness keeps and re-sends to the model every turn.
+                It’s stored as <em>structured turns</em> — each message tagged with who said it:
+                <code>user: …</code> and <code>assistant: …</code>.
+                <br /><br />
+                That’s why it’s a few tokens more than <em>your input</em> + <em>output</em>: those two count only the
+                words, while retained context also counts the <code>user:</code> / <code>assistant:</code> labels and the
+                line breaks that wrap them. The bar below tracks this number against the
+                {budget.maxRetainedContextTokens}-token budget — and it’s what grows until compaction fires.
+              </span>
+            </span>
+          </div>
         </div>
 
         <!-- Capacity bar -->
@@ -756,6 +772,30 @@ MEMORY_KEEP_RECENT=2        <span class="c-cm">// latest turns kept verbatim</sp
   .stat { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.7rem 0.9rem; border: 1px solid rgba(189, 147, 249, 0.22); border-radius: 8px; background: rgba(28, 29, 39, 0.7); }
   .stat strong { font-family: var(--font-heading); font-size: 1.6rem; color: var(--brand-yellow); }
   .stat span { font-size: 0.78rem; color: var(--brand-muted); }
+
+  /* (i) explainer on the retained-context card */
+  .stat-label { position: relative; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .info-dot {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.05rem; height: 1.05rem; padding: 0; border-radius: 50%;
+    border: 1px solid rgba(189, 147, 249, 0.55); background: rgba(28, 29, 39, 0.9);
+    color: var(--brand-purple, #bd93f9); font-family: var(--font-heading);
+    font-size: 0.72rem; line-height: 1; cursor: help; transition: background 0.12s, border-color 0.12s;
+  }
+  .info-dot:hover, .info-dot:focus-visible { background: rgba(189, 147, 249, 0.22); border-color: rgba(189, 147, 249, 0.9); outline: none; }
+  .info-pop {
+    position: absolute; top: calc(100% + 0.5rem); right: 0; z-index: 50;
+    width: min(360px, 78vw); padding: 0.9rem 1rem;
+    border: 1px solid rgba(189, 147, 249, 0.4); border-radius: 10px;
+    background: #1b1c27; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+    color: var(--brand-fg, #f8f8f2); font-size: 0.92rem; line-height: 1.55; text-align: left;
+    opacity: 0; visibility: hidden; transform: translateY(-4px);
+    transition: opacity 0.14s ease, transform 0.14s ease, visibility 0.14s;
+    pointer-events: none;
+  }
+  .info-pop strong { font-family: inherit; font-size: inherit; color: var(--brand-yellow); }
+  .info-pop code { font-size: 0.86em; color: var(--brand-purple, #bd93f9); background: rgba(189, 147, 249, 0.12); padding: 0.05em 0.3em; border-radius: 4px; }
+  .stat-label:hover .info-pop, .stat-label:focus-within .info-pop { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
 
   .capacity { display: flex; flex-direction: column; gap: 0.4rem; }
   .cap-head { display: flex; justify-content: space-between; font-family: var(--font-heading); font-size: 0.85rem; color: var(--brand-text); }
