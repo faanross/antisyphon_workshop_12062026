@@ -546,7 +546,7 @@
               <div class="cw-seg cw-pin" style="flex: 1.3"></div>
               <div class="cw-seg cw-old" style="flex: 3"></div>
               <div class="cw-seg cw-rec" style="flex: 2"></div>
-              <div class="cw-trigger" style="left: 70%"></div>
+              <div class="cw-trigger" style="left: 67%"></div>
             </div>
             <div class="cw-legend">
               <span><i class="cw-dot cw-sys"></i> System prompt — fixed overhead, sent every call</span>
@@ -595,11 +595,11 @@
                 Fill, then fall.
               </p>
               <div class="cv-chain">
-                <span class="cv-chip">max 1000</span>
+                <span class="cv-chip">max 600</span>
                 <span class="cv-mm-sep">×</span>
-                <span class="cv-chip">ratio 0.7</span>
+                <span class="cv-chip">ratio 0.67</span>
                 <ArrowRightIcon size={14} weight="bold" />
-                <span class="cv-chip cv-chip-live">trigger 700</span>
+                <span class="cv-chip cv-chip-live">trigger 402</span>
               </div>
             </article>
 
@@ -658,7 +658,7 @@ MEMORY_KEEP_RECENT=2        <span class="c-cm">// latest turns kept verbatim</sp
 └─ <span class="tr-dir">framework/</span>
    ├─ <span class="tr-file">demo.ts</span>                 <span class="tr-cm">← runs the turn: compact → assemble → call → save</span>
    ├─ <span class="tr-file">memory-lab.ts</span>           <span class="tr-cm">← the memory model: plan, split, build, budget</span>
-   ├─ <span class="tr-file">session.ts</span>             <span class="tr-cm">← the session store + token estimation</span>
+   ├─ <span class="tr-file">session.ts</span>              <span class="tr-cm">← the session store + token estimation</span>
    ├─ <span class="tr-dir">prompts/</span>
    │  └─ <span class="tr-file">chat.ts</span>              <span class="tr-cm">← chat + compaction system prompts</span>
    └─ <span class="tr-dir">providers/</span>              <span class="tr-cm">← the model client (one per vendor)</span></code></pre>
