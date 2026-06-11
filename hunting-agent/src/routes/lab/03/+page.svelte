@@ -115,7 +115,7 @@
   <!-- Persistent context meter: visible on both tabs so the live reaction is never hidden -->
   {#if activeTab === "chat" || activeTab === "context"}
   <div class="meter" class:flash={compactionFlash}>
-    <span class="m-label">context</span>
+    <span class="m-label">retained context</span>
     <div class="m-track">
       {#if budget}
         <span class="m-fill" style="width:{pct(budget.retainedContextTokens, budget.maxRetainedContextTokens)}%"></span>
@@ -618,10 +618,10 @@
                 no tokenizer needed. Four <code>.env</code> knobs decide when compaction fires;
                 lower the max to watch it happen in just a few messages.
               </p>
-              <pre class="cv-code"><code>MEMORY_MAX_TOKENS=1000      <span class="c-cm">// the ceiling</span>
-MEMORY_TRIGGER_RATIO=0.7    <span class="c-cm">// compact at 70%</span>
-MEMORY_PINNED_TURNS=0       <span class="c-cm">// opening turns kept</span>
-MEMORY_KEEP_RECENT=2        <span class="c-cm">// latest turns kept</span></code></pre>
+              <pre class="cv-code"><code>MEMORY_MAX_TOKENS=600       <span class="c-cm">// the ceiling (retained context)</span>
+MEMORY_TRIGGER_RATIO=0.67   <span class="c-cm">// compact at 67% → trigger 402</span>
+MEMORY_PINNED_TURNS=0       <span class="c-cm">// opening turns kept verbatim</span>
+MEMORY_KEEP_RECENT=2        <span class="c-cm">// latest turns kept verbatim</span></code></pre>
             </article>
           </div>
         </details>

@@ -118,6 +118,21 @@ export function buildMemoryBudget(input: {
   // is reported separately (fixed overhead) so compaction's effect is unmistakable.
   const retained = memoryTokens + pinnedTokens + olderTokens + recentTokens;
 
+  // Harmonize the displayed compaction numbers with the bar: when no compaction
+  // happened, report the SAME post-turn `retained` everywhere (bar, "below trigger"
+  // message, before/after) instead of the planner's separate pre-turn estimate.
+  const compaction: ContextCompactionReport = input.compaction.occurred
+    ? input.compaction
+    : {
+        ...input.compaction,
+        beforeTokens: retained,
+        afterTokens: retained,
+        reason:
+          retained < triggerTokens
+            ? `Below trigger: ${retained}/${triggerTokens} tokens — still room, no compaction.`
+            : `At the ${triggerTokens} trigger, but only ${split.olderTurns.length} older turn(s) — need 2 to compact.`,
+      };
+
   return {
     systemPromptTokens,
     toolCatalogTokens: 0,
@@ -143,13 +158,12 @@ export function buildMemoryBudget(input: {
     compactionTriggerTokens: triggerTokens,
     compactionTriggerRatio: memTriggerRatio(),
     contextSections: [
-      { id: "system-prompt", label: "System prompt", tokens: systemPromptTokens, description: "Fixed assistant instructions sent on every call." },
       { id: "memory-summary", label: "Compacted memory", tokens: memoryTokens, description: "Older turns the harness summarized so it could drop them." },
       { id: "pinned-turns", label: "Pinned opening turns", tokens: pinnedTokens, description: "First turns kept verbatim — they set up the conversation." },
       { id: "older-turns", label: "Older turns (compactable)", tokens: olderTokens, description: "Verbatim middle turns. These are what compaction folds into memory next." },
       { id: "recent-turns", label: "Recent turns", tokens: recentTokens, description: "Latest turns kept verbatim for accurate follow-ups." },
     ],
-    compaction: input.compaction,
+    compaction,
     strategy: "keep the whole conversation verbatim until it crosses the trigger; then summarize the oldest turns into memory and drop them",
   };
 }
