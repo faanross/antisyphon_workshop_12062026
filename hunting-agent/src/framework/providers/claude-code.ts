@@ -42,9 +42,13 @@ export function createClaudeCodeProvider(
         args.push("--bare");
       }
 
-      const child = spawn(binary, [...args, combined], {
-        stdio: ["ignore", "pipe", "pipe"],
+      // Pass the prompt via stdin, not argv: Windows caps the command line at
+      // ~32K chars, and tool-heavy prompts (e.g. Lab 05's decide step) exceed it.
+      const child = spawn(binary, args, {
+        stdio: ["pipe", "pipe", "pipe"],
       });
+      child.stdin.write(combined);
+      child.stdin.end();
       let stderr = "";
       child.stderr.on("data", (chunk) => {
         stderr = `${stderr}${chunk.toString()}`.slice(-4000);
