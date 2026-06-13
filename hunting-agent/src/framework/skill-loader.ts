@@ -20,9 +20,14 @@ export interface SkillDocument {
 }
 
 function splitFrontmatter(content: string): { metadata: SkillMetadata; frontmatter: string; body: string } {
-  const match = content.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  // Normalize CRLF/CR -> LF first. On Windows checkouts the skill .md files often have
+  // \r\n line endings; the frontmatter delimiter regex below matches \n only, so without
+  // this the match silently fails and every skill loads as "unnamed-skill". Normalizing
+  // also strips stray \r from the captured frontmatter/body so YAML parsing stays clean.
+  const normalized = content.replace(/\r\n?/g, "\n");
+  const match = normalized.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
   if (!match) {
-    return { metadata: { name: "unnamed-skill" }, frontmatter: "", body: content };
+    return { metadata: { name: "unnamed-skill" }, frontmatter: "", body: normalized };
   }
   return {
     metadata: parse(match[1]) as SkillMetadata,

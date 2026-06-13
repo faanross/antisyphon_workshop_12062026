@@ -12,6 +12,7 @@
 	"scripts": {
 		"preinstall": "node scripts/check-node.mjs",
 		"dev": "vite dev",
+		"dev:host": "vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
