@@ -1,0 +1,23 @@
+# Force LF line endings for all text files, on every platform.
+# Why: on Windows checkouts, files converted to CRLF break the skill-loader's
+# YAML-frontmatter parser (src/framework/skill-loader.ts) and any shell script.
+# Storing LF and checking out LF removes that whole class of bug regardless of
+# the user's git core.autocrlf setting.
+* text=auto eol=lf
+
+# Binary assets — never normalize line endings.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.webp  binary
+*.pdf   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
+*.eot   binary
+*.mp4   binary
+*.mov   binary
+*.zip   binary
